@@ -23,7 +23,7 @@ public class ProjectConfig {
 	}
 
 	/**
-	 * ·µ»ØStringÀàĞÍµÄÅäÖÃĞÅÏ¢
+	 * è¿”å›Stringç±»å‹çš„é…ç½®ä¿¡æ¯
 	 * @param name
 	 * @return
 	 */

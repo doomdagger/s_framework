@@ -16,7 +16,7 @@ public class Util {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat(ProjectConfig.getProperty("format.date"));
 	
 	/**
-	 * ½«java.util.Date¶ÔÏó×ª»»Îªstring£¬¸ñÊ½¹æ¶¨Îªproject.propertiesÎÄ¼şÖĞ
+	 * å°†java.util.Dateå¯¹è±¡è½¬æ¢ä¸ºstringï¼Œæ ¼å¼è§„å®šä¸ºproject.propertiesæ–‡ä»¶ä¸­
 	 * @param date
 	 * @return
 	 */
@@ -28,7 +28,7 @@ public class Util {
 	}
 	
 	/**
-	 * ½«string×ª»»Îªjava.util.Date£¬¸ñÊ½¹æ¶¨Îªproject.propertiesÎÄ¼şÖĞ
+	 * å°†stringè½¬æ¢ä¸ºjava.util.Dateï¼Œæ ¼å¼è§„å®šä¸ºproject.propertiesæ–‡ä»¶ä¸­
 	 * @param string
 	 * @return
 	 */
@@ -47,13 +47,13 @@ public class Util {
 	public static final String IS_PREFIX = "is";
 
 	/**
-	 * ´Ë·½·¨ÓÃÓÚ¿ìËÙÓ³ÉäÁ½¸ö¶ÔÏóµÄÏàÍ¬×Ö¶Î£¬·½·¨»á´´½¨Ò»¸öÓëpojo¶ÔÏó¶ÔÓ¦µÄdto¶ÔÏó£¬
-	 * ÓÃÓÚ´Ópojo¶ÔÏóÖĞ¸´ÖÆ×Ö¶ÎÖµµ½dto¶ÔÏó£¬ÕâĞ©×Ö¶Î±ØĞëÊÇpojo¶ÔÏóÓëdto¶ÔÏó¶¼¹²Í¬´æÔÚµÄ¡£
+	 * æ­¤æ–¹æ³•ç”¨äºå¿«é€Ÿæ˜ å°„ä¸¤ä¸ªå¯¹è±¡çš„ç›¸åŒå­—æ®µï¼Œæ–¹æ³•ä¼šåˆ›å»ºä¸€ä¸ªä¸pojoå¯¹è±¡å¯¹åº”çš„dtoå¯¹è±¡ï¼Œ
+	 * ç”¨äºä»pojoå¯¹è±¡ä¸­å¤åˆ¶å­—æ®µå€¼åˆ°dtoå¯¹è±¡ï¼Œè¿™äº›å­—æ®µå¿…é¡»æ˜¯pojoå¯¹è±¡ä¸dtoå¯¹è±¡éƒ½å…±åŒå­˜åœ¨çš„ã€‚
 	 * 
-	 * ĞèÒª½èÓÃproject.propertiesÖ¸¶¨µÄdtoËùÔÚµÄpackage
-	 * Ê¹ÓÃ´Ë×ª»»¹æÔòĞèÒª×ñÑ­Ò»¶¨µÄÌõ¼ş£º
-	 * 	1.ÀàÃüÃûÌõ¼ş£ºpojoÀàÃüÃûÎª£ºArea£¬¶ÔÓ¦dtoÀàÃüÃûÎª£ºAreaDto
-	 * 	2.×Ö¶ÎÃüÃû¹æÔò£ºÏëÒª¿ìËÙÓ³ÉäµÄ×Ö¶Î£¬ÔÚAreaÓëAreaDtoÖĞÓ¦¸Ã¾ßÓĞÒ»ÑùµÄÃû×ÖºÍgetterÓësetter·½·¨
+	 * éœ€è¦å€Ÿç”¨project.propertiesæŒ‡å®šçš„dtoæ‰€åœ¨çš„package
+	 * ä½¿ç”¨æ­¤è½¬æ¢è§„åˆ™éœ€è¦éµå¾ªä¸€å®šçš„æ¡ä»¶ï¼š
+	 * 	1.ç±»å‘½åæ¡ä»¶ï¼špojoç±»å‘½åä¸ºï¼šAreaï¼Œå¯¹åº”dtoç±»å‘½åä¸ºï¼šAreaDto
+	 * 	2.å­—æ®µå‘½åè§„åˆ™ï¼šæƒ³è¦å¿«é€Ÿæ˜ å°„çš„å­—æ®µï¼Œåœ¨Areaä¸AreaDtoä¸­åº”è¯¥å…·æœ‰ä¸€æ ·çš„åå­—å’Œgetterä¸setteræ–¹æ³•
 	 * @param pojo
 	 * @return
 	 */
@@ -88,12 +88,12 @@ public class Util {
 	}
 	
 	/**
-	 * ´Ë·½·¨ÓÃÓÚ¿ìËÙÓ³ÉäÁ½¸ö¶ÔÏóµÄÏàÍ¬×Ö¶Î£¬·½·¨»á´´½¨Ò»¸öÓëdto¶ÔÏó¶ÔÓ¦µÄpojo¶ÔÏó£¬
-	 * ÓÃÓÚ´Ódto¶ÔÏóÖĞ¸´ÖÆ×Ö¶ÎÖµµ½pojo¶ÔÏó£¬ÕâĞ©×Ö¶Î±ØĞëÊÇpojo¶ÔÏóÓëdto¶ÔÏó¶¼¹²Í¬´æÔÚµÄ¡£
-	 * ĞèÒª½èÓÃproject.propertiesÖ¸¶¨µÄdtoËùÔÚµÄpackage
-	 * Ê¹ÓÃ´Ë×ª»»¹æÔòĞèÒª×ñÑ­Ò»¶¨µÄÌõ¼ş£º
-	 * 	1.ÀàÃüÃûÌõ¼ş£ºpojoÀàÃüÃûÎª£ºArea£¬¶ÔÓ¦dtoÀàÃüÃûÎª£ºAreaDto
-	 * 	2.×Ö¶ÎÃüÃû¹æÔò£ºÏëÒª¿ìËÙÓ³ÉäµÄ×Ö¶Î£¬ÔÚAreaÓëAreaDtoÖĞÓ¦¸Ã¾ßÓĞÒ»ÑùµÄÃû×ÖºÍgetterÓësetter·½·¨
+	 * æ­¤æ–¹æ³•ç”¨äºå¿«é€Ÿæ˜ å°„ä¸¤ä¸ªå¯¹è±¡çš„ç›¸åŒå­—æ®µï¼Œæ–¹æ³•ä¼šåˆ›å»ºä¸€ä¸ªä¸dtoå¯¹è±¡å¯¹åº”çš„pojoå¯¹è±¡ï¼Œ
+	 * ç”¨äºä»dtoå¯¹è±¡ä¸­å¤åˆ¶å­—æ®µå€¼åˆ°pojoå¯¹è±¡ï¼Œè¿™äº›å­—æ®µå¿…é¡»æ˜¯pojoå¯¹è±¡ä¸dtoå¯¹è±¡éƒ½å…±åŒå­˜åœ¨çš„ã€‚
+	 * éœ€è¦å€Ÿç”¨project.propertiesæŒ‡å®šçš„dtoæ‰€åœ¨çš„package
+	 * ä½¿ç”¨æ­¤è½¬æ¢è§„åˆ™éœ€è¦éµå¾ªä¸€å®šçš„æ¡ä»¶ï¼š
+	 * 	1.ç±»å‘½åæ¡ä»¶ï¼špojoç±»å‘½åä¸ºï¼šAreaï¼Œå¯¹åº”dtoç±»å‘½åä¸ºï¼šAreaDto
+	 * 	2.å­—æ®µå‘½åè§„åˆ™ï¼šæƒ³è¦å¿«é€Ÿæ˜ å°„çš„å­—æ®µï¼Œåœ¨Areaä¸AreaDtoä¸­åº”è¯¥å…·æœ‰ä¸€æ ·çš„åå­—å’Œgetterä¸setteræ–¹æ³•
 	 * @param dto
 	 * @return
 	 */
@@ -127,7 +127,7 @@ public class Util {
 		}
 	}
 	/**
-	 * ²é¿´Á½¸ö·½·¨ÊÇ·ñÒ»¸öÎªsetter£¬Ò»¸ögetter£¬²¢ÇÒÊÇÕë¶ÔÍ¬ÑùÃû³ÆµÄ×Ö¶Î²Ù×÷
+	 * æŸ¥çœ‹ä¸¤ä¸ªæ–¹æ³•æ˜¯å¦ä¸€ä¸ªä¸ºsetterï¼Œä¸€ä¸ªgetterï¼Œå¹¶ä¸”æ˜¯é’ˆå¯¹åŒæ ·åç§°çš„å­—æ®µæ“ä½œ
 	 * @param method1
 	 * @param method2
 	 * @return
@@ -159,7 +159,7 @@ public class Util {
 	}
 	
 	/**
-	 * ¸ù¾İendsSameÌá¹©µÄboolean·µ»ØÖµ£¬»ñÈ¡ºÏÊÊµÄmethod¶ÔÏó
+	 * æ ¹æ®endsSameæä¾›çš„booleanè¿”å›å€¼ï¼Œè·å–åˆé€‚çš„methodå¯¹è±¡
 	 * @param method1
 	 * @param methods
 	 * @return

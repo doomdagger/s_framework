@@ -20,7 +20,7 @@ import com.hg.ecommerce.util.Util;
 
 
 /**
- * ¿ÉÒÔ×÷ÎªÊµÌåµÄ¹«¹²¸¸Àà£¬¸½¼ÓÁËºÜ¶à±ã½İ·½·¨
+ * å¯ä»¥ä½œä¸ºå®ä½“çš„å…¬å…±çˆ¶ç±»ï¼Œé™„åŠ äº†å¾ˆå¤šä¾¿æ·æ–¹æ³•
  * @author Li He
  * 
  */
@@ -34,7 +34,7 @@ public class EntityObject implements Serializable{
 	public static final String IS_PREFIX = "is";
 
 	/**
-	 * ¸ù¾İ×Ö¶ÎÃûÉèÖÃÒ»¸ö×Ö¶ÎÖµ£¬ String to EntityObject£¬Ö»Ö§³ÖObject
+	 * æ ¹æ®å­—æ®µåè®¾ç½®ä¸€ä¸ªå­—æ®µå€¼ï¼Œ String to EntityObjectï¼Œåªæ”¯æŒObject
 	 * @param fieldName
 	 * @param value
 	 * @return
@@ -72,7 +72,7 @@ public class EntityObject implements Serializable{
 			Class fieldCls = field.getType();
 			String typeName = fieldCls.getSimpleName();
 			
-			//åŸºæœ¬ç±»å‹, int(Integer) double(Double) long(Long) boolean(Boolean) short(Short)  byte(Byte)
+			//é©çƒ˜æ¹°ç»«è¯²ç€·, int(Integer) double(Double) long(Long) boolean(Boolean) short(Short)  byte(Byte)
 			if(typeName.equals("int")){   
 				setter.invoke(this, Integer.valueOf(value));
 			}else if(typeName.equals("double")){
@@ -101,7 +101,7 @@ public class EntityObject implements Serializable{
 	}
 	
 	/**
-	 * »ñÈ¡EntityObject×ÓÀàµÄ×Ö¶Î£¬ÆäËû×Ö¶ÎºöÂÔ
+	 * è·å–EntityObjectå­ç±»çš„å­—æ®µï¼Œå…¶ä»–å­—æ®µå¿½ç•¥
 	 * @return
 	 */
 	private List<Field> getEntityObjectFields(){
@@ -125,7 +125,7 @@ public class EntityObject implements Serializable{
 	}
 	
 	/**
-	 * ¸ù¾İfieldÃû³Æ»ñÈ¡Ò»¸öMethodPair¶ÔÏó
+	 * æ ¹æ®fieldåç§°è·å–ä¸€ä¸ªMethodPairå¯¹è±¡
 	 * @param fieldName
 	 * @return
 	 */
@@ -133,7 +133,7 @@ public class EntityObject implements Serializable{
 		try{
 			Field field = getClass().getDeclaredField(fieldName);
 			Method[] methods = getClass().getDeclaredMethods();
-			String methodAffix = field.getName().toUpperCase().charAt(0)+field.getName().substring(1); //½«×Ö¶ÎÃû×ª»»Îª·½·¨ÃûµÄºó×º
+			String methodAffix = field.getName().toUpperCase().charAt(0)+field.getName().substring(1); //å°†å­—æ®µåè½¬æ¢ä¸ºæ–¹æ³•åçš„åç¼€
 			Method setter = null;
 			Method getter = null;
 			boolean hasSetter = false;
@@ -175,7 +175,7 @@ public class EntityObject implements Serializable{
 	
 	
 	/**
-	 * Õâ¸öinner class±£´æÒ»¶ÔgetterÓësetter method
+	 * è¿™ä¸ªinner classä¿å­˜ä¸€å¯¹getterä¸setter method
 	 * @author Li He
 	 *
 	 */
@@ -199,12 +199,12 @@ public class EntityObject implements Serializable{
 	}
 	
 	/**
-	 * Éú³ÉJSONObject£¬¿ÉÒÔĞòÁĞ»¯Îª×Ö·û´®
+	 * ç”ŸæˆJSONObjectï¼Œå¯ä»¥åºåˆ—åŒ–ä¸ºå­—ç¬¦ä¸²
 	 * @return JSONObject
 	 */
 	public JSONObject toJSON(){
 		try{
-			Method[] methods = getClass().getDeclaredMethods(); //»ñÈ¡ÉùÃ÷µÄÈ«²¿methods
+			Method[] methods = getClass().getDeclaredMethods(); //è·å–å£°æ˜çš„å…¨éƒ¨methods
 						
 			JSONObject json = new JSONObject();
 			
@@ -212,7 +212,7 @@ public class EntityObject implements Serializable{
 				String fieldName = null;
 				
 				/*
-				 * ÅĞ¶ÏÊÇ·ñÎªgetter method£¬Èç¹ûÎªgetter method£¬¸³ÖµfieldName
+				 * åˆ¤æ–­æ˜¯å¦ä¸ºgetter methodï¼Œå¦‚æœä¸ºgetter methodï¼Œèµ‹å€¼fieldName
 				 */
 				if(method.getName().startsWith(GETTER_PREFIX)){
 					fieldName = Character.toLowerCase(method.getName().charAt(GETTER_PREFIX.length()))+method.getName().substring(GETTER_PREFIX.length()+1);					
@@ -221,12 +221,12 @@ public class EntityObject implements Serializable{
 				}
 				
 				/*
-				 * fieldName²»Îª¿Õ£¬´Ë·½·¨Îªgetter method
+				 * fieldNameä¸ä¸ºç©ºï¼Œæ­¤æ–¹æ³•ä¸ºgetter method
 				 */
 				if(fieldName!=null){
-					Field field = getClass().getDeclaredField(fieldName);  //»ñÈ¡Field¶ÔÏó
-					boolean ormField = false; //ÊÇ·ñÎªorm¿ò¼Ü¹ØÁª×¢ÊÍ×Ö¶Î
-					//±ØĞëÅÅ³ı@ManyToOne @ManyToMany @OneToManyµÄÇé¿ö
+					Field field = getClass().getDeclaredField(fieldName);  //è·å–Fieldå¯¹è±¡
+					boolean ormField = false; //æ˜¯å¦ä¸ºormæ¡†æ¶å…³è”æ³¨é‡Šå­—æ®µ
+					//å¿…é¡»æ’é™¤@ManyToOne @ManyToMany @OneToManyçš„æƒ…å†µ
 					Annotation[] annotations = field.getDeclaredAnnotations();
 					for(Annotation annotation : annotations){
 						String annotationName = annotation.annotationType().getSimpleName();
@@ -255,7 +255,7 @@ public class EntityObject implements Serializable{
 	}
 	
 	/**
-	 * µİ¹é»ñÈ¡¿ÉÒÔputµ½JSONObjectÖĞµÄ¶ÔÏó
+	 * é€’å½’è·å–å¯ä»¥putåˆ°JSONObjectä¸­çš„å¯¹è±¡
 	 * @param object
 	 * @return
 	 */
@@ -266,15 +266,15 @@ public class EntityObject implements Serializable{
 			return null;
 		}
 		
-		if(object instanceof EntityObject){ //×Ö¶Î¶ÔÏóÎªEntityObject
+		if(object instanceof EntityObject){ //å­—æ®µå¯¹è±¡ä¸ºEntityObject
 			object = ((EntityObject)object).toJSON();
-		}else if(object instanceof Date){  //×Ö¶Î¶ÔÏóÎªDate
+		}else if(object instanceof Date){  //å­—æ®µå¯¹è±¡ä¸ºDate
 			object = ((Date)object).getTime();
 		}else if(object instanceof Map){
 			JSONObject jsonObject = new JSONObject();
 			for(Object obj : ((Map)object).entrySet()){
 				Entry entry = (Entry)obj;
-				//Èç¹ûÎªmap£¬±ØĞë±£Ö¤keyÎªString
+				//å¦‚æœä¸ºmapï¼Œå¿…é¡»ä¿è¯keyä¸ºString
 				jsonObject.put(entry.getKey().toString(), getJsonObject(entry.getValue()));
 			}
 			
