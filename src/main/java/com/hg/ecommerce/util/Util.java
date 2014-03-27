@@ -132,7 +132,7 @@ public class Util {
 	 * @param method2
 	 * @return
 	 */
-	public static boolean endsSame(String method1, String method2){
+	private static boolean endsSame(String method1, String method2){
 		String affix1 = null;
 		String affix2 = null;
 		if(method1.startsWith(SETTER_PREFIX)&&!method2.startsWith(SETTER_PREFIX)){
@@ -164,7 +164,7 @@ public class Util {
 	 * @param methods
 	 * @return
 	 */
-	public static Method endsSameMethod(String method1, Method[] methods){
+	private static Method endsSameMethod(String method1, Method[] methods){
 		for(Method method: methods){
 			if(endsSame(method1, method.getName())){
 				return method;

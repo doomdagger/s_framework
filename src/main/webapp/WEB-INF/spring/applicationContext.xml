@@ -29,10 +29,10 @@
 	<context:component-scan base-package="com.hg.ecommerce.dao.impl">
 		<!-- <context:include-filter type="annotation" expression=""/> -->
 	</context:component-scan>
-	<context:component-scan base-package="com.hg.ecommerce.action">
-		<!-- <context:include-filter type="annotation" expression=""/> -->
-	</context:component-scan>
-
+	<context:component-scan base-package="com.hg.ecommerce.action" />
+	<context:component-scan base-package="com.hg.ecommerce.service.impl" />
+	<context:component-scan base-package="com.hg.ecommerce.service.support" />
+	
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp"></bean>
@@ -75,6 +75,23 @@
 		<aop:pointcut expression="execution(public * com.hg.ecommerce.dao.impl..*.*(..))"
 			id="daoTransaction" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="daoTransaction" />
+		
+		<aop:aspect ref="serviceWrapper">
+			<aop:pointcut id="booleanReturnCut"
+				expression="execution(public boolean com.hg.ecommerce.service.*Service+.*(..))" />
+			<aop:pointcut id="entityObjectReturnCut"
+				expression="execution(public com.hg.ecommerce.model.support.EntityObject+ com.hg.ecommerce.service.*Service+.*(..))" />
+			<aop:pointcut id="collectionObjectReturnCut"
+				expression="execution(public java.util.Collection+ com.hg.ecommerce.service.*Service+.*(..))" />
+
+			<aop:around pointcut-ref="booleanReturnCut"
+				method="booleanAroundMethod"/>
+			<aop:around pointcut-ref="entityObjectReturnCut"
+				method="objectAroundMethod"  />
+			<aop:around pointcut-ref="collectionObjectReturnCut"
+				method="objectAroundMethod"  />
+
+		</aop:aspect>
 	</aop:config>
 
 </beans>
