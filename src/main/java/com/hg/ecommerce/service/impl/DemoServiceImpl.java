@@ -12,4 +12,9 @@ public class DemoServiceImpl implements DemoService{
 		return "Lihe Say: " + salutation;
 	}
 
+	@Override
+	public boolean areYouGood() {
+		return true;
+	}
+
 }

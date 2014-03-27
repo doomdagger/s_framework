@@ -1,12 +1,10 @@
 package com.hg.ecommerce.service.support;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.stereotype.Component;
 
-@Component("serviceWrapper")
 public class ServiceWrapper {
 	/**
-	 * 如果返回类型为boolean，自动包装这类方法
+	 * wrap the method return boolean value
 	 * @param point
 	 * @return
 	 */
@@ -15,6 +13,7 @@ public class ServiceWrapper {
 			//logger.entry(point.getArgs());
 			//logger.info("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
 			//return logger.exit((Boolean)point.proceed(point.getArgs()));
+			System.err.println("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
 			return (Boolean)point.proceed(point.getArgs());
 		}catch(Throwable exception){
 			//logger.catching(exception);
@@ -34,6 +33,7 @@ public class ServiceWrapper {
 			//logger.entry(point.getArgs());
 			//logger.info("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
 			//return logger.exit(point.proceed(point.getArgs()));
+			System.err.println("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
 			return point.proceed(point.getArgs());
 		}catch(Throwable exception){
 			//logger.catching(exception);

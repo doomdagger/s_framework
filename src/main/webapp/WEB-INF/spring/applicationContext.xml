@@ -31,7 +31,6 @@
 	</context:component-scan>
 	<context:component-scan base-package="com.hg.ecommerce.action" />
 	<context:component-scan base-package="com.hg.ecommerce.service.impl" />
-	<context:component-scan base-package="com.hg.ecommerce.service.support" />
 	
 	<bean
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
@@ -70,6 +69,7 @@
 			<tx:method name="delete*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
+	<bean id="serviceWrapper" class="com.hg.ecommerce.service.support.ServiceWrapper"></bean>
 	<aop:config>
 	    <!-- impl下的一切dao实现类均无需使用声明式事务注解，勿忘为Service类添加声明式注解 -->
 		<aop:pointcut expression="execution(public * com.hg.ecommerce.dao.impl..*.*(..))"
