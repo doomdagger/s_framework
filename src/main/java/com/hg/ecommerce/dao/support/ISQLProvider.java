@@ -2,7 +2,6 @@ package com.hg.ecommerce.dao.support;
 
 import java.util.Collection;
 
-
 public interface ISQLProvider {
 	
 	/**
@@ -34,6 +33,8 @@ public interface ISQLProvider {
 	public static final String IS_NOT_NULL = "IS NOT NULL";
 	public static final String LIKE = " LIKE ";
 	public static final String NOT_LIKE = " NOT LIKE ";
+	public static final String IN = " IN ";
+	public static final String NOT_IN = " NOT IN ";
 	//key words
 	public static final String INSERT = " INSERT INTO ";//select
 	public static final String VALUES = " VALUES ";
@@ -52,8 +53,18 @@ public interface ISQLProvider {
 	public static final String LP = " ( ";//left parentheses
 	public static final String RP = " ) ";//right parenthesess
 	public static final String COMMA = ",";
-	public static final String QUOTE = "'";//quotation 
-	
+	public static final String QUOTE = "'";//quotation
+	//enum sort
+	public enum Sort{
+		ASC("ASC"),DESC("DESC");
+		private String value;
+		private Sort(String value){
+			this.value = value;
+		}
+		public String getValue() {
+			return value;
+		}
+	};
 	
 	
 	//common sql combination method
@@ -125,10 +136,11 @@ public interface ISQLProvider {
 	
 	public ISQLProvider isNotNull(String field);
 	//sortable
-	public ISQLProvider orderBy();
+	public ISQLProvider orderBy(String field,Sort sort);
 	//pageable
-	public ISQLProvider limit();
+	public ISQLProvider limit(int start,int length);
 	//public get sql
 	public String getSQL();
+
 	
 }

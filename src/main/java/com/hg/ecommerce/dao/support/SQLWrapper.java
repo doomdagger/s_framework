@@ -96,7 +96,8 @@ public class SQLWrapper {
 	public static void main(String args[]) {
 		MySQLProvider mySQLProvider = MySQLProvider.instance("TABLE");
 		Object[] objects = new Object[]{"hello","world","I'AM","HERE"};
-		mySQLProvider.select().fields(objects);
+		
+		mySQLProvider.update().set("name", "joechow").set("age", 18);
 		System.out.println(mySQLProvider.getSQL());
 	}
 }
