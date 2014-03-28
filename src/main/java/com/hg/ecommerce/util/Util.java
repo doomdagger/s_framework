@@ -1,5 +1,7 @@
 package com.hg.ecommerce.util;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,6 +9,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -241,5 +245,31 @@ public class Util {
 			sb.append(parts[i]);
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * 类似于模板引擎，将render mustache模板文件
+	 * @param reader
+	 * @param writer
+	 * @param object
+	 * @throws IOException 
+	 */
+	public static void render(String mustache, PrintWriter writer, EntityObject entityObject){
+		
+		String line;
+		
+		JSONObject jsonObject = entityObject.toJSON();
+		
+		Pattern pattern = Pattern.compile("\\{\\{([#/]?)([a-zA-Z0-9\\-_$]+)\\}\\}", Pattern.MULTILINE);
+		
+		Matcher matcher = pattern.matcher(mustache);
+		
+		int sequenceIndex = 0;
+		while(matcher.find(sequenceIndex)){
+			System.err.println(matcher.group(2));
+			
+			sequenceIndex = matcher.end(0);
+		}
+		
 	}
 }
