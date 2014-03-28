@@ -20,7 +20,7 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 		
 	<!-- 使用占位符，附加props配置文件 -->
-	<context:property-placeholder location="classpath:/com/hg/ecommerce/config/project.properties" />
+	<context:property-placeholder location="classpath:/project-custom.properties" />
 	
 	<!-- 使用注解 -->
 	<mvc:annotation-driven />
