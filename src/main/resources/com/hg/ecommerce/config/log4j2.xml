@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="error" strict="true" monitorInterval="10">
+	<Properties>
+		<Property name="serviceErrorFile">
+			${sys:user.home}/fan1tuan/log/${date:yyyy-MM-dd}/${date:HH}h/service_error_${date:mm}min.log
+		</Property>
+		<Property name="serviceTraceFile">
+			${sys:user.home}/fan1tuan/log/${date:yyyy-MM-dd}/${date:HH}h/service_trace_${date:mm}min.log
+		</Property>
+		<Property name="daoErrorFile">
+			${sys:user.home}/fan1tuan/log/${date:yyyy-MM-dd}/${date:HH}h/dao_error_${date:mm}min.log
+		</Property>
+		<Property name="daoTraceFile">
+			${sys:user.home}/fan1tuan/log/${date:yyyy-MM-dd}/${date:HH}h/dao_trace_${date:mm}min.log
+		</Property>
+		<Property name="requestTraceFile">
+			${sys:user.home}/fan1tuan/log/${date:yyyy-MM-dd}/${date:HH}h/request_trace_${date:mm}min.log
+		</Property>
+		<Property name="filterTraceLogFile">
+			${sys:user.home}/fan1tuan/log/${date:yyyy-MM-dd}/${date:HH}h/filter_trace_${date:mm}min.log
+		</Property>
+		<Property name="interceptorTraceLogFile">
+			${sys:user.home}/fan1tuan/log/${date:yyyy-MM-dd}/${date:HH}h/interceptor_trace_${date:mm}min.log
+		</Property>
+	</Properties>
+
+	<Appenders>
+		<Appender type="Console" name="STDOUT">
+<!-- 			<param name="Encoding" value="UTF-8" />
+ -->			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+			<!-- <Filters> <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" 
+				onMismatch="NEUTRAL" /> <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" 
+				onMismatch="ACCEPT" /> </Filters> -->
+		</Appender>
+		<Appender type="Console" name="FLOW">
+<!-- 			<param name="Encoding" value="UTF-8" />
+ -->			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+			<!-- <Filters> <Filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" 
+				onMismatch="NEUTRAL" /> <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" 
+				onMismatch="DENY" /> </Filters> -->
+		</Appender>
+		
+
+
+		<!-- Service Error Appender 记录一切的Service层错误 -->
+		<Appender type="File" name="serviceErrorLog" fileName="${serviceErrorFile}">
+			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+			<Filters>
+				<Filter type="ThresholdFilter" level="error" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+		</Appender>
+		<!-- Service Trace Appender 记录一切的Service层调用日志 -->
+		<Appender type="File" name="serviceTraceLog" fileName="${serviceTraceFile}">
+			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+		</Appender>
+		<!-- Dao Error Appender 记录一切的Dao层错误 -->
+		<Appender type="File" name="daoErrorLog" fileName="${daoErrorFile}">
+			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+			<Filters>
+				<Filter type="ThresholdFilter" level="error" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</Filters>
+		</Appender>
+		<!-- Dao Trace Appender 记录一切的Dao层调用日志 -->
+		<Appender type="File" name="daoTraceLog" fileName="${daoTraceFile}">
+			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+		</Appender>
+		<!-- Request Trace Appender 记录一切的Request Filter访问日志 -->
+		<Appender type="File" name="requestTraceLog" fileName="${requestTraceFile}">
+			
+		</Appender>
+		
+		<!--  filterTraceLog 记录过滤器的trace -->
+		<Appender type="File" name="filterTraceLog" fileName="${filterTraceLogFile}">
+			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+		</Appender>
+		
+		<!-- interceptorTraceLogFile 记录拦截器的trace  -->
+		<Appender type="File" name="interceptorTraceLog" fileName="${interceptorTraceLogFile}">
+			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+		</Appender>
+	</Appenders>
+	<Loggers>
+
+		<Logger name="com.fan1tuan.general.business.ServiceLogger"
+			level="trace" additivity="true">
+
+			<AppenderRef ref="serviceErrorLog" />
+			<AppenderRef ref="serviceTraceLog"/>
+		</Logger>
+		
+		<Logger name="com.fan1tuan.general.dao.impl"
+			level="trace" additivity="true">
+
+			<AppenderRef ref="daoErrorLog" />
+			<AppenderRef ref="daoTraceLog"/>
+		</Logger>
+
+		<Logger name="com.fan1tuan.general.ui.core.filter" level="trace" additivity="true">
+			<AppenderRef ref="filterTraceLog"/>
+		</Logger>
+		
+		<Logger name="com.fan1tuan.general.ui.struts2.interceptor" level="trace" additivity="true">
+			<AppenderRef ref="interceptorTraceLog"/>
+		</Logger>
+		
+		<Logger name="com.fan1tuan.general.request"
+			level="trace" additivity="false">
+
+			<AppenderRef ref="requestTraceLog"/>
+		</Logger>
+
+		<Root level="error">
+			<AppenderRef ref="STDOUT">
+				<Filter type="ThresholdFilter" level="error" onMatch="ACCEPT"
+					onMismatch="DENY" />
+			</AppenderRef>
+		</Root>
+	</Loggers>
+</Configuration>
+

@@ -10,7 +10,7 @@ import java.util.Properties;
  *
  */
 public class ProjectConfig {
-	private static String location = "/project.properties";
+	private static String location = "/com/hg/ecommerce/config/project.properties";
 	private static Properties props;
 	static {
 		props = new Properties();

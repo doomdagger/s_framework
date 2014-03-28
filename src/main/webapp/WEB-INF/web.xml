@@ -1,8 +1,8 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
 	<display-name>ecommerce</display-name>
 
 	<context-param>
@@ -11,6 +11,11 @@
 			/WEB-INF/spring/applicationContext.xml
 		</param-value>
 	</context-param>
+	<context-param>
+		<param-name>log4jConfiguration</param-name>
+		<param-value>classpath:/com/hg/ecommerce/config/log4j2.xml</param-value>
+	</context-param>
+
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
