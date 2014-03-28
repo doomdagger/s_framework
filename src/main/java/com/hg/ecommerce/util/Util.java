@@ -3,9 +3,16 @@ package com.hg.ecommerce.util;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.hg.ecommerce.config.ProjectConfig;
+import com.hg.ecommerce.model.support.EntityObject;
 
 /**
  * Utilizer class: contain several helper methods
@@ -173,5 +180,66 @@ public class Util {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 转换为JSON化对象，可序列化。
+	 * @param object 要转化的对象
+	 * @return 返回JSONObject
+	 */
+	@SuppressWarnings("rawtypes")
+	public static Object getJsonObject(Object object){
+		
+		if(object==null){
+			return null;
+		}
+		
+		if(object instanceof EntityObject){ //字段对象为EntityObject
+			object = ((EntityObject)object).toJSON();
+		}else if(object instanceof Date){  //字段对象为Date
+			object = ((Date)object).getTime();
+		}else if(object instanceof Map){
+			JSONObject jsonObject = new JSONObject();
+			for(Object obj : ((Map)object).entrySet()){
+				Entry entry = (Entry)obj;
+				//如果为map，必须保证key为String
+				if(!(entry.getKey() instanceof String)){
+					throw new RuntimeException("java.util.Map has Non-String Key, not allowed!");
+				}
+				jsonObject.put(entry.getKey().toString(), getJsonObject(entry.getValue()));
+			}
+			
+			object = jsonObject;
+			
+		}else if(object instanceof Collection){
+			JSONArray jsonArray = new JSONArray();
+			
+			for(Object obj : (Collection)object){
+				jsonArray.put(getJsonObject(obj));
+			}
+			
+			object = jsonArray;
+		}
+		
+		return object;
+	}
+	
+	/**
+	 * 以某种token连接字符串数组
+	 * @param token
+	 * @param parts
+	 * @return
+	 */
+	public static String join(char token, String... parts){
+		StringBuilder sb = new StringBuilder();
+		if(parts.length<1) return "";
+		
+		sb.append(parts[0]);
+		
+		for(int i = 1; i < parts.length; ++i){
+			sb.append(token);
+			sb.append(parts[i]);
+		}
+		return sb.toString();
 	}
 }

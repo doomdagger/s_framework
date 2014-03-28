@@ -1,5 +1,9 @@
 package com.hg.ecommerce.util;
 
+import java.io.IOException;
+
+import com.hg.ecommerce.model.support.EntityGenerator;
+
 /**
  * use this class to bootstrap the project.
  * There is no need for developers to write model classes themselves.
@@ -11,6 +15,11 @@ package com.hg.ecommerce.util;
  */
 public class Bootstrap {
 	public static void main(String[] args){
-		
+		EntityGenerator generator = new EntityGenerator();
+		try {
+			generator.generateModel();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

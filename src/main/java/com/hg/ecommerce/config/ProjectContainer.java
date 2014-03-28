@@ -1,6 +1,8 @@
 package com.hg.ecommerce.config;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.hg.ecommerce.model.support.FieldTypeMapper;
 
 /**
@@ -10,14 +12,19 @@ import com.hg.ecommerce.model.support.FieldTypeMapper;
  */
 public class ProjectContainer extends AbstractModule{
 
+	private static Injector injector = Guice.createInjector(new ProjectContainer());
+	public static <T> T getInstance(Class<T> cls){
+		return injector.getInstance(cls);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void configure() {
 		//get db name
 		String dbName = ProjectConfig.getProperty("db.name");
-		//get mapper class
+		//get mapper class name
 		String fieldTypeMapperCls = ProjectConfig.getProperty(dbName+".field");
-		//get sql dialect class
+		//get sql dialect class name
 		String sqlDialectCls = ProjectConfig.getProperty(dbName+".sql");
 		
 		if(dbName==null||fieldTypeMapperCls==null||sqlDialectCls==null){
@@ -26,9 +33,7 @@ public class ProjectContainer extends AbstractModule{
 		
 		try {
 			bind(FieldTypeMapper.class).to((Class<? extends FieldTypeMapper>)Class.forName(fieldTypeMapperCls));
-			//joe, please insert your bind config here...
-			
-			
+			//bind(ISQLProvider.class).to((Class<? extends ISQLProvider>)Class.forName(sqlDialectCls));			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
