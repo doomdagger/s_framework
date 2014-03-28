@@ -4,5 +4,7 @@
 *.jar
 *.war
 *.ear
-
+# Compiled Outcome #
 target/
+# Auto-generated Model Class #
+src/main/java/com/hg/ecommerce/model/*.java
