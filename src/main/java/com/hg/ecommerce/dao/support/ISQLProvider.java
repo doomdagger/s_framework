@@ -55,6 +55,7 @@ public interface ISQLProvider {
 	public static final String RP = " ) ";//right parenthesess
 	public static final String COMMA = ",";
 	public static final String QUOTE = "'";//quotation
+	public static final String BLANK = " ";
 	//sort
 	public enum SORT{
 		ASC(" ASC "),DESC(" DESC ");
@@ -89,8 +90,12 @@ public interface ISQLProvider {
 	
 	public ISQLProvider inc(String field,long value);//plus value
 	
+	public ISQLProvider dec(String field,long value);//decrease value
+	
 	//select / set fields
 	public ISQLProvider select();
+	
+	public ISQLProvider selectAll();
 	
 	public ISQLProvider fields(Object...objects);
 	
@@ -144,6 +149,11 @@ public interface ISQLProvider {
 	public ISQLProvider limit(int start,int length);
 	//public get sql
 	public String getSQL();
+	
+	//base
+	public void setModel(String model);
+	
+	public String getModel();
 
 	
 }
