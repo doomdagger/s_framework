@@ -1,8 +1,13 @@
 package com.hg.ecommerce.config;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * for configuration. load properties from file -- project.properties
@@ -71,6 +76,30 @@ public class ProjectConfig {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        
+        //normalize token value follow the pattern ${sys:...}
+        Pattern pattern = Pattern.compile("\\$\\{([a-zA-Z]+):([^\\}]+)\\}");
+        for(Entry<Object, Object> entry:config.entrySet()){
+        	Matcher matcher = pattern.matcher(entry.getValue().toString());
+        	
+        	if(matcher.find()){
+        		String prefix = matcher.group(1);
+        		String key = matcher.group(2);
+//        		System.err.println(prefix);
+//        		System.err.println(key);
+        		try{
+        			if("sys".equals(prefix)){
+            			config.setProperty(entry.getKey().toString(), System.getProperty(key));
+            		}else if("date".equals(prefix)){
+            			SimpleDateFormat format = new SimpleDateFormat(key);
+            			config.setProperty(entry.getKey().toString(), format.format(new Date()));
+            		}
+        		}catch(Exception exception){
+        			exception.printStackTrace();
+        		}
+        	}
+        	
         }
 
     }

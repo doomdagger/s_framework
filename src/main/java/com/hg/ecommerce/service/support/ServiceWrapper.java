@@ -1,8 +1,13 @@
 package com.hg.ecommerce.service.support;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 
 public class ServiceWrapper {
+	
+	private static final Logger logger = LogManager.getLogger("com.hg.ecommerce.service"); 
+	
 	/**
 	 * wrap the method return boolean value
 	 * @param point
@@ -10,16 +15,12 @@ public class ServiceWrapper {
 	 */
 	public boolean booleanAroundMethod(ProceedingJoinPoint point){
 		try{
-			//logger.entry(point.getArgs());
-			//logger.info("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
-			//return logger.exit((Boolean)point.proceed(point.getArgs()));
-			System.err.println("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
-			return (Boolean)point.proceed(point.getArgs());
+			logger.entry(point.getArgs());
+			logger.info("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
+			return logger.exit((Boolean)point.proceed(point.getArgs()));
 		}catch(Throwable exception){
-			//logger.catching(exception);
-			exception.printStackTrace();
-			//return logger.exit(false);
-			return false;
+			logger.catching(exception);
+			return logger.exit(false);
 		}
 	}
 	
@@ -30,16 +31,12 @@ public class ServiceWrapper {
 	 */
 	public Object objectAroundMethod(ProceedingJoinPoint point){
 		try{
-			//logger.entry(point.getArgs());
-			//logger.info("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
-			//return logger.exit(point.proceed(point.getArgs()));
-			System.err.println("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
-			return point.proceed(point.getArgs());
+			logger.entry(point.getArgs());
+			logger.info("In "+point.getTarget().getClass().getName()+" "+point.getSignature().getName());
+			return logger.exit(point.proceed(point.getArgs()));
 		}catch(Throwable exception){
-			//logger.catching(exception);
-			exception.printStackTrace();
-			//return logger.exit(null);
-			return null;
+			logger.catching(exception);
+			return logger.exit(null);
 		}
 	}
 }
