@@ -38,13 +38,14 @@ public interface ISQLProvider {
 	//key words
 	public static final String INSERT = " INSERT INTO ";//select
 	public static final String VALUES = " VALUES ";
-	public static final String DELETE = " DELETE ";//delete
+	public static final String DELETE = " DELETE FROM ";//delete
 	public static final String UPDATE = " UPDATE ";//update
 	public static final String SET = " SET ";
 	public static final String SELECT = " SELECT ";//select
 	public static final String FROM = " FROM ";
 	public static final String WHERE = " WHERE ";//where
 	public static final String AND = " AND ";
+	public static final String OR = " OR ";
 	public static final String ORDER = " ORDER BY ";
 	public static final String DESC = " DESC ";
 	public static final String ASC = " ASC ";
@@ -54,18 +55,20 @@ public interface ISQLProvider {
 	public static final String RP = " ) ";//right parenthesess
 	public static final String COMMA = ",";
 	public static final String QUOTE = "'";//quotation
-	//enum sort
-	public enum Sort{
-		ASC("ASC"),DESC("DESC");
-		private String value;
-		private Sort(String value){
-			this.value = value;
-		}
-		public String getValue() {
-			return value;
-		}
-	};
-	
+	//sort
+	public enum SORT{
+		ASC(" ASC "),DESC(" DESC ");
+		String sort;
+		private SORT(String sort){this.sort = sort;}
+		public String getSort() {return this.sort;}
+	}
+	//and||or
+	public enum AOR{
+		AND(" AND "),OR(" OR ");
+		String aor;
+		private AOR(String aor) {this.aor=aor;}
+		public String getAor(){return this.aor;}
+	}
 	
 	//common sql combination method
 	
@@ -98,11 +101,11 @@ public interface ISQLProvider {
 
 	public ISQLProvider and(ISQLProvider isqlProvider);//static
 	
-	public ISQLProvider and(ISQLProvider one,ISQLProvider another);//static
+	public ISQLProvider and(ISQLProvider one,ISQLProvider another,AOR AOR);//static
 	
 	public ISQLProvider or(ISQLProvider isqlProvider);//static
 	
-	public ISQLProvider or(ISQLProvider one,ISQLProvider another);//static
+	public ISQLProvider or(ISQLProvider one,ISQLProvider another,AOR AOR);//static
 	
 	public ISQLProvider eq(String field,Object value);
 	
@@ -136,7 +139,7 @@ public interface ISQLProvider {
 	
 	public ISQLProvider isNotNull(String field);
 	//sortable
-	public ISQLProvider orderBy(String field,Sort sort);
+	public ISQLProvider orderBy(String field,SORT sort);
 	//pageable
 	public ISQLProvider limit(int start,int length);
 	//public get sql
