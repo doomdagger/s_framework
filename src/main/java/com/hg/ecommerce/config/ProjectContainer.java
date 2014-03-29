@@ -3,6 +3,7 @@ package com.hg.ecommerce.config;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.hg.ecommerce.dao.support.ISQLProvider;
 import com.hg.ecommerce.model.support.FieldTypeMapper;
 
 /**
@@ -12,7 +13,16 @@ import com.hg.ecommerce.model.support.FieldTypeMapper;
  */
 public class ProjectContainer extends AbstractModule{
 
+	/**
+	 * build guice Injector, based on current Module 
+	 */
 	private static Injector injector = Guice.createInjector(new ProjectContainer());
+	
+	/**
+	 * Expose only this method to developer, get Instance by passing the correspondent Interface.
+	 * @param cls
+	 * @return
+	 */
 	public static <T> T getInstance(Class<T> cls){
 		return injector.getInstance(cls);
 	}
@@ -27,15 +37,22 @@ public class ProjectContainer extends AbstractModule{
 		//get sql dialect class name
 		String sqlDialectCls = ProjectConfig.getProperty(dbName+".sql");
 		
+		/**
+		 * No Handler, We do not allow this.
+		 */
 		if(dbName==null||fieldTypeMapperCls==null||sqlDialectCls==null){
 			throw new RuntimeException("Unhandled Provider, You should at least choose One provider for your dbms. Check the properties config file exists?");
 		}
 		
+		/**
+		 * Real bind start here, wrap it with exceptions
+		 */
 		try {
+			//dynamic bind
 			bind(FieldTypeMapper.class).to((Class<? extends FieldTypeMapper>)Class.forName(fieldTypeMapperCls));
-			//bind(ISQLProvider.class).to((Class<? extends ISQLProvider>)Class.forName(sqlDialectCls));			
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			bind(ISQLProvider.class).to((Class<? extends ISQLProvider>)Class.forName(sqlDialectCls));		
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
