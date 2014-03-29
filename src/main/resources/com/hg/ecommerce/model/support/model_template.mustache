@@ -3,7 +3,7 @@ package {{packageName}};
 import {{superClsPath}};
 
 /**
- * {{modelDescription}}
+ * Description:{{modelDescription}}
  * <p>from schema <strong>{{schema}}</strong> in table <strong>{{table}}</strong></p>
  * <p>Do not modify the source code randomly</p>
  * @author auto_generate model
@@ -18,7 +18,8 @@ public class {{modelName}} extends EntityObject{
 
 	{{#fieldEntries}}
 	/**
-	 * {{fieldDescription}}
+	 * Description:{{fieldDescription}}
+	 * Mapped field in table is "{{fieldName}}"
 	 * {{refTableName}}
 	 */
 	private {{typeName}} {{fieldName}};

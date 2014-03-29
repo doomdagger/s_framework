@@ -9,15 +9,17 @@ import com.hg.ecommerce.model.support.TableDef;
 
 public class MongoDBFieldTypeMapper implements FieldTypeMapper{
 
-	@Override
-	public <T> Class<T> mapFieldType(FieldEntry entry) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public Map<TableDef, List<FieldEntry>> fetchDatabaseMeta(String url,
 			String username, String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Class mapFieldType(FieldEntry entry) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -2,9 +2,11 @@ package com.hg.ecommerce.model.support.provider;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,17 +73,17 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 			DatabaseMetaData metaData = connection.getMetaData();
 
 			// test... I want to know all the table types
-//			List<String> tableTypes = new ArrayList<String>();
-//			rs = metaData.getTableTypes();
-//			while (rs.next()) {
-//				tableTypes.add(rs.getString(1));
-//			}
-//			System.err.println(tableTypes.toString());
-			//test end...
-			
-			
-			//获取table列表
-			rs = metaData.getTables(connection.getCatalog(), connection.getSchema(), null, null);
+			// List<String> tableTypes = new ArrayList<String>();
+			// rs = metaData.getTableTypes();
+			// while (rs.next()) {
+			// tableTypes.add(rs.getString(1));
+			// }
+			// System.err.println(tableTypes.toString());
+			// test end...
+
+			// 获取table列表
+			rs = metaData.getTables(connection.getCatalog(),
+					connection.getSchema(), null, null);
 			while (rs.next()) {
 				String tableType = rs.getString("TABLE_TYPE"); // 表类型
 
@@ -90,7 +92,8 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 
 				TableDef tableDef = new TableDef();
 
-				tableDef.setIdFieldName(rs.getString("SELF_REFERENCING_COL_NAME")); //主键
+				tableDef.setIdFieldName(rs
+						.getString("SELF_REFERENCING_COL_NAME")); // 主键
 				tableDef.setTableCatalog(rs.getString("TABLE_CAT"));
 				tableDef.setTableDescription(rs.getString("REMARKS")); // 表描述
 				tableDef.setTableName(rs.getString("TABLE_NAME"));
@@ -99,7 +102,8 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 
 				List<FieldEntry> tempList = new ArrayList<FieldEntry>();
 
-				temp_rs = metaData.getColumns(connection.getCatalog(), connection.getSchema(), tableDef.getTableName(), null);
+				temp_rs = metaData.getColumns(connection.getCatalog(),
+						connection.getSchema(), tableDef.getTableName(), null);
 
 				while (temp_rs.next()) {
 					FieldEntry entry = new FieldEntry();
@@ -112,7 +116,7 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 					entry.setFieldDescription(temp_rs.getString("REMARKS"));
 					entry.setRefTableName(temp_rs.getString("SCOPE_TABLE"));
 					entry.setTypeName(temp_rs.getString("TYPE_NAME"));
-					
+
 					tempList.add(entry);
 				}
 
@@ -125,6 +129,42 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 		}
 
 		return metaMap;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public  Class mapFieldType(FieldEntry entry) {
+		
+		Class cls = null;
+		
+		switch (entry.getFieldType()) {
+		case Types.CHAR:
+			if(entry.getCharLength()==1) cls = char.class;
+			else cls = String.class;
+			break;
+		case Types.VARCHAR:
+			cls = String.class;
+			break;
+		case Types.DOUBLE:
+			cls = double.class;
+			break;
+		case Types.INTEGER:
+			cls = int.class;
+			break;
+		case Types.NUMERIC:
+			if(entry.getDecimalDigits()==0) cls = int.class;
+			else cls = double.class;
+			break;
+		case Types.DATE:
+		case Types.TIME:
+		case Types.TIMESTAMP:
+			cls = Date.class;
+			break;
+		
+		
+		}
+		
+		return cls;
 	}
 
 }

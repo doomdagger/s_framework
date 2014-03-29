@@ -5,8 +5,11 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -254,22 +257,94 @@ public class Util {
 	 * @param object
 	 * @throws IOException 
 	 */
-	public static void render(String mustache, PrintWriter writer, EntityObject entityObject){
-		
+	public static void render(List<String> mustache, PrintWriter writer, JSONObject jsonObject){
+				
 		String line;
-		
-		JSONObject jsonObject = entityObject.toJSON();
 		
 		Pattern pattern = Pattern.compile("\\{\\{([#/]?)([a-zA-Z0-9\\-_$]+)\\}\\}", Pattern.MULTILINE);
 		
-		Matcher matcher = pattern.matcher(mustache);
-		
-		int sequenceIndex = 0;
-		while(matcher.find(sequenceIndex)){
-			System.err.println(matcher.group(2));
+		ListIterator<String> iterator = mustache.listIterator();
+		while(iterator.hasNext()){
+			String mstr = iterator.next();
 			
-			sequenceIndex = matcher.end(0);
+			Matcher matcher = pattern.matcher(mstr);
+			
+			int sequenceIndex = 0;
+			boolean shouldContinue = true;
+			while(matcher.find(sequenceIndex)){
+				//更新下标，避免死循环
+				sequenceIndex = matcher.end(0);
+				if(!shouldContinue)break;
+				
+				
+//				System.err.println(matcher.group(0));
+//				System.err.println(matcher.group(1));
+//				System.err.println(matcher.group(2));
+//				System.err.println();
+				
+				
+				String prefix = matcher.group(1);
+				String token = matcher.group(2);
+				if(prefix==null||prefix.trim().equals("")){
+					String replacement = "";
+					try{
+						replacement = jsonObject.getString(token);
+					}catch(Exception exception){
+						System.err.println("Has no property named \""+token+"\"");
+					}
+					//直接覆盖mstr应当不影响Matcher对象
+					mstr = mstr.replace("{{"+token+"}}", replacement);
+				}else{
+					mstr = mstr.replace("{{"+prefix+token+"}}", "");
+					
+					//递归判定开始
+					if("#".equals(prefix)){
+						List<String> subList = new ArrayList<String>();
+						
+						Object subObject = null;
+						try{
+							subObject = jsonObject.get(token);
+						}catch(Exception exception){
+							System.err.println("Has no property named \""+token+"\"");
+							continue;
+						}
+						
+						//判定递归成功，不应再让Matcher查找下去
+						shouldContinue = false;
+						
+						subList.add(mstr);
+						while(iterator.hasNext()){
+							line = iterator.next();
+							//添加行数，知道遇到结束标签
+							if(line.contains("{{/"+token+"}}")){
+								iterator.previous();
+								break;
+							}else{
+								subList.add(line);
+							}
+						}
+						if(subObject instanceof JSONArray){
+							//转型为 JSONArray
+							JSONArray array = (JSONArray)subObject;
+							for(int i = 0; i < array.length(); ++i){
+								JSONObject inner = array.getJSONObject(i);
+								render(subList, writer, inner);
+							}
+						}else{
+							//除了JSONArray之外，其他相似标签一律作true or false判定
+							System.err.println("do not implement yet!");
+						}
+					}else{
+						continue;
+					}
+				}
+				
+			}
+			//System.err.println(mstr);
+			writer.println(mstr);
 		}
+		
+		
 		
 	}
 }

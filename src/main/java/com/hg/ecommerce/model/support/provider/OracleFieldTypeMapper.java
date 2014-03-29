@@ -4,12 +4,11 @@ import com.hg.ecommerce.model.support.FieldEntry;
 
 public class OracleFieldTypeMapper extends AbstractRSQLFieldTypeMapper{
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	public <T> Class<T> mapFieldType(FieldEntry entry) {
-		// TODO Auto-generated method stub
-		return null;
+	public Class mapFieldType(FieldEntry entry) {
+		return super.mapFieldType(entry);
 	}
-
 	
 
 }

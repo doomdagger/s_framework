@@ -4,9 +4,9 @@ import com.hg.ecommerce.model.support.FieldEntry;
 
 public class MySQLFieldTypeMapper extends AbstractRSQLFieldTypeMapper{
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	public <T> Class<T> mapFieldType(FieldEntry entry) {
-		return null;
+	public Class mapFieldType(FieldEntry entry) {
+		return super.mapFieldType(entry);
 	}
-	
 }

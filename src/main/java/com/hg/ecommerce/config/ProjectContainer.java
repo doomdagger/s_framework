@@ -3,6 +3,7 @@ package com.hg.ecommerce.config;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.hg.ecommerce.dao.support.ISQLProvider;
 import com.hg.ecommerce.model.support.FieldTypeMapper;
 
 /**
@@ -33,7 +34,7 @@ public class ProjectContainer extends AbstractModule{
 		
 		try {
 			bind(FieldTypeMapper.class).to((Class<? extends FieldTypeMapper>)Class.forName(fieldTypeMapperCls));
-			//bind(ISQLProvider.class).to((Class<? extends ISQLProvider>)Class.forName(sqlDialectCls));			
+			bind(ISQLProvider.class).to((Class<? extends ISQLProvider>)Class.forName(sqlDialectCls));			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

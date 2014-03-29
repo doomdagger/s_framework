@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,10 +38,10 @@ public class EntityGenerator {
 		Resource template = new ClassPathResource(TEMPLATE_FILE_PATH);
 		BufferedReader templateReader = new BufferedReader(new InputStreamReader(template.getInputStream()));
 		
-		StringBuilder builder = new StringBuilder();
+		List<String> mustache = new ArrayList<String>();
 		String line;
 		while((line=templateReader.readLine())!=null){
-			builder.append(line+"\n");
+			mustache.add(line);
 		}
 		templateReader.close();
 		
@@ -65,9 +66,14 @@ public class EntityGenerator {
 			modelConfig.setSuperClsPath(EntityObject.class.getName());
 			modelConfig.setTable(tableDef.getTableName());
 			
+			for(FieldEntry fieldEntry : entries){
+				
+			}
 			
-			Util.render(builder.toString(), writer, modelConfig);
+			Util.render(mustache, writer, modelConfig.toJSON());
 			
+			
+			writer.flush();
 			writer.close();
 		}
 	}

@@ -11,7 +11,8 @@ import java.util.Map;
  */
 public interface FieldTypeMapper {
 	//映射字段类型
-	public <T> Class<T> mapFieldType(FieldEntry entry);
+	@SuppressWarnings("rawtypes")
+	public Class mapFieldType(FieldEntry entry);
 	
 	//获取全部表(集合)的全部字段结构
 	public Map<TableDef, List<FieldEntry>> fetchDatabaseMeta(String url, String username, String password);
