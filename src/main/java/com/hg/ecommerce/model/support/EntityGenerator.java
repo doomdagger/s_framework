@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -27,7 +29,7 @@ public class EntityGenerator {
 	private static final String CWD_RELATIVE_PATH = "src"+File.separatorChar+"main"+File.separatorChar+"java"+File.separatorChar;
 	private static final String TEMPLATE_FILE_PATH = "com/hg/ecommerce/model/support/model_template.mustache";
 	
-	public void generateModel() throws IOException{
+	public void generateModel() throws IOException{		
 		
 		String packagePath = Util.join(File.separatorChar, ProjectConfig.getProperty("package.pojo").split("\\."));
 		
@@ -53,22 +55,38 @@ public class EntityGenerator {
 			TableDef tableDef = entry.getKey();
 			List<FieldEntry> entries = entry.getValue();
 			
-			Resource resource = new FileSystemResource(CWD_RELATIVE_PATH+packagePath+File.separatorChar+tableDef.getTableName()+SOURCE_FILE_AFFIX);
+			Resource resource = new FileSystemResource(CWD_RELATIVE_PATH+packagePath+File.separatorChar+Util.qualifyModelName(tableDef.getTableName())+SOURCE_FILE_AFFIX);
 			//Writer is ready, now start to write something to the opened file
 			PrintWriter writer = new PrintWriter(resource.getFile());
 			
 			ModelConfig modelConfig = new ModelConfig();
 			modelConfig.setFieldEntries(entries);
-			modelConfig.setModelDescription(tableDef.getTableDescription());
-			modelConfig.setModelName(tableDef.getTableName());
+			modelConfig.setModelDescription(Util.conditionedGet(tableDef.getTableDescription(), "No Description Available"));
+			modelConfig.setModelName(Util.qualifyModelName(tableDef.getTableName()));
 			modelConfig.setPackageName(ProjectConfig.getProperty("package.pojo"));
-			modelConfig.setSchema((tableDef.getTableCatalog()==null||tableDef.getTableCatalog().equals(""))?tableDef.getTableSchema():tableDef.getTableCatalog());
+			modelConfig.setSchema(Util.conditionedGet(tableDef.getTableCatalog(), tableDef.getTableSchema()));
 			modelConfig.setSuperClsPath(EntityObject.class.getName());
 			modelConfig.setTable(tableDef.getTableName());
 			
+			Set<String> importInfos = new HashSet<String>();
+			
 			for(FieldEntry fieldEntry : entries){
+				@SuppressWarnings("rawtypes")
+				Class cls = mapper.mapFieldType(fieldEntry);
+				String clsName = cls.getName();
 				
+				if(clsName.split("\\.").length>1){
+					if(!clsName.contains("java.lang."))
+						importInfos.add(cls.getName());
+				}
+				
+				
+				fieldEntry.setFieldName(Util.qualifyFieldName(fieldEntry.getMappedFieldName()));
+				fieldEntry.setQualifiedFieldName(Util.repairName(fieldEntry.getFieldName()));
+				fieldEntry.setTypeName(cls.getSimpleName());
 			}
+			
+			modelConfig.setImportInfos(importInfos);
 			
 			Util.render(mustache, writer, modelConfig.toJSON());
 			

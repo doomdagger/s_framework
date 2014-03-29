@@ -1,6 +1,7 @@
 package com.hg.ecommerce.model.support;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * be applied to model template
@@ -21,6 +22,7 @@ public class ModelConfig extends EntityObject{
 	private String modelDescription;
 	private String schema;
 	private String table;
+	private Set<String> importInfos;
 	
 	private List<FieldEntry> fieldEntries;
 
@@ -72,6 +74,14 @@ public class ModelConfig extends EntityObject{
 		this.table = table;
 	}
 
+	public Set<String> getImportInfos() {
+		return importInfos;
+	}
+
+	public void setImportInfos(Set<String> importInfos) {
+		this.importInfos = importInfos;
+	}
+
 	public List<FieldEntry> getFieldEntries() {
 		return fieldEntries;
 	}
@@ -79,6 +89,8 @@ public class ModelConfig extends EntityObject{
 	public void setFieldEntries(List<FieldEntry> fieldEntries) {
 		this.fieldEntries = fieldEntries;
 	}
+
+	
 
 	
 }

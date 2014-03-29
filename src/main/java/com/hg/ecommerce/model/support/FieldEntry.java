@@ -79,8 +79,14 @@ public class FieldEntry extends EntityObject {
 
 	// 字段名称
 	private String fieldName;
+	//原有字段名称
+	private String mappedFieldName;
+	//用户setter与getter的字段名
+	private String qualifiedFieldName;
 	// 字段类型名称
 	private String typeName;
+	// 数据库字段名
+	private String mappedTypeName;
 	// 字段类型
 	private int fieldType;
 	// 字段长度
@@ -157,6 +163,30 @@ public class FieldEntry extends EntityObject {
 
 	public void setFieldLength(int fieldLength) {
 		this.fieldLength = fieldLength;
+	}
+
+	public String getMappedTypeName() {
+		return mappedTypeName;
+	}
+
+	public void setMappedTypeName(String mappedTypeName) {
+		this.mappedTypeName = mappedTypeName;
+	}
+
+	public String getMappedFieldName() {
+		return mappedFieldName;
+	}
+
+	public void setMappedFieldName(String mappedFieldName) {
+		this.mappedFieldName = mappedFieldName;
+	}
+
+	public String getQualifiedFieldName() {
+		return qualifiedFieldName;
+	}
+
+	public void setQualifiedFieldName(String qualifiedFieldName) {
+		this.qualifiedFieldName = qualifiedFieldName;
 	}
 
 }

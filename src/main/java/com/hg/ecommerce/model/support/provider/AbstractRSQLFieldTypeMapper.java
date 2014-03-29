@@ -92,8 +92,7 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 
 				TableDef tableDef = new TableDef();
 
-				tableDef.setIdFieldName(rs
-						.getString("SELF_REFERENCING_COL_NAME")); // 主键
+				tableDef.setIdFieldName(rs.getString("SELF_REFERENCING_COL_NAME")); // 主键
 				tableDef.setTableCatalog(rs.getString("TABLE_CAT"));
 				tableDef.setTableDescription(rs.getString("REMARKS")); // 表描述
 				tableDef.setTableName(rs.getString("TABLE_NAME"));
@@ -109,14 +108,14 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 					FieldEntry entry = new FieldEntry();
 
 					entry.setFieldType(temp_rs.getInt("DATA_TYPE"));
-					entry.setFieldName(temp_rs.getString("COLUMN_NAME"));
+					entry.setMappedFieldName(temp_rs.getString("COLUMN_NAME"));
 					entry.setFieldLength(temp_rs.getInt("COLUMN_SIZE"));
 					entry.setCharLength(temp_rs.getInt("CHAR_OCTET_LENGTH"));
 					entry.setDecimalDigits(temp_rs.getInt("DECIMAL_DIGITS"));
 					entry.setFieldDescription(temp_rs.getString("REMARKS"));
 					entry.setRefTableName(temp_rs.getString("SCOPE_TABLE"));
-					entry.setTypeName(temp_rs.getString("TYPE_NAME"));
-
+					entry.setMappedTypeName(temp_rs.getString("TYPE_NAME"));
+					
 					tempList.add(entry);
 				}
 
@@ -134,6 +133,7 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public  Class mapFieldType(FieldEntry entry) {
+		//System.err.println(entry.getMappedTypeName());
 		
 		Class cls = null;
 		
@@ -150,6 +150,15 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 			break;
 		case Types.INTEGER:
 			cls = int.class;
+			break;
+		case Types.BIGINT:
+			cls = long.class;
+			break;
+		case Types.BIT:
+			cls = boolean.class;
+			break;
+		case Types.DECIMAL:
+			cls = double.class;
 			break;
 		case Types.NUMERIC:
 			if(entry.getDecimalDigits()==0) cls = int.class;

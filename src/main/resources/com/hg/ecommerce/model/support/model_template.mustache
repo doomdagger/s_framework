@@ -1,12 +1,16 @@
 package {{packageName}};
 
 import {{superClsPath}};
+{{#importInfos}}
+import {{.}};
+{{/importInfos}}
 
 /**
  * Description:{{modelDescription}}
  * <p>from schema <strong>{{schema}}</strong> in table <strong>{{table}}</strong></p>
  * <p>Do not modify the source code randomly</p>
- * @author auto_generate model
+ * 
+ *  @author auto_generate model
  */
 public class {{modelName}} extends EntityObject{
 
@@ -19,16 +23,23 @@ public class {{modelName}} extends EntityObject{
 	{{#fieldEntries}}
 	/**
 	 * Description:{{fieldDescription}}
-	 * Mapped field in table is "{{fieldName}}"
-	 * {{refTableName}}
+	 * <p>
+	 * Mapped field info in table:
+	 * <ul>
+	 * 	 <li>Field Name  : "{{mappedFieldName}}"</li>
+	 * 	 <li>Field Type  : "{{mappedTypeName}}"</li>
+	 * 	 <li>Field Length: "{{fieldLength}}"</li>
+	 *   <li>Refer Info  : "{{refTableName}}"</li>
+	 * </ul>
+	 * </p>
 	 */
 	private {{typeName}} {{fieldName}};
 
-	public {{typeName}} get{{fieldName}}() {
+	public {{typeName}} get{{qualifiedFieldName}}() {
 		return {{fieldName}};
 	}
 
-	public void set{{fieldName}}({{typeName}} {{fieldName}}) {
+	public void set{{qualifiedFieldName}}({{typeName}} {{fieldName}}) {
 		this.{{fieldName}} = {{fieldName}};
 	}
 	{{/fieldEntries}}
