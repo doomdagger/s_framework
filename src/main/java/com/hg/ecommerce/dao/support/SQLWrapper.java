@@ -1,8 +1,5 @@
 package com.hg.ecommerce.dao.support;
 
-import com.hg.ecommerce.dao.support.provider.MySQLProvider;
-
-
 public class SQLWrapper {
 	
 	public SQLWrapper fields(){
@@ -91,13 +88,5 @@ public class SQLWrapper {
 	
 	public SQLWrapper limit(){
 		return this;
-	}
-	
-	public static void main(String args[]) {
-		MySQLProvider mySQLProvider = MySQLProvider.instance("TABLE");
-		Object[] objects = new Object[]{"hello","world","I'AM","HERE"};
-		
-		mySQLProvider.update().set("name", "joechow").set("age", 18);
-		System.out.println(mySQLProvider.getSQL());
 	}
 }

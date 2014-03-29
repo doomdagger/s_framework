@@ -3,7 +3,6 @@ package com.hg.ecommerce.dao.support.provider;
 import java.util.Collection;
 
 import com.hg.ecommerce.dao.support.ISQLProvider;
-import com.hg.ecommerce.dao.support.ISQLProvider.Sort;
 @SuppressWarnings("unused")
 public class MySQLProvider implements ISQLProvider {
 	
@@ -20,9 +19,17 @@ public class MySQLProvider implements ISQLProvider {
 	
 	private String Model;
 	
-	private MySQLProvider(String Model){
+	public MySQLProvider(){
+		this.SQL = new StringBuffer();
+	}
+	
+	public MySQLProvider(String Model){
 		this.setModel(Model);
 		this.SQL = new StringBuffer();
+	}
+	
+	public static MySQLProvider instance(){
+		return new MySQLProvider();
 	}
 	
 	public static MySQLProvider instance(String Model){
@@ -30,10 +37,12 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	
+	
 	//this.SQL operation here
 	
 	@Override
 	public ISQLProvider insert() {
+		this.SQL = new StringBuffer();
 		this.SQL.append(INSERT).append(this.Model);
 		isInsert = true;
 		return this;
@@ -41,6 +50,7 @@ public class MySQLProvider implements ISQLProvider {
 	
 	@Override
 	public ISQLProvider delete() {
+		this.SQL = new StringBuffer();
 		this.SQL.append(DELETE).append(this.Model);
 		isDelete = true;
 		return this;
@@ -76,6 +86,7 @@ public class MySQLProvider implements ISQLProvider {
 	
 	@Override
 	public ISQLProvider update() {
+		this.SQL = new StringBuffer();
 		this.SQL.append(UPDATE).append(this.Model).append(SET);
 		isUpdate = true;
 		return this;
@@ -83,6 +94,7 @@ public class MySQLProvider implements ISQLProvider {
 	
 	@Override
 	public ISQLProvider select() {
+		this.SQL = new StringBuffer();
 		this.SQL.append(SELECT);
 		isSelect = true;
 		return this;
@@ -142,7 +154,10 @@ public class MySQLProvider implements ISQLProvider {
 	
 	@Override
 	public ISQLProvider where() {
-		if(isSelect||isUpdate||isDelete){
+		if(isSelect){
+			this.SQL.append(FROM).append(this.Model).append(WHERE);
+		}
+		else if(isUpdate||isDelete){
 			this.SQL.append(WHERE);
 		}
 		return this;
@@ -150,25 +165,53 @@ public class MySQLProvider implements ISQLProvider {
 	
 	@Override
 	public ISQLProvider and(ISQLProvider isqlProvider) {
-		// TODO Auto-generated method stub
+		if(null!=isqlProvider){
+			if(!isAnd){
+				this.SQL.append(LP).append(isqlProvider.getSQL()).append(RP);
+				isAnd = true;
+			}else{
+				this.SQL.append(AND).append(LP).append(isqlProvider.getSQL()).append(RP);
+			}
+		}
 		return this;
 	}
 	
 	@Override
-	public ISQLProvider and(ISQLProvider one, ISQLProvider another) {
-		// TODO Auto-generated method stub
+	public ISQLProvider and(ISQLProvider one, ISQLProvider another,AOR AOR) {
+		if(null!=one && null!=another){
+			if(!isAnd){
+				this.SQL.append(LP).append(one.getSQL()).append(RP).append(AND).append(LP).append(another.getSQL()).append(RP);
+				isAnd = true;
+			}else{
+				this.SQL.append(AND).append(LP).append(LP).append(one.getSQL()).append(RP).append(AOR.getAor()).append(LP).append(another.getSQL()).append(RP).append(RP);
+			}
+		}
 		return this;
 	}
 	
 	@Override
 	public ISQLProvider or(ISQLProvider isqlProvider) {
-		// TODO Auto-generated method stub
+		if(null!=isqlProvider){
+			if(!isAnd){
+				this.SQL.append(isqlProvider.getSQL());
+				isAnd = true;
+			}else{
+				this.SQL.append(OR).append(LP).append(isqlProvider.getSQL()).append(RP);
+			}
+		}
 		return this;
 	}
 	
 	@Override
-	public ISQLProvider or(ISQLProvider one, ISQLProvider another) {
-		// TODO Auto-generated method stub
+	public ISQLProvider or(ISQLProvider one, ISQLProvider another,AOR AOR) {
+		if(null!=one && null!=another){
+			if(!isAnd){
+				this.SQL.append(LP).append(LP).append(one.getSQL()).append(RP).append(OR).append(LP).append(another.getSQL()).append(RP).append(RP);
+				isAnd = true;
+			}else{
+				this.SQL.append(OR).append(LP).append(LP).append(one.getSQL()).append(RP).append(AOR.getAor()).append(LP).append(another.getSQL()).append(RP).append(RP);
+			}
+		}
 		return this;
 	}
 	
@@ -176,10 +219,10 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider eq(String field, Object value) {
 		if(null!=value){
 			if(!isAnd){
-				this.SQL.append(field).append(EQ).append(value);
+				this.SQL.append(field).append(EQ).append(QUOTE).append(value).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(AND).append(field).append(EQ).append(value);
+				this.SQL.append(AND).append(field).append(EQ).append(QUOTE).append(value).append(QUOTE);
 			}
 		}
 		return this;
@@ -189,10 +232,10 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider ne(String field, Object value) {
 		if(null!=value){
 			if(!isAnd){
-				this.SQL.append(field).append(NE).append(value);
+				this.SQL.append(field).append(NE).append(QUOTE).append(value).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(AND).append(field).append(NE).append(value);
+				this.SQL.append(AND).append(field).append(NE).append(QUOTE).append(value).append(QUOTE);
 			}
 		}
 		return this;
@@ -202,10 +245,10 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider gt(String field, Object value) {
 		if(null!=value){
 			if(!isAnd){
-				this.SQL.append(field).append(GT).append(value);
+				this.SQL.append(field).append(GT).append(QUOTE).append(value).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(AND).append(field).append(GT).append(value);
+				this.SQL.append(AND).append(field).append(GT).append(QUOTE).append(value).append(QUOTE);
 			}
 		}
 		return this;
@@ -215,10 +258,10 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider ge(String field, Object value) {
 		if(null!=value){
 			if(!isAnd){
-				this.SQL.append(field).append(GE).append(value);
+				this.SQL.append(field).append(GE).append(QUOTE).append(value).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(AND).append(field).append(GE).append(value);
+				this.SQL.append(AND).append(field).append(GE).append(QUOTE).append(value).append(QUOTE);
 			}
 		}
 		return this;
@@ -227,11 +270,11 @@ public class MySQLProvider implements ISQLProvider {
 	@Override
 	public ISQLProvider lt(String field, Object value) {
 		if(null!=value){
-			if(isAnd){
-				this.SQL.append(field).append(LT).append(value);
+			if(!isAnd){
+				this.SQL.append(field).append(LT).append(QUOTE).append(value).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(isAnd).append(field).append(LT).append(value);
+				this.SQL.append(AND).append(field).append(LT).append(QUOTE).append(value).append(QUOTE);
 			}
 		}
 		return this;
@@ -241,10 +284,10 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider le(String field, Object value) {
 		if(null!=value){
 			if(!isAnd){
-				this.SQL.append(field).append(LE).append(value);
+				this.SQL.append(field).append(LE).append(QUOTE).append(value).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(AND).append(field).append(LE).append(value);
+				this.SQL.append(AND).append(field).append(LE).append(QUOTE).append(value).append(QUOTE);
 			}
 		}
 		return this;
@@ -254,10 +297,10 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider not(String field, Object value) {
 		if(null!=value){
 			if(!isAnd){
-				this.SQL.append(field).append(NOT).append(value);
+				this.SQL.append(field).append(NOT).append(QUOTE).append(value).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(AND).append(field).append(NOT).append(value);
+				this.SQL.append(AND).append(field).append(NOT).append(QUOTE).append(value).append(QUOTE);
 			}
 		}
 		return this;
@@ -409,13 +452,13 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider orderBy(String field,Sort sort) {
+	public ISQLProvider orderBy(String field,SORT sort) {
 		if(isSelect){
 			if(!isOrder){
-				this.SQL.append(ORDER).append(field).append(sort);
+				this.SQL.append(ORDER).append(field).append(sort.getSort());
 				isOrder = true;
 			}else{
-				this.SQL.append(COMMA).append(field).append(sort);
+				this.SQL.append(COMMA).append(field).append(sort.getSort());
 			}
 		}
 		return this;
