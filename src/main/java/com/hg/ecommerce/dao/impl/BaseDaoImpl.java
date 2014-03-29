@@ -1,7 +1,18 @@
 package com.hg.ecommerce.dao.impl;
 
-import com.hg.ecommerce.dao.BaseDao;
+import java.lang.reflect.ParameterizedType;
 
-public class BaseDaoImpl implements BaseDao{
+
+public class BaseDaoImpl<T>{
+	
+	private Class<T> cls;
+	
+	@SuppressWarnings("unchecked")
+	public BaseDaoImpl(){
+		this.cls =(Class<T>)((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	}
+	
+	
+
 
 }
