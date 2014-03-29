@@ -15,6 +15,9 @@ import com.hg.ecommerce.model.support.EntityGenerator;
  */
 public class Bootstrap {
 	public static void main(String[] args){
+		
+		System.err.println(System.getenv());
+		
 		EntityGenerator generator = new EntityGenerator();
 		try {
 			generator.generateModel();
