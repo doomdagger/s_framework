@@ -290,6 +290,7 @@ public class Util {
 
 		ListIterator<String> iterator = mustache.listIterator();
 		while (iterator.hasNext()) {
+			boolean shouldPrint = true;
 			String mstr = iterator.next();
 
 			Matcher matcher = pattern.matcher(mstr);
@@ -340,6 +341,7 @@ public class Util {
 
 						// 我的策略是如果用户在模板中指定的集合字段或boolean字段不存在，标签体中的一切都要放弃掉
 						if (subObject != null) {
+							//创建list，收集标签体中的语句
 							List<String> subList = new ArrayList<String>();
 
 							subList.add(mstr);
@@ -353,7 +355,7 @@ public class Util {
 									subList.add(line);
 								}
 							}
-
+							//收集完成后，判断对象类型，决定处理手段，如果是array，遍历array，多次递归调用render，如果是boolean。。。见下面的else
 							if (subObject instanceof JSONArray) {
 								// 转型为 JSONArray
 								JSONArray array = (JSONArray) subObject;
@@ -373,8 +375,18 @@ public class Util {
 									render(subList, writer, innerJsonObject);
 								}
 							} else {
+								boolean dealFlag = true;
 								// 除了JSONArray之外，其他相似标签一律作true or false判定
-								System.err.println("do not implement yet!");
+								if(subObject.getClass().getName().equals("boolean")||subObject instanceof Boolean){
+									if(!(Boolean)subObject){
+										//设置不作处理
+										dealFlag = false;
+									}
+								}
+								//判断是否处理
+								if(dealFlag){
+									render(subList, writer, jsonObject);
+								}
 							}
 						} else {
 							// 空找结束标签，抛弃体中的一切东西
@@ -389,13 +401,15 @@ public class Util {
 						}
 
 					} else {
+						shouldPrint = false;
 						continue;
 					}
 				}
 
 			}
 			// System.err.println(mstr);
-			writer.println(mstr);
+			if(shouldPrint&&!mstr.trim().equals(""))
+				writer.println(mstr);
 		}
 
 	}

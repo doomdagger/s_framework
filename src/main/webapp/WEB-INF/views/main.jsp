@@ -7,6 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+	<h1>Hello World</h1>
+	<h2>${message }</h2>
+	<h2>${date }</h2>
+	<h2>${username } with ${age }</h2>
 </body>
 </html>

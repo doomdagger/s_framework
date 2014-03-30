@@ -23,8 +23,8 @@ public class ModelConfig extends EntityObject{
 	private String schema;
 	private String table;
 	private Set<String> importInfos;
-	
 	private List<FieldEntry> fieldEntries;
+
 
 	public String getPackageName() {
 		return packageName;

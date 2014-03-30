@@ -92,7 +92,6 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 
 				TableDef tableDef = new TableDef();
 
-				tableDef.setIdFieldName(rs.getString("SELF_REFERENCING_COL_NAME")); // 主键
 				tableDef.setTableCatalog(rs.getString("TABLE_CAT"));
 				tableDef.setTableDescription(rs.getString("REMARKS")); // 表描述
 				tableDef.setTableName(rs.getString("TABLE_NAME"));
@@ -101,9 +100,15 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 
 				List<FieldEntry> tempList = new ArrayList<FieldEntry>();
 
+				//添加主键
+				temp_rs = metaData.getPrimaryKeys(connection.getCatalog(), connection.getSchema(), tableDef.getTableName());
+				while (temp_rs.next()) {
+					tableDef.addPKColumnName(temp_rs.getString("COLUMN_NAME"));
+				}
+				temp_rs.close();
 				temp_rs = metaData.getColumns(connection.getCatalog(),
 						connection.getSchema(), tableDef.getTableName(), null);
-
+				
 				while (temp_rs.next()) {
 					FieldEntry entry = new FieldEntry();
 
@@ -118,7 +123,7 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 					
 					tempList.add(entry);
 				}
-
+				temp_rs.close();
 				metaMap.put(tableDef, tempList);
 			}
 		} catch (SQLException exception) {

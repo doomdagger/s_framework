@@ -23,19 +23,13 @@
 	<context:property-placeholder location="classpath:/project-custom.properties" />
 	
 	<!-- 使用注解 -->
-	<mvc:annotation-driven />
 	<context:annotation-config></context:annotation-config>
 	
 	<context:component-scan base-package="com.hg.ecommerce.dao.impl">
 		<!-- <context:include-filter type="annotation" expression=""/> -->
 	</context:component-scan>
-	<context:component-scan base-package="com.hg.ecommerce.action" />
 	<context:component-scan base-package="com.hg.ecommerce.service.impl" />
 	
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-		p:prefix="/WEB-INF/views/" p:suffix=".jsp"></bean>
-
 
 	<bean id="dataSource"
 		class="org.apache.commons.dbcp.BasicDataSource">

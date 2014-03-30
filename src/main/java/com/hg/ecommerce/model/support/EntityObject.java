@@ -7,9 +7,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.hg.ecommerce.model.support.annotation.Column;
+import com.hg.ecommerce.model.support.annotation.Id;
 import com.hg.ecommerce.model.support.annotation.Table;
 import com.hg.ecommerce.util.Util;
 
@@ -327,6 +330,19 @@ public class EntityObject implements Serializable, AnnotatedModel{
 		}
 		
 		return "";
+	}
+
+	@Override
+	public Set<String> getPrimaryKeys() {
+		Set<String> ids = new HashSet<String>();
+		
+		Field[] fields = getClass().getDeclaredFields();
+		for(Field field : fields){
+			if(field.isAnnotationPresent(Id.class)){
+				ids.add(getColumnName(field.getName()));
+			}
+		}
+		return ids;
 	}
 	
 }

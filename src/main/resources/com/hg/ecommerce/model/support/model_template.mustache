@@ -33,6 +33,9 @@ public class {{modelName}} extends EntityObject{
 	 * </ul>
 	 * </p>
 	 */
+	{{#primaryKey}}
+	@Id
+	{{/primaryKey}}
 	@Column("{{mappedFieldName}}")
 	private {{typeName}} {{fieldName}};
 
