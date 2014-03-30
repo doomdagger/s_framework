@@ -1,7 +1,14 @@
 package com.hg.ecommerce.action;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,11 +43,41 @@ public class AdvancedDemoController {
 		return mail;
 	}
 	
-	
+	/**
+	 * 当访问/mail时， fetchMail 会先于 returnMail调用，returnMail可以通过@ModelAttribute获取fetchMail返回的Mail对象，
+	 * 通过传BindingResult入参，可以检测任何 TypeConversion是否出错。
+	 * @param cacheMail
+	 * @param result
+	 * @return
+	 */
 	@RequestMapping(value="/mail",produces="application/json")
 	@ResponseBody
-	public String fetchMail(@ModelAttribute("mail") Mail cacheMail){
+	public String returnMail(@ModelAttribute("mail") Mail cacheMail , BindingResult result){
+		
+		if(result.hasErrors()){
+			cacheMail.setContent("Error!");
+		}
+		
 		return cacheMail.toJSON().toString();
+	}
+	
+	/**
+	 * 使用原生Servlet Class, 响应信息写入response中，handler方法返回void
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	public void useOriginal(HttpServletRequest request, HttpServletResponse response){
+		
+	}
+	
+	/**
+	 * 使用Stream IO类
+	 * @param inputStream
+	 * @param outputStream
+	 */
+	public void useStream(InputStream inputStream, OutputStream outputStream){
+		
 	}
 	
 	
