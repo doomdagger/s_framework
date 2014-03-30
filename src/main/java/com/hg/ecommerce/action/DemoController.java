@@ -58,8 +58,8 @@ public class DemoController {
 	 * @return
 	 */
 	@RequestMapping(value="/user/{day}", method = RequestMethod.GET)
-	public String getForDay(@PathVariable("day") @DateTimeFormat(pattern="yyyy-MM-dd") Date theDay, Model model) {
-	   model.addAttribute("date",Util.dateToString(theDay));
+	public String getForDay(@PathVariable("day") @DateTimeFormat(pattern="yyyy-MM-dd") Date date, Model model) {
+		model.addAttribute("date",Util.dateToString(date));
 		return "main";
 	}
 	 
