@@ -49,7 +49,9 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	
 	@Override
 	public boolean add(T param) {
-		if(0<jdbcTemplate.update(SQLWrapper.instance().insert((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+		String query = SQLWrapper.instance().insert((EntityObject) param).setModel(cls.getSimpleName()).getQuery();
+		System.out.println("add T:"+query);
+		if(0<jdbcTemplate.update(query)){
 			return true;
 		}
 		return false;
