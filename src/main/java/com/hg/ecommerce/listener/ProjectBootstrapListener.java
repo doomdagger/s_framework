@@ -23,7 +23,7 @@ public class ProjectBootstrapListener implements ServletContextListener{
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		//ensuring log path in System Property
-		System.setProperty("logPath", ProjectConfig.getProperty("log.path"));
+		System.setProperty("log.path", ProjectConfig.getProperty("log.path"));
 		
 	}
 

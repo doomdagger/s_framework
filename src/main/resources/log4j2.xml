@@ -2,22 +2,22 @@
 <Configuration status="error" strict="true" monitorInterval="40">
 	<Properties>
 		<Property name="serviceErrorFile">
-			${sys:logPath}/ecommerce/${date:yyyy-MM-dd}/service_error_${date:HH}h.log
+			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/service_error_${date:HH}h.log
 		</Property>
 		<Property name="serviceTraceFile">
-			${sys:logPath}/ecommerce/${date:yyyy-MM-dd}/service_trace_${date:HH}h.log
+			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/service_trace_${date:HH}h.log
 		</Property>
 		<Property name="daoErrorFile">
-			${sys:logPath}/ecommerce/${date:yyyy-MM-dd}/dao_error_${date:HH}h.log
+			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/dao_error_${date:HH}h.log
 		</Property>
 		<Property name="daoTraceFile">
-			${sys:logPath}/ecommerce/${date:yyyy-MM-dd}/dao_trace_${date:HH}h.log
+			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/dao_trace_${date:HH}h.log
 		</Property>
 		<Property name="requestTraceFile">
-			${sys:logPath}/ecommerce/${date:yyyy-MM-dd}/request_trace_${date:HH}h.log
+			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/request_trace_${date:HH}h.log
 		</Property>
 		<Property name="filterTraceLogFile">
-			${sys:logPath}/ecommerce/${date:yyyy-MM-dd}/filter_trace_${date:HH}h.log
+			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/filter_trace_${date:HH}h.log
 		</Property>
 	</Properties>
 

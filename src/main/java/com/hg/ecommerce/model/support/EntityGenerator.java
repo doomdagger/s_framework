@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import com.hg.ecommerce.config.ProjectConfig;
 import com.hg.ecommerce.config.ProjectContainer;
 import com.hg.ecommerce.model.support.annotation.Column;
+import com.hg.ecommerce.model.support.annotation.Id;
 import com.hg.ecommerce.model.support.annotation.Table;
 import com.hg.ecommerce.util.Util;
 
@@ -85,6 +86,10 @@ public class EntityGenerator {
 						importInfos.add(cls.getName());
 				}
 				
+				if(tableDef.getPkColumnNames().contains(fieldEntry.getMappedFieldName())){
+					importInfos.add(Id.class.getName());
+					fieldEntry.setPrimaryKey(true);
+				}
 				
 				fieldEntry.setFieldName(Util.qualifyFieldName(fieldEntry.getMappedFieldName()));
 				fieldEntry.setQualifiedFieldName(Util.repairName(fieldEntry.getFieldName()));

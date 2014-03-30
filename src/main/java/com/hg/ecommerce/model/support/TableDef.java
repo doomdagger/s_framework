@@ -1,5 +1,8 @@
 package com.hg.ecommerce.model.support;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * <ol>
  * 	<li>TABLE_CAT String => table catalog (may be null) </li>
@@ -34,9 +37,21 @@ public class TableDef extends EntityObject{
 	//表类型
 	private String tableType;
 	//主键字段名称
-	private String idFieldName;
+	private Set<String> pkColumnNames;
 	
+	public void addPKColumnName(String columnName){
+		if(pkColumnNames==null){
+			pkColumnNames = new HashSet<String>();
+		}
+		pkColumnNames.add(columnName);
+	}
 	
+	public Set<String> getPkColumnNames() {
+		return pkColumnNames;
+	}
+	public void setPkColumnNames(Set<String> pkColumnNames) {
+		this.pkColumnNames = pkColumnNames;
+	}
 	public String getTableCatalog() {
 		return tableCatalog;
 	}
@@ -54,12 +69,6 @@ public class TableDef extends EntityObject{
 	}
 	public void setTableType(String tableType) {
 		this.tableType = tableType;
-	}
-	public String getIdFieldName() {
-		return idFieldName;
-	}
-	public void setIdFieldName(String idFieldName) {
-		this.idFieldName = idFieldName;
 	}
 	public String getTableName() {
 		return tableName;

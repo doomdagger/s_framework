@@ -99,8 +99,18 @@ public class FieldEntry extends EntityObject {
 	private int charLength; //CHAR_OCTET_LENGTH 
 	// 外键指向表
 	private String refTableName; //SCOPE_TABLE 
+	// 是否为主键
+	private boolean primaryKey;
 	
 	
+	public boolean isPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(boolean primaryKey) {
+		this.primaryKey = primaryKey;
+	}
+
 	public String getTypeName() {
 		return typeName;
 	}
