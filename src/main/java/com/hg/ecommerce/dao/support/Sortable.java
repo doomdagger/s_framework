@@ -4,10 +4,6 @@ import com.hg.ecommerce.dao.support.IOperators.SORT;
 
 public class Sortable {
 	
-	public static final String ASCEND = "ASC";
-	
-	public static final String DESCND = "DESC";
-	
 	private String field;
 	private SORT sort;
 	

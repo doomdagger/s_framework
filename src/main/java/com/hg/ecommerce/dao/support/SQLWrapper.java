@@ -5,12 +5,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.aspectj.lang.reflect.FieldSignature;
-
+import java.util.Set;
 import com.hg.ecommerce.config.ProjectContainer;
 import com.hg.ecommerce.dao.support.IOperators.AOR;
-import com.hg.ecommerce.dao.support.IOperators.SORT;
 import com.hg.ecommerce.model.support.EntityObject;
 
 public class SQLWrapper {
@@ -46,7 +43,7 @@ public class SQLWrapper {
 			  if(methods[i].getName().startsWith("get")){
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
-					  Object value = methods[i].invoke(Model, null);  // 值
+					  Object value = methods[i].invoke(Model, new Object());  // 值
 					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
 					  fields.add(Model.getColumnName(fieldName));
 					  values.add(value);
@@ -88,9 +85,19 @@ public class SQLWrapper {
 		return this;
 	}
 	
+	/**
+	 * Update一个实体
+	 * @param Model
+	 * @return
+	 */
 	public SQLWrapper update(EntityObject Model){
-		List<String> fields = new ArrayList<String>();
-		List<Object> values = new ArrayList<Object>();
+		List<String> fields = new ArrayList<String>();//字段
+		List<Object> values = new ArrayList<Object>();//字段值
+		List<String> keys = new ArrayList<String>();//主键
+		List<Object> keyValues = new ArrayList<Object>();//主键值
+		String tempName;
+		Set<String> set = ((EntityObject)Model).getPrimaryKeys();//获取主键
+		
 		if(Model!=null){
 			Method[] methods = Model.getClass().getMethods();
 			String fieldName;
@@ -98,10 +105,17 @@ public class SQLWrapper {
 			  if(methods[i].getName().startsWith("get")){
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
-					  Object value = methods[i].invoke(Model, null);  // 值
+					  Object value = methods[i].invoke(Model, new Object());  // 值
 					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
-					  fields.add(Model.getColumnName(fieldName));
-					  values.add(value);
+					  tempName = Model.getColumnName(fieldName);
+					  //判断是否是主键
+					  if(set.contains(tempName)){
+						  keys.add(tempName);
+						  keyValues.add(value);
+					  }else{
+						  fields.add(tempName);
+						  values.add(value);
+					  }
 					} catch (IllegalAccessException e) {
 						e.printStackTrace();
 					} catch (IllegalArgumentException e) {
@@ -112,12 +126,52 @@ public class SQLWrapper {
 			  	}
 			}
 		}
+		//set fields and values
 		provider.update();
 		for (int i=0,size=fields.size(); i<size; i++) {
 			provider.set(fields.get(i), values.get(i));
-			//TODO:
 		}
-		
+		provider.where();//where
+		//set key and keyValue
+		for(int i=0,size=keys.size(); i<size; i++){
+			provider.eq(keys.get(i), keyValues.get(i));
+		}
+		return this;
+	}
+	
+	public SQLWrapper upsert(EntityObject Model){
+		Set<String> set = ((EntityObject)Model).getPrimaryKeys();//获取主键
+		List<Object> values = new ArrayList<Object>();
+		String fieldName;
+		String tempName;
+		if(Model!=null){
+			Method[] methods = Model.getClass().getMethods();
+			for(int i=0;i<methods.length;i++){
+			  if(methods[i].getName().startsWith("get")){
+				  try {
+					  fieldName = methods[i].getName().substring(3);   // 属性
+					  Object value = methods[i].invoke(Model, new Object());  // 值
+					  tempName = Model.getColumnName(fieldName);
+					  //判断是否是主键
+					  if(set.contains(tempName) && null!=value){
+						  values.add(value);
+					  }
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+				  
+			  }
+			}
+		}
+		if(values.size()<1){
+			this.insert(Model);//add
+		}else{
+			this.update(Model);//update
+		}
 		return this;
 	}
 	
@@ -141,8 +195,23 @@ public class SQLWrapper {
 		return this;
 	}
 	
-	public SQLWrapper fields(EntityObject model){
-		// TODO:GOGOGO
+	/**
+	 * 使用Model中的所有字段来填充fields
+	 * @param Model
+	 * @return
+	 */
+	public SQLWrapper fields(EntityObject Model){
+		List<String> fields = new ArrayList<String>();//字段
+		String fieldName;
+		if(Model!=null){
+			Method[] methods = Model.getClass().getMethods();
+			for(int i=0;i<methods.length;i++){
+			  if(methods[i].getName().startsWith("get")){
+				  fieldName = methods[i].getName().substring(3);   // 属性
+				  fields.add(Model.getColumnName(fieldName));
+			  }
+			}
+		}
 		return this;
 	}
 	
