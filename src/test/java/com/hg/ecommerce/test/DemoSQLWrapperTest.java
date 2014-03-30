@@ -5,17 +5,24 @@ import org.junit.Test;
 
 import com.hg.ecommerce.dao.impl.BaseDaoImpl;
 import com.hg.ecommerce.dao.support.SQLWrapper;
-import com.hg.ecommerce.model.MCities;
+//import com.hg.ecommerce.model.MCities;
 
 public class DemoSQLWrapperTest {
-	BaseDaoImpl<MCities> dao = new BaseDaoImpl<MCities>();
+	//BaseDaoImpl<MCities> dao = new BaseDaoImpl<MCities>();
 	SQLWrapper wrapper = SQLWrapper.instance();
-	
 	
 	//insert model
 	@Test
 	public void test1(){
-		wrapper.insert();
+		/*
+		MCities cities = new MCities();
+		cities.setFlag(false);
+		cities.setNameEn("JOE");
+		cities.setNameZh("乔");
+		cities.setParentid(0);
+		//wrapper.insert(cities);
+		dao.add(cities);
+		*/
 		System.out.println("TEST-1: "+wrapper.getQuery());
 	}
 	
