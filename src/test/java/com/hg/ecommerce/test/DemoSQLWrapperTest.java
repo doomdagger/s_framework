@@ -5,20 +5,17 @@ import org.junit.Test;
 
 import com.hg.ecommerce.dao.impl.BaseDaoImpl;
 import com.hg.ecommerce.dao.support.SQLWrapper;
+import com.hg.ecommerce.model.MCities;
 
 public class DemoSQLWrapperTest {
-	BaseDaoImpl<TestModel> dao = new BaseDaoImpl<TestModel>();
+	BaseDaoImpl<MCities> dao = new BaseDaoImpl<MCities>();
 	SQLWrapper wrapper = SQLWrapper.instance();
 	
 	
 	//insert model
 	@Test
 	public void test1(){
-		TestModel model = new TestModel();
-		model.setName("JOECHOW");
-		model.setGender("Male");
-		model.setAge("18");
-		wrapper.insert(model);
+		wrapper.insert();
 		System.out.println("TEST-1: "+wrapper.getQuery());
 	}
 	
