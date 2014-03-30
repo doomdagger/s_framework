@@ -8,11 +8,11 @@ import com.hg.ecommerce.model.support.annotation.Column;
 import com.hg.ecommerce.model.support.annotation.Id;
 import com.hg.ecommerce.model.support.annotation.Table;
 
-public class AnnotatedModel<T> {
+public class AnnotatedModel<T extends EntityObject> {
 	
-	private Class<T> cls;
+	private Class<? extends EntityObject> cls;
 	
-	public AnnotatedModel(Class<T> cls){
+	public AnnotatedModel(Class<? extends EntityObject> cls){
 		this.cls = cls;
 	}
 	
