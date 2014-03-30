@@ -1,10 +1,13 @@
 package com.hg.ecommerce.action;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,9 +69,22 @@ public class AdvancedDemoController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws IOException 
 	 */
-	public void useOriginal(HttpServletRequest request, HttpServletResponse response){
+	public void useOriginal(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		response.setContentType("text/html");
+		response.setCharacterEncoding("utf8");
 		
+		HttpSession session = request.getSession(true);
+		
+		session.setAttribute("greeting", demoService.greeting("Hi!"));
+		
+		PrintWriter writer = response.getWriter();
+		
+		writer.println("<h1>Hello World</h1>");
+		writer.flush();
+		
+		writer.close();
 	}
 	
 	/**

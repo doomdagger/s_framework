@@ -1,5 +1,6 @@
 package com.hg.ecommerce.model.support.provider;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Date;
@@ -148,9 +149,23 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 			else cls = String.class;
 			break;
 		case Types.VARCHAR:
+		case Types.LONGVARCHAR:
 			cls = String.class;
 			break;
+		case Types.BINARY:
+		case Types.VARBINARY:
+		case Types.LONGVARBINARY:
+			cls = byte[].class;
+			break;
+		case Types.TINYINT:
+		case Types.SMALLINT:
+			cls = short.class;
+			break;
+		case Types.REAL:
+			cls = float.class;
+			break;
 		case Types.DOUBLE:
+		case Types.FLOAT:
 			cls = double.class;
 			break;
 		case Types.INTEGER:
@@ -162,19 +177,15 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 		case Types.BIT:
 			cls = boolean.class;
 			break;
-		case Types.DECIMAL:
-			cls = double.class;
-			break;
 		case Types.NUMERIC:
-			if(entry.getDecimalDigits()==0) cls = int.class;
-			else cls = double.class;
+		case Types.DECIMAL:
+			cls = BigDecimal.class;
 			break;
 		case Types.DATE:
 		case Types.TIME:
 		case Types.TIMESTAMP:
 			cls = Date.class;
 			break;
-		
 		
 		}
 		
