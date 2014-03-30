@@ -4,15 +4,24 @@ import java.util.Collection;
 import java.util.List;
 
 import com.hg.ecommerce.dao.support.Pageable;
-import com.hg.ecommerce.dao.support.Projections;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.dao.support.Sortable;
 
 
 public interface BaseDao<T> {
 	
+	/**
+	 * 直接添加一个实体Model
+	 * @param param：实体
+	 * @return：成功返回true
+	 */
 	boolean add(T param);
 	
+	/**
+	 * 同时添加多个实体Model
+	 * @param params：Model的Collection集合
+	 * @return：成功返回true
+	 */
 	boolean addMulti(Collection<T> params);
 	
 	boolean addByWrapper(SQLWrapper sqlWrapper);
@@ -29,47 +38,30 @@ public interface BaseDao<T> {
 	
 	boolean deleteByWrapper(SQLWrapper sqlWrapper);
 	
-	boolean deleteByIdByWrapper(String id,SQLWrapper sqlWrapper);
-	
 	T findOneById(String id);
 	
-	T findOneByIdByProjected(String id,Projections projections);
-	
-	T findOneByIdByWrapper(String id,SQLWrapper sqlWrapper);
+	T findOneByIdByProjected(String id);
 		
-	T findOneByProjectedByWrapper(Projections projections,SQLWrapper sqlWrapper);
+	T findOneByWrapper(SQLWrapper sqlWrapper);
 	
 	List<T> findAll();
 	
-	List<T> findAllByProjected();
-	
-	List<T> findAllByProjectedInPage();
-	
-	List<T> findAllByProjectedInOrder();
-	
-	List<T> findAllByProjectedInPageInOrder();
-	
 	//wrapper
-	List<T> findAllByWrapper();
+	List<T> findAllByWrapper(SQLWrapper sqlWrapper);
 	
-	List<T> findAllByWrapperInPage();
+	List<T> findAllByWrapperInPage(SQLWrapper sqlWrapper,Pageable pageable);
 	
-	List<T> findAllByWrapperInOrder();
+	List<T> findAllByWrapperInOrder(SQLWrapper sqlWrapper,Sortable sortable);
 	
-	List<T> findAllByWrapperInPageInOrder();
-	
-	
-	//projected and wrapper
-	List<T> findAllByProjectedByWrapper();
-	
-	List<T> findAllByProjectedByWrapperInPage();
-	
-	List<T> findAllByProjectedByWrapperInOrder();
-	
-	List<T> findAllByProjectedByWrapperInPageInOrder(Projections projections,SQLWrapper sqlWrapper,Pageable pageable,Sortable sortable);
+	List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,Pageable pageable,Sortable sortable);
 	
 	//native
 	List<T> findByNativeQuery();
+	
+	//all rows
+	long getCount();
+	
+	long getCountByWrapper(SQLWrapper sqlWrapper);
 	
 	
 }

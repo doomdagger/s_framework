@@ -2,11 +2,14 @@ package com.hg.ecommerce.dao.support.provider;
 
 import java.util.Collection;
 
+import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Black;
+
+import com.hg.ecommerce.dao.support.IProjections;
 import com.hg.ecommerce.dao.support.ISQLProvider;
 @SuppressWarnings("unused")
 public class MySQLProvider implements ISQLProvider {
 	
-	private StringBuilder SQL; 
+	private StringBuilder SQL;
 	
 	private boolean isSelect = false;
 	private boolean isUpdate = false;
@@ -17,6 +20,11 @@ public class MySQLProvider implements ISQLProvider {
 	private boolean isSet = false;//work with update
 	private boolean isAnd = false;//work with where
 	private boolean isOrder = false;//work with order
+	
+	/**
+	 * 当使用selectAll 和 select(Projection)的时候，isProjected设置为true，控制ISQLProvider的fileds的使用
+	 */
+	private boolean isProjected = false;//work with select(Projection)
 	
 	private String Model;
 	
@@ -87,24 +95,59 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
+	public ISQLProvider select(IProjections iProjections) {
+		if(null!=iProjections){
+			this.SQL.append(SELECT).append(iProjections.getProjection()).append(BLANK);
+			isSelect = true;
+			isProjected = true;
+		}
+		return null;
+	}
+	
+	@Override
 	public ISQLProvider selectAll(){
 		this.SQL = new StringBuilder();
 		this.SQL.append(SELECT).append(MULTI).append(FROM);
 		isSelect = true;
+		isProjected = true;
+		return this;
+	}
+	
+	@Override
+	public ISQLProvider distinct() {
+		if(isSelect){
+			this.SQL.append(DISTINCT);
+		}
+		return this;
+	}
+	
+	@Override
+	public ISQLProvider distinct(String field) {
+		if(isSelect){
+			if(null!=field){
+				return this.distinct();
+			}else{
+				this.SQL.append(DISTINCT).append(field);
+			}
+		}
 		return this;
 	}
 	
 	@Override
 	public ISQLProvider fields(Object... objects) {
-		if(null!=objects && (isInsert || isSelect)){
-			this.SQL.append(LP);
-			for(Object object : objects){
-				this.SQL.append(object).append(COMMA);
-			}
-			this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
-			if(isSelect){
+		if(null!=objects){
+			if(isSelect && !isProjected){
+				for(Object object : objects){
+					this.SQL.append(BLANK).append(object).append(COMMA);
+				}
+				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
 				this.SQL.append(RP).append(FROM);
-			}else{
+			}else if(isInsert){
+				this.SQL.append(LP);
+				for(Object object : objects){
+					this.SQL.append(BLANK).append(object).append(COMMA);
+				}
+				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
 				this.SQL.append(RP);
 			}
 		}
@@ -113,15 +156,19 @@ public class MySQLProvider implements ISQLProvider {
 	
 	@Override
 	public ISQLProvider fields(Collection<Object> objects) {
-		if(null!=objects && (isInsert || isSelect)){
-			this.SQL.append(LP);
-			for(Object object : objects){
-				this.SQL.append(object).append(COMMA);
-			}
-			this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
-			if(isSelect){
-				this.SQL.append(RP).append(FROM);
-			}else{
+		if(null!=objects){
+			if(isSelect && !isProjected){
+				for(Object object : objects){
+					this.SQL.append(BLANK).append(object).append(COMMA);
+				}
+				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
+				this.SQL.append(FROM);
+			}else if(isInsert){
+				this.SQL.append(LP);
+				for(Object object : objects){
+					this.SQL.append(BLANK).append(object).append(COMMA);
+				}
+				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
 				this.SQL.append(RP);
 			}
 		}
@@ -309,10 +356,10 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider between(String field, Object lvalue, Object rvalue) {
 		if(null!=lvalue && null!=rvalue){
 			if(!isAnd){
-				this.SQL.append(field).append(BETWEEN).append(lvalue).append(AND).append(rvalue);
+				this.SQL.append(field).append(BETWEEN).append(QUOTE).append(lvalue).append(QUOTE).append(AND).append(QUOTE).append(rvalue).append(QUOTE);
 				isAnd = true;
 			}else{
-				this.SQL.append(AND).append(field).append(BETWEEN).append(lvalue).append(AND).append(rvalue);
+				this.SQL.append(AND).append(field).append(BETWEEN).append(QUOTE).append(lvalue).append(QUOTE).append(AND).append(QUOTE).append(rvalue).append(QUOTE);
 			}
 		}
 		return this;
@@ -472,6 +519,12 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
+	public ISQLProvider HAVING(IProjections iProjections) {
+		this.SQL.append(HAVING).append(iProjections.getProjection()).append(BLANK);
+		return this;
+	}
+	
+	@Override
 	public String getSQL() {
 		return this.SQL.toString();
 	}
@@ -488,7 +541,14 @@ public class MySQLProvider implements ISQLProvider {
 		}else if(isUpdate){
 			this.SQL.insert(this.SQL.indexOf(UPDATE)+UPDATE.length()+1, new StringBuffer().append(this.Model).append(SET));
 		}else if(isSelect){
-			this.SQL.insert(this.SQL.indexOf(FROM)+FROM.length()+1, this.Model+BLANK);
+			if(-1!=this.SQL.indexOf(FROM)){
+				this.SQL.insert(this.SQL.indexOf(FROM)+FROM.length()+1, this.Model+BLANK);
+			}else if(-1!=this.SQL.indexOf(WHERE)){
+				this.SQL.insert(this.SQL.indexOf(WHERE), FROM+this.Model+BLANK);
+			}else{
+				this.SQL.append(FROM).append(this.Model);
+			}
+			
 		}
 	}
 	
@@ -496,6 +556,15 @@ public class MySQLProvider implements ISQLProvider {
 	public String getModel() {
 		return Model;
 	}
+
+
+
+	
+	
+
+	
+
+
 
 	
 
