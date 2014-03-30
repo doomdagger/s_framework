@@ -8,3 +8,4 @@
 target/
 # Auto-generated Model Class #
 src/main/java/com/hg/ecommerce/model/*.java
+src/main/resources/project-custom.properties
