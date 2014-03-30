@@ -10,6 +10,7 @@ import com.hg.ecommerce.dao.BaseDao;
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.dao.support.Sortable;
+import com.hg.ecommerce.model.support.EntityObject;
 
 
 public class BaseDaoImpl<T> implements BaseDao<T>{
@@ -21,7 +22,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}
-
+	
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
@@ -34,31 +35,46 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	
 	@Override
 	public boolean add(T param) {
-		//jdbcTemplate
+		if(0<jdbcTemplate.update(SQLWrapper.instance().insert((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+			return true;
+		}
 		return false;
 	}
 	
 	@Override
 	public boolean addMulti(Collection<T> params) {
-		// TODO Auto-generated method stub
+		int count = 0;
+		for(T param : params){
+			jdbcTemplate.update(SQLWrapper.instance().insert((EntityObject) param).setModel(cls.getSimpleName()).getQuery());
+			count++;
+		}
+		if(count==params.size()){
+			return true;
+		}
 		return false;
 	}
 	
 	@Override
 	public boolean addByWrapper(SQLWrapper sqlWrapper) {
-		// TODO Auto-generated method stub
+		if(0<jdbcTemplate.update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean update(T param) {
-		// TODO Auto-generated method stub
+		if(0<jdbcTemplate.update(SQLWrapper.instance().update((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean updateByWrapper(SQLWrapper sqlWrapper) {
-		// TODO Auto-generated method stub
+		if(0<jdbcTemplate.update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
+			return true;
+		}
 		return false;
 	}
 
@@ -70,19 +86,24 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@Override
 	public boolean delete(T param) {
-		// TODO Auto-generated method stub
+		if(0<jdbcTemplate.update(SQLWrapper.instance().delete((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean deleteById(String id) {
-		// TODO Auto-generated method stub
+		//if(0<jdbcTemplate.update(SQLWrapper.instance().delete().where().eq(, value)))
+		//TODO:
 		return false;
 	}
 
 	@Override
 	public boolean deleteByWrapper(SQLWrapper sqlWrapper) {
-		// TODO Auto-generated method stub
+		if(0<jdbcTemplate.update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
+			return true;
+		}
 		return false;
 	}
 
@@ -93,66 +114,50 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	}
 
 	@Override
-	public T findOneByIdByProjected(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public T findOneByWrapper(SQLWrapper sqlWrapper) {
-		// TODO Auto-generated method stub
-		return null;
+		return jdbcTemplate.queryForObject(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
 	}
 
 	@Override
 	public List<T> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return jdbcTemplate.queryForList(SQLWrapper.instance().selectAll().setModel(cls.getSimpleName()).getQuery(), cls);
 	}
 
 	@Override
 	public List<T> findAllByWrapper(SQLWrapper sqlWrapper) {
-		// TODO Auto-generated method stub
-		return null;
+		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
 	}
 
 	@Override
-	public List<T> findAllByWrapperInPage(SQLWrapper sqlWrapper,
-			Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> findAllByWrapperInPage(SQLWrapper sqlWrapper,Pageable pageable) {
+		List<T> totaList = jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
+		pageable.setPageCount(totaList.size());
+		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).limit(pageable).getQuery(),cls);
 	}
 
 	@Override
-	public List<T> findAllByWrapperInOrder(SQLWrapper sqlWrapper,
-			Sortable sortable) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> findAllByWrapperInOrder(SQLWrapper sqlWrapper,Sortable sortable) {
+		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).orderBy(sortable).getQuery(), cls);
 	}
 
 	@Override
-	public List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,
-			Pageable pageable, Sortable sortable) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,Pageable pageable, Sortable sortable) {
+		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).orderBy(sortable).limit(pageable).getQuery(), cls);
 	}
 
 	@Override
-	public List<T> findByNativeQuery() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> findByNativeQuery(String sql) {
+		return jdbcTemplate.queryForList(sql, cls);
 	}
 
 	@Override
 	public long getCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return jdbcTemplate.queryForList(SQLWrapper.instance().selectAll().setModel(cls.getSimpleName()).getQuery(), cls).size();
 	}
 
 	@Override
 	public long getCountByWrapper(SQLWrapper sqlWrapper) {
-		// TODO Auto-generated method stub
-		return 0;
+		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls).size();
 	}
 
 

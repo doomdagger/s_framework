@@ -1,5 +1,7 @@
 package com.hg.ecommerce.dao.support;
 
+import com.hg.ecommerce.dao.support.IOperators.SORT;
+
 public class Sortable {
 	
 	public static final String ASCEND = "ASC";
@@ -7,21 +9,13 @@ public class Sortable {
 	public static final String DESCND = "DESC";
 	
 	private String field;
-	private Sort sort;
+	private SORT sort;
 	
-	private Sortable(String field,Sort sort){
+	private Sortable(String field,SORT sort){
 		this.setSort(sort);
 	}
 	
-	public enum Sort{
-		ASC(0),DESC(1);
-		int sort;
-		Sort(int sort){
-			this.sort = sort;
-		}
-	}
-	
-	public static Sortable inSort(String field,Sort sort){
+	public static Sortable inSort(String field,SORT sort){
 		return new Sortable(field,sort);
 	}
 
@@ -33,11 +27,11 @@ public class Sortable {
 		this.field = field;
 	}
 
-	public Sort getSort() {
+	public SORT getSort() {
 		return sort;
 	}
 
-	public void setSort(Sort sort) {
+	public void setSort(SORT sort) {
 		this.sort = sort;
 	}
 }
