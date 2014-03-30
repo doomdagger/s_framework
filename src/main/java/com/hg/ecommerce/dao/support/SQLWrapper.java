@@ -1,22 +1,30 @@
 package com.hg.ecommerce.dao.support;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import org.aspectj.lang.reflect.FieldSignature;
 
 import com.hg.ecommerce.config.ProjectContainer;
-import com.hg.ecommerce.dao.support.ISQLProvider.AOR;
-import com.hg.ecommerce.dao.support.ISQLProvider.SORT;
+import com.hg.ecommerce.dao.support.IOperators.AOR;
+import com.hg.ecommerce.dao.support.IOperators.SORT;
 import com.hg.ecommerce.model.support.EntityObject;
 
 public class SQLWrapper {
 	
 	private String Model;
 	
-	private StringBuffer query;
+	private StringBuilder query;
 	
 	private ISQLProvider provider = ProjectContainer.getInstance(ISQLProvider.class);
 	
 	
-	private SQLWrapper(){}
+	private SQLWrapper(){
+		this.query = new StringBuilder();
+	}
 	
 	public static SQLWrapper instance(){
 		return new SQLWrapper();
@@ -25,6 +33,32 @@ public class SQLWrapper {
 	// operations
 	public SQLWrapper insert(){
 		provider.insert();
+		return this;
+	}
+	
+	public SQLWrapper insert(EntityObject Model){
+		if(Model!=null){
+			Method[] sourceMethods = Model.getClass().getMethods();
+			//String[] fields = new String[]{};
+			List<String> fields = new ArrayList<String>();
+			String fieldName;
+			for(int i=0;i<sourceMethods.length;i++){
+			  if(sourceMethods[i].getName().startsWith("get")){
+				  try {
+					  fieldName = sourceMethods[i].getName().substring(3);   // 属性
+					  Object loValue = sourceMethods[i].invoke(Model, null);  // 值
+					  //fields.add()
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+			     String lsSourceType = sourceMethods[i].getReturnType().getName(); //类型
+			  }
+			}
+		}
 		return this;
 	}
 	
@@ -222,6 +256,7 @@ public class SQLWrapper {
 	}
 
 	public void setModel(String model) {
-		Model = model;
+		this.Model = model;
+		provider.setModel(model);
 	}
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+
+import com.hg.ecommerce.dao.support.projection.MySQLProjections;
 import com.hg.ecommerce.dao.support.provider.MySQLProvider;
 
 public class MysqlProviderTest {
@@ -13,17 +15,19 @@ public class MysqlProviderTest {
 	@Test
 	public void test() {
 		//select();
-		update();
+		//update();
 	}
-	
+	@Test
 	public void select(){
 		List<Object> objects = new ArrayList<Object>();
-		objects.add("NAME");
-		objects.add("JOECHOW");
-		objects.add("AGE");
-		
-		provider.select().fields(objects).where().eq("NAME", "joechow");
-		provider.setModel("Model");
+		objects.add("Host");
+		objects.add("User");
+		objects.add("Password");
+		//select action
+		provider.select((new MySQLProjections()))
+		.where()
+		.eq("User", "root");
+		provider.setModel("user");
 		System.out.println(provider.getSQL());
 	}
 	

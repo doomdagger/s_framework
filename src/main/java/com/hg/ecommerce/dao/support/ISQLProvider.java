@@ -2,74 +2,7 @@ package com.hg.ecommerce.dao.support;
 
 import java.util.Collection;
 
-public interface ISQLProvider {
-	
-	/**
-	 * Database common operation,you can override in subclass,you also can add new operation in subclass
-	 */
-	public static final String EQ = " = ";
-	public static final String NE = " <> ";
-	public static final String MOD = " % ";
-	public static final String BIT_LEFT = " << ";
-	public static final String BIT_RIGHT = " >> ";
-	public static final String BIT_AND = " & ";
-	public static final String BIT_OR = " | ";
-	public static final String BIT_XOR = " ^ ";
-	public static final String LOG_AND = " && ";
-	public static final String LOG_OR = " || ";
-	public static final String MULTI = " * ";
-	public static final String PLUS = " + ";
-	public static final String SUB = " - ";
-	public static final String DIV = " / ";
-	public static final String LT = " < ";
-	public static final String LE = " <= ";
-	public static final String GT = " > ";
-	public static final String GE = " >= ";
-	public static final String BETWEEN = " BETWEEN ";
-	public static final String IS = " IS ";
-	public static final String NOT = " NOT ";
-	public static final String IS_NULL = " IS NULL ";
-	public static final String IS_NOT = " IS_NOT ";
-	public static final String IS_NOT_NULL = "IS NOT NULL";
-	public static final String LIKE = " LIKE ";
-	public static final String NOT_LIKE = " NOT LIKE ";
-	public static final String IN = " IN ";
-	public static final String NOT_IN = " NOT IN ";
-	//key words
-	public static final String INSERT = " INSERT INTO ";//select
-	public static final String VALUES = " VALUES ";
-	public static final String DELETE = " DELETE FROM ";//delete
-	public static final String UPDATE = " UPDATE ";//update
-	public static final String SET = " SET ";
-	public static final String SELECT = " SELECT ";//select
-	public static final String FROM = " FROM ";
-	public static final String WHERE = " WHERE ";//where
-	public static final String AND = " AND ";
-	public static final String OR = " OR ";
-	public static final String ORDER = " ORDER BY ";
-	public static final String DESC = " DESC ";
-	public static final String ASC = " ASC ";
-	public static final String LIMIT = " LIMIT ";
-	//syntax operators
-	public static final String LP = " ( ";//left parentheses
-	public static final String RP = " ) ";//right parenthesess
-	public static final String COMMA = ",";
-	public static final String QUOTE = "'";//quotation
-	public static final String BLANK = " ";
-	//sort
-	public enum SORT{
-		ASC(" ASC "),DESC(" DESC ");
-		String sort;
-		private SORT(String sort){this.sort = sort;}
-		public String getSort() {return this.sort;}
-	}
-	//and||or
-	public enum AOR{
-		AND(" AND "),OR(" OR ");
-		String aor;
-		private AOR(String aor) {this.aor=aor;}
-		public String getAor(){return this.aor;}
-	}
+public interface ISQLProvider extends IOperators{
 	
 	//common sql combination method
 	
@@ -95,7 +28,13 @@ public interface ISQLProvider {
 	//select / set fields
 	public ISQLProvider select();
 	
+	public ISQLProvider select(IProjections iProjections);
+	
 	public ISQLProvider selectAll();
+	
+	public ISQLProvider distinct();
+	
+	public ISQLProvider distinct(String field);
 	
 	public ISQLProvider fields(Object...objects);
 	
@@ -147,6 +86,8 @@ public interface ISQLProvider {
 	public ISQLProvider orderBy(String field,SORT sort);
 	//pageable
 	public ISQLProvider limit(int start,int length);
+	//function
+	public ISQLProvider HAVING(IProjections iProjections);
 	//public get sql
 	public String getSQL();
 	
@@ -154,6 +95,9 @@ public interface ISQLProvider {
 	public void setModel(String model);
 	
 	public String getModel();
+	
+	
+	
 
 	
 }
