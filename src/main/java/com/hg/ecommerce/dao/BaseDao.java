@@ -39,8 +39,6 @@ public interface BaseDao<T> {
 	boolean deleteByWrapper(SQLWrapper sqlWrapper);
 	
 	T findOneById(String id);
-	
-	T findOneByIdByProjected(String id);
 		
 	T findOneByWrapper(SQLWrapper sqlWrapper);
 	
@@ -56,7 +54,7 @@ public interface BaseDao<T> {
 	List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,Pageable pageable,Sortable sortable);
 	
 	//native
-	List<T> findByNativeQuery();
+	List<T> findByNativeQuery(String sql);
 	
 	//all rows
 	long getCount();

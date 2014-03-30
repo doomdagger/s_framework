@@ -37,17 +37,19 @@ public class SQLWrapper {
 	}
 	
 	public SQLWrapper insert(EntityObject Model){
+		List<String> fields = new ArrayList<String>();
+		List<Object> values = new ArrayList<Object>();
 		if(Model!=null){
-			Method[] sourceMethods = Model.getClass().getMethods();
-			//String[] fields = new String[]{};
-			List<String> fields = new ArrayList<String>();
+			Method[] methods = Model.getClass().getMethods();
 			String fieldName;
-			for(int i=0;i<sourceMethods.length;i++){
-			  if(sourceMethods[i].getName().startsWith("get")){
+			for(int i=0;i<methods.length;i++){
+			  if(methods[i].getName().startsWith("get")){
 				  try {
-					  fieldName = sourceMethods[i].getName().substring(3);   // 属性
-					  Object loValue = sourceMethods[i].invoke(Model, null);  // 值
-					  //fields.add()
+					  fieldName = methods[i].getName().substring(3);   // 属性
+					  Object value = methods[i].invoke(Model, null);  // 值
+					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
+					  fields.add(Model.getColumnName(fieldName));
+					  values.add(value);
 					} catch (IllegalAccessException e) {
 						e.printStackTrace();
 					} catch (IllegalArgumentException e) {
@@ -55,15 +57,19 @@ public class SQLWrapper {
 					} catch (InvocationTargetException e) {
 						e.printStackTrace();
 					}
-			     String lsSourceType = sourceMethods[i].getReturnType().getName(); //类型
-			  }
+			  	}
 			}
 		}
+		provider.insert().fields(fields).values(values);
 		return this;
 	}
 	
 	public SQLWrapper delete(){
 		provider.delete();
+		return this;
+	}
+	
+	public SQLWrapper delete(EntityObject Model){
 		return this;
 	}
 	
@@ -79,6 +85,39 @@ public class SQLWrapper {
 	
 	public SQLWrapper update(){
 		provider.update();
+		return this;
+	}
+	
+	public SQLWrapper update(EntityObject Model){
+		List<String> fields = new ArrayList<String>();
+		List<Object> values = new ArrayList<Object>();
+		if(Model!=null){
+			Method[] methods = Model.getClass().getMethods();
+			String fieldName;
+			for(int i=0;i<methods.length;i++){
+			  if(methods[i].getName().startsWith("get")){
+				  try {
+					  fieldName = methods[i].getName().substring(3);   // 属性
+					  Object value = methods[i].invoke(Model, null);  // 值
+					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
+					  fields.add(Model.getColumnName(fieldName));
+					  values.add(value);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+			  	}
+			}
+		}
+		provider.update();
+		for (int i=0,size=fields.size(); i<size; i++) {
+			provider.set(fields.get(i), values.get(i));
+			//TODO:
+		}
+		
 		return this;
 	}
 	
@@ -228,8 +267,8 @@ public class SQLWrapper {
 		return this;
 	}
 	
-	public SQLWrapper orderBy(String field,SORT sort){
-		provider.orderBy(field, sort);
+	public SQLWrapper orderBy(Sortable sortable){
+		provider.orderBy(sortable.getField(), sortable.getSort());
 		return this;
 	}
 	
@@ -255,8 +294,9 @@ public class SQLWrapper {
 		return Model;
 	}
 
-	public void setModel(String model) {
+	public SQLWrapper setModel(String model) {
 		this.Model = model;
 		provider.setModel(model);
+		return this;
 	}
 }
