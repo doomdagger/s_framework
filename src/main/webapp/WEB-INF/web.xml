@@ -12,15 +12,74 @@
 		</param-value>
 	</context-param>
 	<context-param>
+        <param-name>isLog4jAutoInitializationDisabled</param-name>
+        <param-value>true</param-value>
+    </context-param>
+	<context-param>
 		<param-name>log4jConfiguration</param-name>
-		<param-value>classpath:/com/hg/ecommerce/config/log4j2.xml</param-value>
+		<param-value>classpath:/log4j2.xml</param-value>
 	</context-param>
 
 
 	<listener>
+	    <listener-class>com.hg.ecommerce.listener.ProjectBootstrapListener</listener-class>
+	</listener>
+	<listener>
+        <listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
+    </listener>
+	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+	
 
+	<!-- Filter Place Here -->
+	<filter>
+		<filter-name>charEncodingFilter</filter-name>
+		<filter-class>com.hg.ecommerce.filter.CharEncodingFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>debugFilter</filter-name>
+		<filter-class>com.hg.ecommerce.filter.DebugFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>requestFilter</filter-name>
+		<filter-class>com.hg.ecommerce.filter.RequestFilter</filter-class>
+	</filter>
+	<filter>
+        <filter-name>log4jServletFilter</filter-name>
+        <filter-class>org.apache.logging.log4j.core.web.Log4jServletFilter</filter-class>
+    </filter>
+    
+	
+    <!-- sequence does matter from now -->
+    <filter-mapping>
+        <filter-name>log4jServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+        <dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization only; not supported in 2.5 -->
+    </filter-mapping>
+	<filter-mapping>
+		<filter-name>charEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>requestFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>debugFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<!-- servlet config now -->
 	<servlet>
 		<servlet-name>spring-mvc-servlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

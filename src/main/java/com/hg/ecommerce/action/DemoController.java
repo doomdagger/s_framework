@@ -15,7 +15,6 @@ public class DemoController {
 	
 	@RequestMapping("/index.action")
 	public String index(){
-		System.err.println(demoService.greeting("Hello~!"));
 		demoService.areYouGood();
 		return "/main";
 	}

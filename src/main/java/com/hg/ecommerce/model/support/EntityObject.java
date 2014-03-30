@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.hg.ecommerce.model.support.annotation.Column;
+import com.hg.ecommerce.model.support.annotation.Table;
 import com.hg.ecommerce.util.Util;
 
 
@@ -24,7 +26,7 @@ import com.hg.ecommerce.util.Util;
  * @author Li He
  * 
  */
-public class EntityObject implements Serializable{
+public class EntityObject implements Serializable, AnnotatedModel{
 	/**
 	 * 
 	 */
@@ -72,7 +74,7 @@ public class EntityObject implements Serializable{
 			Class fieldCls = field.getType();
 			String typeName = fieldCls.getSimpleName();
 			
-			//鍩烘湰绫诲瀷, int(Integer) double(Double) long(Long) boolean(Boolean) short(Short)  byte(Byte)
+			//类型判断 int(Integer) double(Double) long(Long) boolean(Boolean) short(Short)  byte(Byte)
 			if(typeName.equals("int")){   
 				setter.invoke(this, Integer.valueOf(value));
 			}else if(typeName.equals("double")){
@@ -292,6 +294,39 @@ public class EntityObject implements Serializable{
 		
 		return object;
 	}
-	
+
+	/**
+	 * 获取 实体 所映射的表名
+	 * @return
+	 */
+	@Override
+	public String getTableName() {
+		if(getClass().isAnnotationPresent(Table.class)){
+			return getClass().getAnnotation(Table.class).value();
+		}
+		
+		return "";
+	}
+
+	/**
+	 * 获取对应 字段 所映射的列名
+	 * @param fieldName
+	 * @return
+	 */
+	@Override
+	public String getColumnName(String fieldName) {
+		try {
+			Field field = getClass().getDeclaredField(fieldName);
+			if(field.isAnnotationPresent(Column.class)){
+				return field.getAnnotation(Column.class).value();
+			}
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+		
+		return "";
+	}
 	
 }

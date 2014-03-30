@@ -17,6 +17,8 @@ import org.springframework.core.io.Resource;
 
 import com.hg.ecommerce.config.ProjectConfig;
 import com.hg.ecommerce.config.ProjectContainer;
+import com.hg.ecommerce.model.support.annotation.Column;
+import com.hg.ecommerce.model.support.annotation.Table;
 import com.hg.ecommerce.util.Util;
 
 public class EntityGenerator {
@@ -69,6 +71,9 @@ public class EntityGenerator {
 			modelConfig.setTable(tableDef.getTableName());
 			
 			Set<String> importInfos = new HashSet<String>();
+			importInfos.add(modelConfig.getSuperClsPath());
+			importInfos.add(Table.class.getName());
+			importInfos.add(Column.class.getName());
 			
 			for(FieldEntry fieldEntry : entries){
 				@SuppressWarnings("rawtypes")
