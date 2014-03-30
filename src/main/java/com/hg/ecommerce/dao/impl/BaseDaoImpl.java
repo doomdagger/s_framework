@@ -77,10 +77,12 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean upsert(T param) {
-		// TODO Auto-generated method stub
+		if(0<jdbcTemplate.update(SQLWrapper.instance().upsert((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+			return true;
+		}
 		return false;
 	}
 
@@ -94,6 +96,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@Override
 	public boolean deleteById(String id) {
+		
 		//if(0<jdbcTemplate.update(SQLWrapper.instance().delete().where().eq(, value)))
 		//TODO:
 		return false;
@@ -159,7 +162,6 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public long getCountByWrapper(SQLWrapper sqlWrapper) {
 		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls).size();
 	}
-
 
 	
 	
