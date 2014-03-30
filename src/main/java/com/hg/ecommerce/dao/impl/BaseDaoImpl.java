@@ -1,6 +1,7 @@
 package com.hg.ecommerce.dao.impl;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.hg.ecommerce.dao.BaseDao;
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.dao.support.Sortable;
+import com.hg.ecommerce.model.support.AnnotatedModel;
 import com.hg.ecommerce.model.support.EntityObject;
 
 
@@ -30,7 +32,19 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	
 	@SuppressWarnings("unchecked")
 	public BaseDaoImpl(){
-		this.cls =(Class<T>)((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		@SuppressWarnings("rawtypes")
+		Class clazz = getClass();
+		while (clazz != Object.class) {
+			Type t = clazz.getGenericSuperclass();
+			if (t instanceof ParameterizedType) {
+				Type[] args = ((ParameterizedType) t).getActualTypeArguments();
+				if (args[0] instanceof Class) {
+					this.cls = (Class<T>) args[0];
+					break;
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
 	}
 	
 	@Override
@@ -94,11 +108,19 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean deleteById(String id) {
-		
-		//if(0<jdbcTemplate.update(SQLWrapper.instance().delete().where().eq(, value)))
-		//TODO:
+	public boolean deleteById(String...id) {
+		AnnotatedModel meta = new AnnotatedModel((Class<? extends EntityObject>) cls);
+		String[] keys = (String[]) meta.getPrimaryKeys().toArray();
+		SQLWrapper wrapper = SQLWrapper.instance();
+		wrapper.delete().setModel(cls.getSimpleName()).where();
+		for(int i=0,size=id.length; i<size; i++){
+			wrapper.eq(keys[i], id[i]);
+		}
+		if(0<jdbcTemplate.update(wrapper.getQuery())){
+			return true;
+		}
 		return false;
 	}
 
@@ -111,9 +133,16 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	}
 
 	@Override
-	public T findOneById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public T findOneById(String...id) {
+		@SuppressWarnings("unchecked")
+		AnnotatedModel meta = new AnnotatedModel((Class<? extends EntityObject>) cls);
+		String[] keys = (String[]) meta.getPrimaryKeys().toArray();
+		SQLWrapper wrapper = SQLWrapper.instance();
+		wrapper.selectAll().setModel(cls.getSimpleName()).where();
+		for(int i=0,size=id.length; i<size; i++){
+			wrapper.eq(keys[i], id[i]);
+		}
+		return jdbcTemplate.queryForObject(wrapper.getQuery(), cls);
 	}
 
 	@Override

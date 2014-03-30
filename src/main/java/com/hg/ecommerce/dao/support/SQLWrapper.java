@@ -6,22 +6,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
 import com.hg.ecommerce.config.ProjectContainer;
 import com.hg.ecommerce.dao.support.IOperators.AOR;
+import com.hg.ecommerce.model.support.AnnotatedModel;
 import com.hg.ecommerce.model.support.EntityObject;
 
+/**
+ * 此wrapper实现的是简单单表查询，不支持多表查询，连接查询，子查询
+ * 不支持的查询请原生SQL实进行实现
+ * @author JOE
+ *
+ */
 public class SQLWrapper {
 	
 	private String Model;
 	
-	private StringBuilder query;
-	
 	private ISQLProvider provider = ProjectContainer.getInstance(ISQLProvider.class);
 	
 	
-	private SQLWrapper(){
-		this.query = new StringBuilder();
-	}
+	private SQLWrapper(){}
 	
 	public static SQLWrapper instance(){
 		return new SQLWrapper();
@@ -34,18 +38,20 @@ public class SQLWrapper {
 	}
 	
 	public SQLWrapper insert(EntityObject Model){
-		List<String> fields = new ArrayList<String>();
+		List<Object> fields = new ArrayList<Object>();
 		List<Object> values = new ArrayList<Object>();
+		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
 		if(Model!=null){
-			Method[] methods = Model.getClass().getMethods();
+			Method[] methods = Model.getClass().getDeclaredMethods();
 			String fieldName;
 			for(int i=0;i<methods.length;i++){
 			  if(methods[i].getName().startsWith("get")){
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
-					  Object value = methods[i].invoke(Model, new Object());  // 值
-					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
-					  fields.add(Model.getColumnName(fieldName));
+					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
+					  System.out.println("fieldName:"+fieldName);
+					  Object value = methods[i].invoke(Model, null); // 值
+					  fields.add(fieldName);
 					  values.add(value);
 					} catch (IllegalAccessException e) {
 						e.printStackTrace();
@@ -96,7 +102,8 @@ public class SQLWrapper {
 		List<String> keys = new ArrayList<String>();//主键
 		List<Object> keyValues = new ArrayList<Object>();//主键值
 		String tempName;
-		Set<String> set = ((EntityObject)Model).getPrimaryKeys();//获取主键
+		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
+		Set<String> set = meta.getPrimaryKeys();//获取主键
 		
 		if(Model!=null){
 			Method[] methods = Model.getClass().getMethods();
@@ -105,9 +112,10 @@ public class SQLWrapper {
 			  if(methods[i].getName().startsWith("get")){
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
+					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
 					  Object value = methods[i].invoke(Model, new Object());  // 值
 					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
-					  tempName = Model.getColumnName(fieldName);
+					  tempName = meta.getColumnName(fieldName);
 					  //判断是否是主键
 					  if(set.contains(tempName)){
 						  keys.add(tempName);
@@ -140,7 +148,8 @@ public class SQLWrapper {
 	}
 	
 	public SQLWrapper upsert(EntityObject Model){
-		Set<String> set = ((EntityObject)Model).getPrimaryKeys();//获取主键
+		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
+		Set<String> set = meta.getPrimaryKeys();//获取主键
 		List<Object> values = new ArrayList<Object>();
 		String fieldName;
 		String tempName;
@@ -150,8 +159,9 @@ public class SQLWrapper {
 			  if(methods[i].getName().startsWith("get")){
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
+					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
 					  Object value = methods[i].invoke(Model, new Object());  // 值
-					  tempName = Model.getColumnName(fieldName);
+					  tempName = meta.getColumnName(fieldName);
 					  //判断是否是主键
 					  if(set.contains(tempName) && null!=value){
 						  values.add(value);
@@ -185,7 +195,7 @@ public class SQLWrapper {
 		return this;
 	}
 	
-	public SQLWrapper fields(Object[] objects){
+	public SQLWrapper fields(Object...objects){
 		provider.fields(objects);
 		return this;
 	}
@@ -201,14 +211,16 @@ public class SQLWrapper {
 	 * @return
 	 */
 	public SQLWrapper fields(EntityObject Model){
-		List<String> fields = new ArrayList<String>();//字段
+		List<Object> fields = new ArrayList<Object>();//字段
+		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
 		String fieldName;
 		if(Model!=null){
 			Method[] methods = Model.getClass().getMethods();
 			for(int i=0;i<methods.length;i++){
 			  if(methods[i].getName().startsWith("get")){
 				  fieldName = methods[i].getName().substring(3);   // 属性
-				  fields.add(Model.getColumnName(fieldName));
+				  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
+				  fields.add(meta.getColumnName(fieldName));
 			  }
 			}
 		}
@@ -356,7 +368,7 @@ public class SQLWrapper {
 
 	//only get, no set
 	public String getQuery() {
-		return this.query.toString();
+		return this.provider.getSQL();
 	}
 
 	public String getModel() {
