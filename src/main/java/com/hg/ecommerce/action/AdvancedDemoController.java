@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,8 +12,11 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,12 +42,11 @@ public class AdvancedDemoController {
 	 * @return
 	 */
 	@ModelAttribute("mail")
-	public Mail fetchMail(@RequestParam("content") String content){
+	public void fetchMail(@RequestParam(value="content",required=false,defaultValue="Hello, I am from Dalian") String content, Model model){
 		Mail mail = new Mail();
 		mail.setTitle("Greeting");
 		mail.setContent(demoService.greeting(content));
-		
-		return mail;
+		model.addAttribute(mail);
 	}
 	
 	/**
@@ -71,6 +74,7 @@ public class AdvancedDemoController {
 	 * @return
 	 * @throws IOException 
 	 */
+	@RequestMapping("/origin")
 	public void useOriginal(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		response.setContentType("text/html");
 		response.setCharacterEncoding("utf8");
@@ -92,9 +96,37 @@ public class AdvancedDemoController {
 	 * @param inputStream
 	 * @param outputStream
 	 */
+	@RequestMapping("/stream")
 	public void useStream(InputStream inputStream, OutputStream outputStream){
+		PrintWriter writer = new PrintWriter(outputStream);
 		
+		writer.println("<h1>Hello From Stream</h1>");
+		
+		writer.flush();
+		writer.close();
 	}
+	
+	/**
+	 * Cookie support
+	 * @param cookie
+	 */
+	@RequestMapping("/displayCookieInfo.do")
+	@ResponseBody
+	public String displayHeaderInfo(@CookieValue("JSESSIONID") String cookie) {
+	    return cookie;
+	}
+
+	/**
+	 * Header support
+	 * @param encoding
+	 * @param keepAlive
+	 */
+	@RequestMapping("/displayHeaderInfo.do")
+	@ResponseBody
+	public String displayHeaderInfo(@RequestHeader("Accept-Encoding") String[] encoding) {
+	    return "<h1>"+Arrays.toString(encoding)+"</h1>";
+	}
+
 	
 	
 	/**
