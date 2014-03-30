@@ -49,7 +49,7 @@ public class SQLWrapper {
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
 					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
-					  Object value = methods[i].invoke(Model, null); // 值
+					  Object value = methods[i].invoke(Model, (Object[])null); // 值
 					  fields.add(meta.getColumnName(fieldName));
 					  values.add(value);
 					} catch (IllegalAccessException e) {
@@ -112,7 +112,7 @@ public class SQLWrapper {
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
 					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
-					  Object value = methods[i].invoke(Model, new Object());  // 值
+					  Object value = methods[i].invoke(Model, (Object[])null);  // 值
 					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
 					  tempName = meta.getColumnName(fieldName);
 					  //判断是否是主键
@@ -159,7 +159,7 @@ public class SQLWrapper {
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
 					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
-					  Object value = methods[i].invoke(Model, new Object());  // 值
+					  Object value = methods[i].invoke(Model, (Object[])null);  // 值
 					  tempName = meta.getColumnName(fieldName);
 					  //判断是否是主键
 					  if(set.contains(tempName) && null!=value){
