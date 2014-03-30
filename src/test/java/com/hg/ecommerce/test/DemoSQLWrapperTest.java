@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.hg.ecommerce.dao.impl.BaseDaoImpl;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 
-public class DemoBaseDaoImpl {
+public class DemoSQLWrapperTest {
 	BaseDaoImpl<TestModel> dao = new BaseDaoImpl<TestModel>();
 	SQLWrapper wrapper = SQLWrapper.instance();
 	

@@ -44,12 +44,14 @@ public class SQLWrapper {
 		if(Model!=null){
 			Method[] methods = Model.getClass().getDeclaredMethods();
 			String fieldName;
+			System.out.println("here is SQLWrapper:");
 			for(int i=0;i<methods.length;i++){
 			  if(methods[i].getName().startsWith("get")){
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
 					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
-					  System.out.println("fieldName:"+fieldName);
+					  System.out.println("fieldName I got:"+fieldName);
+					  System.out.println("getColumnName: "+meta.getColumnName(fieldName));
 					  Object value = methods[i].invoke(Model, null); // 值
 					  fields.add(fieldName);
 					  values.add(value);
