@@ -33,5 +33,12 @@ public class DemoSQLWrapperTest {
 		wrapper.insert().fields("NAME").fields("AGE").fields(objects).values("JOECHOW").values(18).values(values);
 		System.out.println("TEST-2: "+wrapper.getQuery());
 	}
+	
+	@Test
+	public void test3(){
+		wrapper.delete().where().eq("name", "joecow");
+		System.out.println("TEST-3:"+wrapper.getQuery());
+		
+	}
 
 }
