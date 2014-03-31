@@ -573,13 +573,14 @@ public class MySQLProvider implements ISQLProvider {
 	public void setModel(String model) {
 		this.Model = model;
 		if(isInsert){
-			this.SQL.insert(this.SQL.indexOf(INSERT)+INSERT.length()+1, this.Model);
+			this.SQL.insert(this.SQL.indexOf(INSERT)+INSERT.length()+1, this.Model+BLANK);
 		}else if(isDelete){
-			this.SQL.insert(this.SQL.indexOf(DELETE)+DELETE.length()+1, this.Model);
+			this.SQL.insert(this.SQL.indexOf(DELETE)+DELETE.length()+1, this.Model+BLANK);
 		}else if(isUpdate){
-			this.SQL.insert(this.SQL.indexOf(UPDATE)+UPDATE.length()+1, new StringBuffer().append(this.Model).append(SET));
+			this.SQL.insert(this.SQL.indexOf(UPDATE)+UPDATE.length(), this.Model+BLANK+SET);
 		}else if(isSelect){
 			if(-1!=this.SQL.indexOf(FROM)){
+				this.SQL.append(BLANK).append(BLANK);
 				this.SQL.insert(this.SQL.indexOf(FROM)+FROM.length()+1, this.Model+BLANK);
 			}else if(-1!=this.SQL.indexOf(WHERE)){
 				this.SQL.insert(this.SQL.indexOf(WHERE), FROM+this.Model+BLANK);

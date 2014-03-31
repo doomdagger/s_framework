@@ -1,5 +1,6 @@
 package com.hg.ecommerce.dao.support;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -51,7 +52,15 @@ public class SQLWrapper {
 					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
 					  Object value = methods[i].invoke(Model, (Object[])null); // 值
 					  fields.add(meta.getColumnName(fieldName));
-					  values.add(value);
+					  if(value instanceof Boolean){
+						  if((Boolean) value){
+							  values.add(1);
+						  }else{
+							  values.add(0);
+						  }
+					  }else {
+						  values.add(value);
+					  }
 					} catch (IllegalAccessException e) {
 						e.printStackTrace();
 					} catch (IllegalArgumentException e) {
@@ -72,6 +81,29 @@ public class SQLWrapper {
 	}
 	
 	public SQLWrapper delete(EntityObject Model){
+		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
+		Set<String> set = meta.getPrimaryKeys();
+		Method[] methods = Model.getClass().getDeclaredMethods();
+		provider.delete().where();
+		String fieldName;
+		for(int i=0;i<methods.length;i++){
+			  if(methods[i].getName().startsWith("get")){
+				  try {
+					  fieldName = methods[i].getName().substring(3);   // 属性
+					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
+					  fieldName = meta.getColumnName(fieldName);
+					  if(set.contains(fieldName)){
+						  provider.eq(fieldName,methods[i].invoke(Model, (Object[])null));
+					  }
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+			  	}
+			}
 		return this;
 	}
 	
@@ -100,12 +132,11 @@ public class SQLWrapper {
 		List<Object> values = new ArrayList<Object>();//字段值
 		List<String> keys = new ArrayList<String>();//主键
 		List<Object> keyValues = new ArrayList<Object>();//主键值
-		String tempName;
 		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
 		Set<String> set = meta.getPrimaryKeys();//获取主键
 		
 		if(Model!=null){
-			Method[] methods = Model.getClass().getMethods();
+			Method[] methods = Model.getClass().getDeclaredMethods();
 			String fieldName;
 			for(int i=0;i<methods.length;i++){
 			  if(methods[i].getName().startsWith("get")){
@@ -114,14 +145,22 @@ public class SQLWrapper {
 					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
 					  Object value = methods[i].invoke(Model, (Object[])null);  // 值
 					  //String lsSourceType = methods[i].getReturnType().getName(); //类型
-					  tempName = meta.getColumnName(fieldName);
+					  fieldName = meta.getColumnName(fieldName);
 					  //判断是否是主键
-					  if(set.contains(tempName)){
-						  keys.add(tempName);
+					  if(set.contains(fieldName)){
+						  keys.add(fieldName);
 						  keyValues.add(value);
 					  }else{
-						  fields.add(tempName);
-						  values.add(value);
+						  fields.add(fieldName);
+						  if(value instanceof Boolean){
+							  if((Boolean) value){
+								  values.add(1);
+							  }else{
+								  values.add(0);
+							  }
+						  }else {
+							  values.add(value);
+						  }
 					  }
 					} catch (IllegalAccessException e) {
 						e.printStackTrace();
@@ -151,18 +190,17 @@ public class SQLWrapper {
 		Set<String> set = meta.getPrimaryKeys();//获取主键
 		List<Object> values = new ArrayList<Object>();
 		String fieldName;
-		String tempName;
 		if(Model!=null){
-			Method[] methods = Model.getClass().getMethods();
+			Method[] methods = Model.getClass().getDeclaredMethods();
 			for(int i=0;i<methods.length;i++){
 			  if(methods[i].getName().startsWith("get")){
 				  try {
 					  fieldName = methods[i].getName().substring(3);   // 属性
 					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
 					  Object value = methods[i].invoke(Model, (Object[])null);  // 值
-					  tempName = meta.getColumnName(fieldName);
+					  fieldName = meta.getColumnName(fieldName);
 					  //判断是否是主键
-					  if(set.contains(tempName) && null!=value){
+					  if(set.contains(fieldName) && null!=value){
 						  values.add(value);
 					  }
 				} catch (IllegalAccessException e) {
@@ -214,7 +252,7 @@ public class SQLWrapper {
 		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
 		String fieldName;
 		if(Model!=null){
-			Method[] methods = Model.getClass().getMethods();
+			Method[] methods = Model.getClass().getDeclaredMethods();
 			for(int i=0;i<methods.length;i++){
 			  if(methods[i].getName().startsWith("get")){
 				  fieldName = methods[i].getName().substring(3);   // 属性
