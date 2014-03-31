@@ -3,7 +3,6 @@ package com.hg.ecommerce.test;
 
 import org.junit.Test;
 
-import com.hg.ecommerce.dao.impl.BaseDaoImpl;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 //import com.hg.ecommerce.model.MCities;
 
