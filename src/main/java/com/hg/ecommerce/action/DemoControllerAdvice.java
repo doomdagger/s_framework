@@ -1,12 +1,17 @@
-package com.hg.ecommerce.action.advice;
+package com.hg.ecommerce.action;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -21,7 +26,7 @@ import org.springframework.web.bind.annotation.InitBinder;
  * @author Li He
  * 
  */
-//@ControllerAdvice(basePackages = "com.hg.ecommerce.action")
+@ControllerAdvice(basePackages="com.hg.ecommerce.action.demo")
 public class DemoControllerAdvice {
 
 	/**
@@ -42,10 +47,18 @@ public class DemoControllerAdvice {
 	 * 空指针异常处理
 	 * @param exception
 	 * @return
+	 * @throws IOException 
 	 */
 	@ExceptionHandler(NullPointerException.class)
-	public ResponseEntity<String> handleNullPointer(NullPointerException exception){
-		ResponseEntity<String> entity = new ResponseEntity<String>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		return entity;
+	public void handleNullPointer(HttpServletRequest request, HttpServletResponse response, NullPointerException exception) throws IOException{
+		response.setCharacterEncoding("utf8");
+		response.setContentType("text/html");
+		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		PrintWriter writer = response.getWriter();
+		writer.print("<pr>");
+		exception.printStackTrace(writer);
+		writer.print("</pr>");
+		writer.flush();
+		writer.close();
 	}
 }

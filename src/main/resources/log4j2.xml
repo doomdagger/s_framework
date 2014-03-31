@@ -19,6 +19,9 @@
 		<Property name="filterTraceLogFile">
 			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/filter_trace_${date:HH}h.log
 		</Property>
+		<Property name="interceptorTraceLogFile">
+			${sys:log.path}/ecommerce/${date:yyyy-MM-dd}/interceptor_trace_${date:HH}h.log
+		</Property>
 	</Properties>
 
 	<Appenders>
@@ -72,7 +75,12 @@
 			<Layout type="PatternLayout"
 				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
 		</Appender>
-
+		
+		<!-- interceptorTraceLog 记录拦截器的trace -->
+		<Appender type="File" name="interceptorTraceLog" fileName="${interceptorTraceLogFile}">
+			<Layout type="PatternLayout"
+				pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+		</Appender>
 		
 	</Appenders>
 	<Loggers>
@@ -95,6 +103,11 @@
 			<AppenderRef ref="filterTraceLog" />
 		</Logger>
 
+		<Logger name="com.hg.ecommerce.interceptor" level="trace"
+			additivity="true">
+			<AppenderRef ref="interceptorTraceLog" />
+		</Logger>
+		
 		<Logger name="com.hg.ecommerce.filter.RequestFilter" level="trace"
 			additivity="false">
 

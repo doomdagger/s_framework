@@ -1,4 +1,4 @@
-package com.hg.ecommerce.action;
+package com.hg.ecommerce.action.demo;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ import com.hg.ecommerce.util.Util;
  *
  */
 @RestController
-@RequestMapping("/webservice")
+@RequestMapping("/demo/webservice")
 public class RestfulController {
 	
 	/**
@@ -27,4 +27,15 @@ public class RestfulController {
 	public String getJsonResult(@PathVariable Map<String, String> pathVar){
 		return Util.getJsonObject(pathVar).toString();
 	}
+	
+	/**
+	 * 
+	 * @param pathVar
+	 * @return
+	 */
+	@RequestMapping(value="/exception",produces="application/json")
+	public String testException(){
+		throw new NullPointerException("Error, I've made it.");
+	}
+	
 }

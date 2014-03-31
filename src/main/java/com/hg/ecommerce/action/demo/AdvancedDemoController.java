@@ -1,9 +1,10 @@
-package com.hg.ecommerce.action;
+package com.hg.ecommerce.action.demo;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,19 +14,20 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hg.ecommerce.model.support.EntityObject;
 import com.hg.ecommerce.service.DemoService;
 
 @Controller
-@RequestMapping("/advance")
+@RequestMapping("/demo/advance")
 public class AdvancedDemoController {
 	
 	@Autowired
@@ -40,9 +42,10 @@ public class AdvancedDemoController {
 	 * 获取Mail对象的方法，见下一方法
 	 * @param content
 	 * @return
+	 * @throws UnsupportedEncodingException 
 	 */
 	@ModelAttribute("mail")
-	public void fetchMail(@RequestParam(value="content",required=false,defaultValue="Hello, I am from Dalian") String content, Model model){
+	public void fetchMail(@RequestParam(value="content",required=false,defaultValue="Hello, I am from Dalian") String content, Model model) throws UnsupportedEncodingException {
 		Mail mail = new Mail();
 		mail.setTitle("Greeting");
 		mail.setContent(demoService.greeting(content));
@@ -56,15 +59,15 @@ public class AdvancedDemoController {
 	 * @param result
 	 * @return
 	 */
-	@RequestMapping(value="/mail",produces="application/json")
+	@RequestMapping(value="/mail",produces="text/plain")
 	@ResponseBody
-	public String returnMail(@ModelAttribute("mail") Mail cacheMail , BindingResult result){
+	public String returnMail(@ModelAttribute("mail") Mail cacheMail , BindingResult result) throws UnsupportedEncodingException{
 		
 		if(result.hasErrors()){
 			cacheMail.setContent("Error!");
 		}
-		
-		return cacheMail.toJSON().toString();
+				
+		return cacheMail.getTitle()+"\n"+cacheMail.getContent();
 	}
 	
 	/**
@@ -85,7 +88,7 @@ public class AdvancedDemoController {
 		
 		PrintWriter writer = response.getWriter();
 		
-		writer.println("<h1>Hello World</h1>");
+		writer.println("<h1>大家好~</h1>");
 		writer.flush();
 		
 		writer.close();
@@ -127,14 +130,25 @@ public class AdvancedDemoController {
 	    return "<h1>"+Arrays.toString(encoding)+"</h1>";
 	}
 
-	
+	/**
+	 * @ResponseBody  &   @RequestBody 的说明
+	 * <p>RequestBody注解利用HttpMessageConverter的子类将请求体从流中读取后转换为用户索要的类型，这种转换时潜在的，
+	 * Spring选择合适的Converter作类型转换，用户直接利用所需的类型进行合适的操作，如果想要实现自定义类型的转换，需要
+	 * 自行编写Converter子类，并注册到AnnotationMethodHandlerAdapter中。</p>
+	 * 
+	 * <p>ResponseBody注解正好是相反的过程，转换后直接写入输出流，跳过view这一部分</p>
+	 */
+	@RequestMapping(value="/body",produces="text/plain")
+	@ResponseBody
+	public String useBodyAnnotation(@RequestBody MultiValueMap<String,String> formTrans){
+		return formTrans.toString();
+	}
 	
 	/**
 	 * 此实体无任何实际作用，就是为了演示Controller功能
 	 * @author lihe
 	 */
-	class Mail extends EntityObject{
-		private static final long serialVersionUID = 1L;
+	class Mail {
 		private String title;
 		private String content;
 		public String getTitle() {

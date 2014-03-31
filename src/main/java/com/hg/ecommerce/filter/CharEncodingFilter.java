@@ -35,10 +35,15 @@ public class CharEncodingFilter implements Filter {
         
         try {
         	if (!"UTF-8".equals(req.getCharacterEncoding())) {
+//        		HttpServletRequest request = (HttpServletRequest)req;
+//        		System.err.println(request.getQueryString());
+//        		String mstr = URLDecoder.decode(request.getQueryString(), "UTF-8");
+//        		System.err.println(mstr);
         		// only set encoding if not already UTF-8
         		// despite the fact that this is the first filter in the chain, on Glassfish it 
         		// is already too late to set request encoding without getting a WARN level log message
         		req.setCharacterEncoding("UTF-8");
+        		res.setCharacterEncoding("UTF-8");
         	}
             
         } catch (UnsupportedEncodingException e) {

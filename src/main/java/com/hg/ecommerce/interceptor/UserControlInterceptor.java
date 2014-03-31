@@ -3,6 +3,8 @@ package com.hg.ecommerce.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -20,12 +22,17 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 public class UserControlInterceptor extends HandlerInterceptorAdapter {
 	
+	private static Logger mLogger = LogManager.getLogger(UserControlInterceptor.class);
+	
 	/**
 	 * This implementation always returns {@code true}.
 	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 		throws Exception {
+		
+		mLogger.trace("Pre Handle");
+		//want to revert the request, please modify return true to return false
 		return true;
 	}
 
@@ -36,6 +43,7 @@ public class UserControlInterceptor extends HandlerInterceptorAdapter {
 	public void postHandle(
 			HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
 			throws Exception {
+		mLogger.trace("Post Handle");
 	}
 
 	/**
@@ -45,14 +53,8 @@ public class UserControlInterceptor extends HandlerInterceptorAdapter {
 	public void afterCompletion(
 			HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
+		mLogger.trace("Already Complete!");
 	}
 
-	/**
-	 * This implementation is empty.
-	 */
-	@Override
-	public void afterConcurrentHandlingStarted(
-			HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
-	}
+	
 }

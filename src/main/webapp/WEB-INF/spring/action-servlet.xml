@@ -12,15 +12,53 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-4.0.xsd ">
 
-
-	<mvc:annotation-driven enable-matrix-variables="true" />
-	<context:component-scan base-package="com.hg.ecommerce.action" />
-	 
+	<mvc:annotation-driven enable-matrix-variables="true" conversion-service="conversionService" />
+	
+	<!-- 拦截器配置 -->
+	<mvc:interceptors>
+    	<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+    	<mvc:interceptor>
+        	<mvc:mapping path="/**"/>
+        	<mvc:exclude-mapping path="/demo/webservice/**"/>
+			<bean class="com.hg.ecommerce.interceptor.UserControlInterceptor"/>
+    	</mvc:interceptor>
+    	<!-- Add more interceptors here -->
+	</mvc:interceptors>
+	
+	<!-- conversion&formatter service 转换服务 -->
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+    	<property name="formatters">
+        	<list>
+            	
+        	</list>
+    	</property>
+    	<property name="converters">
+    	    <list>
+    	        
+    	    </list>
+    	</property>
+	</bean>
+	
+	<!-- 配置静态资源，直接映射到对应的文件夹，不被DispatcherServlet处理 -->  
+    <mvc:resources mapping="/app/**" location="/app/" />
+	
+	<!-- ignore the error, I don't know what goes wrong with STS. Everything works well. -->
+	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="com.hg.ecommerce.action" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>  
+       	<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/> 
+	</context:component-scan>
+	
+	
+	
 	<!-- 覆盖默认值，提供jsp文件路径以及后缀名 -->
 	<bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     	<property name="prefix" value="/WEB-INF/views/"/>
     	<property name="suffix" value=".jsp"/>
 	</bean>
+	
+	
+	
 	<!-- 覆盖默认的DataBinder配置 -->
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
     	<property name="cacheSeconds" value="0" />
@@ -28,12 +66,5 @@
         	<bean class="com.hg.ecommerce.action.extension.ActionBindingInitializer" />
     	</property>
 	</bean>
-	
-	<!-- 拦截器配置 -->
-	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
-        <property name="interceptors">
-            <bean class="com.hg.ecommerce.interceptor.UserControlInterceptor"/>
-        </property>
-    </bean>
 	
 </beans>

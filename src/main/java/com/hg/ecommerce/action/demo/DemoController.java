@@ -1,4 +1,4 @@
-package com.hg.ecommerce.action;
+package com.hg.ecommerce.action.demo;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,7 +24,7 @@ import com.hg.ecommerce.service.DemoService;
 import com.hg.ecommerce.util.Util;
 
 @Controller
-@RequestMapping("/") //默认值，将 自己的  namespace 追加在Controller中的全部@RequestMapping之前
+@RequestMapping("/demo") //默认值，将 自己的  namespace 追加在Controller中的全部@RequestMapping之前
 public class DemoController {
 
 	@Autowired
