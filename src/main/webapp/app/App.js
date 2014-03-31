@@ -23,8 +23,8 @@ Ext.define('MyDesktop.App', {
         'MyDesktop.BogusModule',
 
         //my ext
-//        'MyDesktop.view.UserModule',
-//        'MyDesktop.Blockalanche',
+        'MyDesktop.view.SysSettingView',
+//      'MyDesktop.Blockalanche',
         'MyDesktop.Settings'
     ],
 
@@ -35,7 +35,7 @@ Ext.define('MyDesktop.App', {
     	
         // now ready...
         setTimeout(function(){
-        	console.log(new Date());
+        	//console.log(new Date());
         	myDesktopApp.desktop.initShortcut();
         },250);
     },
@@ -53,7 +53,7 @@ Ext.define('MyDesktop.App', {
             new MyDesktop.BogusModule(),
             
             //my ext
-//            new MyDesktop.view.UserModule()
+            new MyDesktop.view.SysSettingView()
         ];
     },
 
@@ -77,8 +77,8 @@ Ext.define('MyDesktop.App', {
                     { name: '笔记本2', iconCls: 'notepad-shortcut', module: 'notepad' },
                     { name: '笔记本3', iconCls: 'notepad-shortcut', module: 'notepad' },
                     { name: '笔记本4', iconCls: 'notepad-shortcut', module: 'notepad' },
-                    { name: '系统状态', iconCls: 'cpu-shortcut', module: 'systemstatus'}
-//                    { name: '用户管理', iconCls: 'grid-shortcut', module: 'user-manage'}
+                    { name: '系统状态', iconCls: 'cpu-shortcut', module: 'systemstatus'},
+                    { name: '系统管理', iconCls: 'grid-shortcut', module: 'sys-setting'}
                 ]
             }),
 
