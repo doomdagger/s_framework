@@ -21,7 +21,14 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	
 	private JdbcTemplate jdbcTemplate;
 	
-	
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	protected void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
 	@SuppressWarnings("unchecked")
 	public BaseDaoImpl(){
 		@SuppressWarnings("rawtypes")
@@ -43,7 +50,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public boolean add(T param) {
 		String query = SQLWrapper.instance().insert((EntityObject) param).setModel(cls.getSimpleName()).getQuery();
 		System.out.println("add T:"+query);
-		if(0<jdbcTemplate.update(query)){
+		if(0<getJdbcTemplate().update(query)){
 			return true;
 		}
 		return false;
@@ -53,7 +60,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public boolean addMulti(Collection<T> params) {
 		int count = 0;
 		for(T param : params){
-			jdbcTemplate.update(SQLWrapper.instance().insert((EntityObject) param).setModel(cls.getSimpleName()).getQuery());
+			getJdbcTemplate().update(SQLWrapper.instance().insert((EntityObject) param).setModel(cls.getSimpleName()).getQuery());
 			count++;
 		}
 		if(count==params.size()){
@@ -64,7 +71,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	
 	@Override
 	public boolean addByWrapper(SQLWrapper sqlWrapper) {
-		if(0<jdbcTemplate.update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
+		if(0<getJdbcTemplate().update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
 			return true;
 		}
 		return false;
@@ -72,7 +79,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@Override
 	public boolean update(T param) {
-		if(0<jdbcTemplate.update(SQLWrapper.instance().update((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+		if(0<getJdbcTemplate().update(SQLWrapper.instance().update((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
 			return true;
 		}
 		return false;
@@ -80,7 +87,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@Override
 	public boolean updateByWrapper(SQLWrapper sqlWrapper) {
-		if(0<jdbcTemplate.update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
+		if(0<getJdbcTemplate().update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
 			return true;
 		}
 		return false;
@@ -88,7 +95,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	
 	@Override
 	public boolean upsert(T param) {
-		if(0<jdbcTemplate.update(SQLWrapper.instance().upsert((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+		if(0<getJdbcTemplate().update(SQLWrapper.instance().upsert((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
 			return true;
 		}
 		return false;
@@ -96,7 +103,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@Override
 	public boolean delete(T param) {
-		if(0<jdbcTemplate.update(SQLWrapper.instance().delete((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
+		if(0<getJdbcTemplate().update(SQLWrapper.instance().delete((EntityObject) param).setModel(cls.getSimpleName()).getQuery())){
 			return true;
 		}
 		return false;
@@ -112,7 +119,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		for(int i=0,size=id.length; i<size; i++){
 			wrapper.eq(keys[i], id[i]);
 		}
-		if(0<jdbcTemplate.update(wrapper.getQuery())){
+		if(0<getJdbcTemplate().update(wrapper.getQuery())){
 			return true;
 		}
 		return false;
@@ -120,7 +127,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@Override
 	public boolean deleteByWrapper(SQLWrapper sqlWrapper) {
-		if(0<jdbcTemplate.update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
+		if(0<getJdbcTemplate().update(sqlWrapper.setModel(cls.getSimpleName()).getQuery())){
 			return true;
 		}
 		return false;
@@ -136,54 +143,54 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		for(int i=0,size=id.length; i<size; i++){
 			wrapper.eq(keys[i], id[i]);
 		}
-		return jdbcTemplate.queryForObject(wrapper.getQuery(), cls);
+		return getJdbcTemplate().queryForObject(wrapper.getQuery(), cls);
 	}
 
 	@Override
 	public T findOneByWrapper(SQLWrapper sqlWrapper) {
-		return jdbcTemplate.queryForObject(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
+		return getJdbcTemplate().queryForObject(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
 	}
 
 	@Override
 	public List<T> findAll() {
-		return jdbcTemplate.queryForList(SQLWrapper.instance().selectAll().setModel(cls.getSimpleName()).getQuery(), cls);
+		return getJdbcTemplate().queryForList(SQLWrapper.instance().selectAll().setModel(cls.getSimpleName()).getQuery(), cls);
 	}
 
 	@Override
 	public List<T> findAllByWrapper(SQLWrapper sqlWrapper) {
-		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
+		return getJdbcTemplate().queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
 	}
 
 	@Override
 	public List<T> findAllByWrapperInPage(SQLWrapper sqlWrapper,Pageable pageable) {
-		List<T> totaList = jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
+		List<T> totaList = getJdbcTemplate().queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls);
 		pageable.setPageCount(totaList.size());
-		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).limit(pageable).getQuery(),cls);
+		return getJdbcTemplate().queryForList(sqlWrapper.setModel(cls.getSimpleName()).limit(pageable).getQuery(),cls);
 	}
 
 	@Override
 	public List<T> findAllByWrapperInOrder(SQLWrapper sqlWrapper,Sortable sortable) {
-		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).orderBy(sortable).getQuery(), cls);
+		return getJdbcTemplate().queryForList(sqlWrapper.setModel(cls.getSimpleName()).orderBy(sortable).getQuery(), cls);
 	}
 
 	@Override
 	public List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,Pageable pageable, Sortable sortable) {
-		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).orderBy(sortable).limit(pageable).getQuery(), cls);
+		return getJdbcTemplate().queryForList(sqlWrapper.setModel(cls.getSimpleName()).orderBy(sortable).limit(pageable).getQuery(), cls);
 	}
 
 	@Override
 	public List<T> findByNativeQuery(String sql) {
-		return jdbcTemplate.queryForList(sql, cls);
+		return getJdbcTemplate().queryForList(sql, cls);
 	}
 
 	@Override
 	public long getCount() {
-		return jdbcTemplate.queryForList(SQLWrapper.instance().selectAll().setModel(cls.getSimpleName()).getQuery(), cls).size();
+		return getJdbcTemplate().queryForList(SQLWrapper.instance().selectAll().setModel(cls.getSimpleName()).getQuery(), cls).size();
 	}
 
 	@Override
 	public long getCountByWrapper(SQLWrapper sqlWrapper) {
-		return jdbcTemplate.queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls).size();
+		return getJdbcTemplate().queryForList(sqlWrapper.setModel(cls.getSimpleName()).getQuery(), cls).size();
 	}
 
 	

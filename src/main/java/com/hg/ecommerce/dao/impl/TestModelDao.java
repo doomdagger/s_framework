@@ -11,8 +11,12 @@ public class TestModelDao extends BaseDaoImpl<TestModel>{
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	@Override
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
+	}
+	protected void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
 	}
 	
 }
