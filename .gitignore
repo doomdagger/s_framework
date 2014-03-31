@@ -8,4 +8,6 @@
 target/
 # Auto-generated Model Class #
 src/main/java/com/hg/ecommerce/model/*.java
+!src/main/java/com/hg/ecommerce/model/TestModel.java
+# Custom Configuration #
 src/main/resources/project-custom.properties

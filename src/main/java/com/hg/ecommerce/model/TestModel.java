@@ -1,4 +1,5 @@
-package com.hg.ecommerce.model.test;
+package com.hg.ecommerce.model;
+
 
 import com.hg.ecommerce.model.support.EntityObject;
 import com.hg.ecommerce.model.support.annotation.Column;
