@@ -10,8 +10,8 @@
     <!-- GC -->
     <!-- <x-compile> -->
     <!-- <x-bootstrap> -->
-    <script type="text/javascript" src="http://localhost:9119/extjs/examples/shared/include-ext.js"></script>
-    <script type="text/javascript" src="http://localhost:9119/extjs/examples/shared/options-toolbar.js"></script>
+    <script type="text/javascript" src="${extRoot }examples/shared/include-ext.js"></script>
+    <script type="text/javascript" src="${extRoot }examples/shared/options-toolbar.js"></script>
     <!-- </x-bootstrap> -->
     <script type="text/javascript">
         Ext.Loader.setPath({

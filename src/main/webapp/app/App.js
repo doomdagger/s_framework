@@ -71,7 +71,7 @@ Ext.define('MyDesktop.App', {
                 model: 'Ext.ux.desktop.ShortcutModel',
                 data: [
                     { name: '表格窗口', iconCls: 'grid-shortcut', module: 'grid-win' },
-                    { name: 'Accordion Window', iconCls: 'accordion-shortcut', module: 'acc-win' },
+                    { name: '联系人', iconCls: 'accordion-shortcut', module: 'acc-win' },
                     { name: '笔记本', iconCls: 'notepad-shortcut', module: 'notepad' },
                     { name: '笔记本1', iconCls: 'notepad-shortcut', module: 'notepad' },
                     { name: '笔记本2', iconCls: 'notepad-shortcut', module: 'notepad' },
@@ -82,7 +82,7 @@ Ext.define('MyDesktop.App', {
                 ]
             }),
 
-            wallpaper: 'wallpapers/Blue-Sencha.jpg',
+            wallpaper: 'wallpapers/sky.jpg',
             wallpaperStretch: true
         });
     },
@@ -99,14 +99,14 @@ Ext.define('MyDesktop.App', {
                 width: 100,
                 items: [
                     {
-                        text:'Settings',
+                        text:'设置',
                         iconCls:'settings',
                         handler: me.onSettings,
                         scope: me
                     },
                     '-',
                     {
-                        text:'Logout',
+                        text:'登出',
                         iconCls:'logout',
                         handler: me.onLogout,
                         scope: me
@@ -121,8 +121,8 @@ Ext.define('MyDesktop.App', {
 
         return Ext.apply(ret, {
             quickStart: [
-                { name: 'Accordion Window', iconCls: 'accordion', module: 'acc-win' },
-                { name: 'Grid Window', iconCls: 'icon-grid', module: 'grid-win' }
+                { name: '联系人', iconCls: 'accordion', module: 'acc-win' },
+                { name: '表格窗口', iconCls: 'icon-grid', module: 'grid-win' }
             ],
             trayItems: [
                 { xtype: 'trayclock', flex: 1 }
@@ -131,7 +131,7 @@ Ext.define('MyDesktop.App', {
     },
 
     onLogout: function () {
-        Ext.Msg.confirm('Logout', 'Are you sure you want to logout?');
+        Ext.Msg.confirm('退出登录', '您确定要退出系统吗?');
     },
 
     onSettings: function () {
