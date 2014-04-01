@@ -6,10 +6,9 @@ import java.util.List;
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.dao.support.Sortable;
-import com.hg.ecommerce.model.support.EntityObject;
 
 
-public interface BaseDao<T extends EntityObject> {
+public interface BaseDao<T> {
 	
 	/**
 	 * 直接添加一个实体Model
@@ -35,11 +34,11 @@ public interface BaseDao<T extends EntityObject> {
 	
 	boolean delete(T param);
 	
-	boolean deleteById(String...id);
+	boolean deleteById(Object...id);
 	
 	boolean deleteByWrapper(SQLWrapper sqlWrapper);
 	
-	T findOneById(String...id);
+	T findOneById(Object...id);
 		
 	T findOneByWrapper(SQLWrapper sqlWrapper);
 	

@@ -64,8 +64,8 @@ public class SysSettingServiceImpl implements SysSettingService {
 	}
 
 	@Override
-	public SysSetting selectById() {
-		// TODO Auto-generated method stub
+	public SysSetting selectById(Object...id) {
+		sysSettingDao.findOneById(id);
 		return null;
 	}
 
