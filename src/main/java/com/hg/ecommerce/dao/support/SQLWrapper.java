@@ -191,6 +191,8 @@ public class SQLWrapper {
 							  }else{
 								  values.add(0);
 							  }
+						  }else if(value instanceof Date){
+							  values.add(Util.dateToString((Date)value));
 						  }else {
 							  values.add(value);
 						  }

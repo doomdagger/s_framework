@@ -128,9 +128,11 @@ Ext.define('MyDesktop.view.SysSettingView', {
                     handler : function() {
                         rowEditing.cancelEdit();
 
+                        var id = store.last().get('propId')+1;
+                        
                         // Create a model instance
-                        var r = Ext.create('MyDesktop.model.SysSettingModel', {
-                            propId : 0,
+                        var data = Ext.create('MyDesktop.model.SysSettingModel', {
+                            propId : id,
 							propKey : '输入关键字',
 							propValue : '输入参数值',
 							remark : '输入描述',
@@ -139,9 +141,23 @@ Ext.define('MyDesktop.view.SysSettingView', {
 							editperson : 0,
 							edittime : Ext.Date.clearTime(new Date())
                         });
-
-                        store.insert(0, r);
-                        rowEditing.startEdit(0, 0);
+                        Ext.Ajax.request({
+                    	    url: '/ecommerce/webservice/sys_setting/add',
+                    	    params: {
+                    	    	propId:data.get('propId'),
+                    	        propKey:data.get('propKey'),
+                    	        propValue:data.get('propValue'),
+                    	        remark:data.get('remark'),
+                    	        createperson:data.get('createperson'),
+                    	        createtime:Ext.Date.format(data.get('createtime'), 'Y-m-d H:i:s'),
+                    	        editperson:data.get('editperson'),
+                    	        edittime:Ext.Date.format(data.get('createtime'), 'Y-m-d H:i:s')
+                    	    },
+                    	    success: function(response){
+                    	    	store.insert(store.count(),data);
+                                rowEditing.startEdit(store.count()-1, 0);
+                    	    }
+                    	});
                     }
                 }, {
                     itemId: 'removeSysSetting',
@@ -149,11 +165,23 @@ Ext.define('MyDesktop.view.SysSettingView', {
                     iconCls: 'remove',
                     handler: function() {
                         var sm = grid.getSelectionModel();
+                        var data = sm.getSelection()[0].data;
                         rowEditing.cancelEdit();
-                        store.remove(sm.getSelection());
-                        if (store.getCount() > 0) {
-                            sm.select(0);
-                        }
+                        Ext.Ajax.request({
+                    	    url: '/ecommerce/webservice/sys_setting/remove',
+                    	    params: {
+                    	        propId:data.propId
+                    	    },
+                    	    success: function(response){
+                    	        var text = response.responseText;
+                    	        console.log(text);
+                    	        store.remove(sm.getSelection());
+                                if (store.getCount() > 0) {
+                                    sm.select(0);
+                                }
+                    	    }
+                    	});
+                        
                     },
                     disabled: true
                 }],
