@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+
 import com.hg.ecommerce.dao.BaseDao;
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
