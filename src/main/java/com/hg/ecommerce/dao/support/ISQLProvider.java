@@ -34,7 +34,7 @@ public interface ISQLProvider extends IOperators{
 	
 	public ISQLProvider distinct();
 	
-	public ISQLProvider distinct(String field);
+	public ISQLProvider distinct(Object field);
 	
 	public ISQLProvider fields(Object...objects);
 	
@@ -51,39 +51,39 @@ public interface ISQLProvider extends IOperators{
 	
 	public ISQLProvider or(ISQLProvider one,ISQLProvider another,AOR AOR);//static
 	
-	public ISQLProvider eq(String field,Object value);
+	public ISQLProvider eq(Object field,Object value);
 	
-	public ISQLProvider ne(String field,Object value);
+	public ISQLProvider ne(Object field,Object value);
 	
-	public ISQLProvider gt(String field,Object value);
+	public ISQLProvider gt(Object field,Object value);
 	
-	public ISQLProvider ge(String field,Object value);
+	public ISQLProvider ge(Object field,Object value);
 	
-	public ISQLProvider lt(String field,Object value);
+	public ISQLProvider lt(Object field,Object value);
 	
-	public ISQLProvider le(String field,Object value);
+	public ISQLProvider le(Object field,Object value);
 	
-	public ISQLProvider not(String field,Object value);
+	public ISQLProvider not(Object field,Object value);
 	
-	public ISQLProvider between(String field,Object lvalue,Object rvalue);
+	public ISQLProvider between(Object field,Object lvalue,Object rvalue);
 	
-	public ISQLProvider in(String field,Object...objects);
+	public ISQLProvider in(Object field,Object...objects);
 	
-	public ISQLProvider in(String field,Collection<Object> objects);
+	public ISQLProvider in(Object field,Collection<Object> objects);
 	
-	public ISQLProvider notIn(String field,Object...objects);
+	public ISQLProvider notIn(Object field,Object...objects);
 	
-	public ISQLProvider notIn(String field,Collection<Object> objects);
+	public ISQLProvider notIn(Object field,Collection<Object> objects);
 	
-	public ISQLProvider like(String field,Object regex);
+	public ISQLProvider like(Object field,Object regex);
 	
-	public ISQLProvider notLike(String filed,Object regex);
+	public ISQLProvider notLike(Object filed,Object regex);
 	
-	public ISQLProvider isNull(String field);
+	public ISQLProvider isNull(Object field);
 	
-	public ISQLProvider isNotNull(String field);
+	public ISQLProvider isNotNull(Object field);
 	//sortable
-	public ISQLProvider orderBy(String field,SORT sort);
+	public ISQLProvider orderBy(Object field,SORT sort);
 	//pageable
 	public ISQLProvider limit(int start,int length);
 	//function
@@ -92,9 +92,9 @@ public interface ISQLProvider extends IOperators{
 	public String getSQL();
 	
 	//base
-	public void setModel(String model);
+	public void setModel(Object model);
 	
-	public String getModel();
+	public Object getModel();
 	
 	
 	

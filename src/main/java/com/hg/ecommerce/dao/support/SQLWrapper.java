@@ -1,13 +1,11 @@
 package com.hg.ecommerce.dao.support;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import com.hg.ecommerce.config.ProjectContainer;
 import com.hg.ecommerce.dao.support.IOperators.AOR;
 import com.hg.ecommerce.model.support.AnnotatedModel;
@@ -21,7 +19,7 @@ import com.hg.ecommerce.model.support.EntityObject;
  */
 public class SQLWrapper {
 	
-	private String Model;
+	private Object Model;
 	
 	private ISQLProvider provider = ProjectContainer.getInstance(ISQLProvider.class);
 	
@@ -114,6 +112,37 @@ public class SQLWrapper {
 	
 	public SQLWrapper values(Collection<Object> objects){
 		provider.values(objects);
+		return this;
+	}
+	
+	public SQLWrapper values(EntityObject Model){
+		List<Object> fields = new ArrayList<Object>();
+		List<Object> values = new ArrayList<Object>();
+		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
+		Method[] methods = Model.getClass().getDeclaredMethods();
+		String fieldName;
+		Object tempValue;
+		for(int i=0;i<methods.length;i++){
+			if(methods[i].getName().startsWith("get")){
+				  try {
+					  fieldName = methods[i].getName().substring(3);   // 属性
+					  fieldName = fieldName.toLowerCase().substring(0, 1)+fieldName.substring(1);
+					  fieldName = meta.getColumnName(fieldName);
+					  tempValue = methods[i].invoke(Model, (Object[])null);
+					  if(null!=tempValue&&!tempValue.equals("")){
+						  fields.add(fieldName);
+						  values.add(tempValue);
+					  }
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+			  	}
+		}
+		provider.fields(fields).values(values);
 		return this;
 	}
 	
@@ -247,9 +276,9 @@ public class SQLWrapper {
 	 * @param Model
 	 * @return
 	 */
-	public SQLWrapper fields(EntityObject Model){
+	public SQLWrapper fields(Class<EntityObject> Model){
 		List<Object> fields = new ArrayList<Object>();//字段
-		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
+		AnnotatedModel meta = new AnnotatedModel(Model);
 		String fieldName;
 		if(Model!=null){
 			Method[] methods = Model.getClass().getDeclaredMethods();
@@ -305,82 +334,82 @@ public class SQLWrapper {
 		return this;
 	}
 	
-	public SQLWrapper eq(String field,Object value){
+	public SQLWrapper eq(Object field,Object value){
 		provider.eq(field, value);
 		return this;
 	}
 	
-	public SQLWrapper ne(String field,Object value){
+	public SQLWrapper ne(Object field,Object value){
 		provider.ne(field, value);
 		return this;
 	}
 	
-	public SQLWrapper gt(String field,Object value){
+	public SQLWrapper gt(Object field,Object value){
 		provider.gt(field, value);
 		return this;
 	}
 	
-	public SQLWrapper ge(String field,Object value){
+	public SQLWrapper ge(Object field,Object value){
 		provider.ge(field, value);
 		return this;
 	}
 	
-	public SQLWrapper lt(String field,Object value){
+	public SQLWrapper lt(Object field,Object value){
 		provider.lt(field, value);
 		return this;
 	}
 	
-	public SQLWrapper le(String field,Object value){
+	public SQLWrapper le(Object field,Object value){
 		provider.le(field, value);
 		return this;
 	}
 	
-	public SQLWrapper not(String field,Object value){
+	public SQLWrapper not(Object field,Object value){
 		provider.not(field, value);
 		return this;
 	}
 	
-	public SQLWrapper between(String field,Object lvalue,Object rvalue){
+	public SQLWrapper between(Object field,Object lvalue,Object rvalue){
 		provider.between(field, lvalue, rvalue);
 		return this;
 	}
 	
-	public SQLWrapper in(String field,Object...objects){
+	public SQLWrapper in(Object field,Object...objects){
 		provider.in(field, objects);
 		return this;
 	}
 	
-	public SQLWrapper in(String field,Collection<Object> objects){
+	public SQLWrapper in(Object field,Collection<Object> objects){
 		provider.in(field, objects);
 		return this;
 	}
 	
-	public SQLWrapper notIn(String field,Object...objects){
+	public SQLWrapper notIn(Object field,Object...objects){
 		provider.notIn(field, objects);
 		return this;
 	}
 	
-	public SQLWrapper notIn(String field,Collection<Object> objects){
+	public SQLWrapper notIn(Object field,Collection<Object> objects){
 		provider.notIn(field, objects);
 		return this;
 	}
 	
-	public SQLWrapper like(String field,Object regex){
+	public SQLWrapper like(Object field,Object regex){
 		provider.like(field, regex);
 		return this;
 	}
 	
-	public SQLWrapper notLike(String field,Object regex){
+	public SQLWrapper notLike(Object field,Object regex){
 		provider.notLike(field, regex);
 		return this;
 	}
 	
-	public SQLWrapper isNull(String field){
+	public SQLWrapper isNull(Object field){
 		provider.isNull(field);
 		return this;
 	}
 	
-	public SQLWrapper isNotNull(String field){
+	public SQLWrapper isNotNull(Object field){
 		provider.isNotNull(field);
 		return this;
 	}
@@ -408,11 +437,11 @@ public class SQLWrapper {
 		return this.provider.getSQL();
 	}
 
-	public String getModel() {
+	public Object getModel() {
 		return Model;
 	}
 
-	public SQLWrapper setModel(String model) {
+	public SQLWrapper setModel(Object model) {
 		this.Model = model;
 		provider.setModel(model);
 		return this;

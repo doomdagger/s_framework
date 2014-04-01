@@ -4,11 +4,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
-
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-
 import com.hg.ecommerce.dao.BaseDao;
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
@@ -30,11 +27,11 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public JdbcTemplate getJdbcTemplate() {
 		return jdbcTemplate;
 	}
-
+	
 	protected void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public BaseDaoImpl(){
 		@SuppressWarnings("rawtypes")
@@ -84,7 +81,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean update(T param) {
 		this.query = SQLWrapper.instance().update((EntityObject) param).setModel(meta.getTableName()).getQuery();
@@ -123,9 +120,9 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean deleteById(String...id) {
+	public boolean deleteById(Object...id) {
 		AnnotatedModel meta = new AnnotatedModel((Class<? extends EntityObject>) cls);
-		String[] keys = (String[]) meta.getPrimaryKeys().toArray();
+		Object[] keys = (Object[]) meta.getPrimaryKeys().toArray();
 		SQLWrapper wrapper = SQLWrapper.instance();
 		wrapper.delete().setModel(meta.getTableName()).where();
 		for(int i=0,size=id.length; i<size; i++){
@@ -144,21 +141,28 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		if(0<getJdbcTemplate().update(this.query)){
 			return true;
 		}
+		
 		return false;
 	}
 
 	@Override
-	public T findOneById(String...id) {
+	public T findOneById(Object...id) {
 		@SuppressWarnings("unchecked")
 		AnnotatedModel meta = new AnnotatedModel((Class<? extends EntityObject>) cls);
-		String[] keys = (String[]) meta.getPrimaryKeys().toArray();
+		Object[] keys = (Object[]) meta.getPrimaryKeys().toArray();
 		SQLWrapper wrapper = SQLWrapper.instance();
 		wrapper.selectAll().setModel(meta.getTableName()).where();
 		for(int i=0,size=id.length; i<size; i++){
 			wrapper.eq(keys[i], id[i]);
 		}
 		this.query = wrapper.getQuery();
-		return getJdbcTemplate().queryForObject(this.query, cls);
+		System.out.println("ById:"+this.query);
+		List<T> list = getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
+		System.out.println(list.size());
+		for(T t : list){
+			System.out.println(((EntityObject)t).toJSON());
+		}
+		return list.iterator().next();
 	}
 
 	@Override
@@ -173,13 +177,13 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 		//return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
-
+	
 	@Override
 	public List<T> findAllByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
-
+	
 	@Override
 	public List<T> findAllByWrapperInPage(SQLWrapper sqlWrapper,Pageable pageable) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
@@ -188,25 +192,25 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		this.query = sqlWrapper.setModel(meta.getTableName()).limit(pageable).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
-
+	
 	@Override
 	public List<T> findAllByWrapperInOrder(SQLWrapper sqlWrapper,Sortable sortable) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).orderBy(sortable).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
-
+	
 	@Override
 	public List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,Pageable pageable, Sortable sortable) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).orderBy(sortable).limit(pageable).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
-
+	
 	@Override
 	public List<T> findByNativeQuery(String sql) {
 		this.query = sql;
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
-
+	
 	@Override
 	public long getCount() {
 		this.query = SQLWrapper.instance().selectAll().setModel(meta.getTableName()).getQuery();

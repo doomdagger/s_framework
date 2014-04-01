@@ -34,11 +34,11 @@ public interface BaseDao<T> {
 	
 	boolean delete(T param);
 	
-	boolean deleteById(String...id);
+	boolean deleteById(Object...id);
 	
 	boolean deleteByWrapper(SQLWrapper sqlWrapper);
 	
-	T findOneById(String...id);
+	T findOneById(Object...id);
 		
 	T findOneByWrapper(SQLWrapper sqlWrapper);
 	

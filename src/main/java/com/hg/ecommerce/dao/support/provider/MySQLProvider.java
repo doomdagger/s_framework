@@ -27,7 +27,7 @@ public class MySQLProvider implements ISQLProvider {
 	 */
 	private boolean isProjected = false;//work with select(Projection)
 	
-	private String Model;
+	private Object Model;
 	
 	public MySQLProvider(){
 		this.SQL = new StringBuilder();
@@ -142,7 +142,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider distinct(String field) {
+	public ISQLProvider distinct(Object field) {
 		if(isSelect){
 			if(null!=field){
 				return this.distinct();
@@ -157,11 +157,19 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider fields(Object... objects) {
 		if(null!=objects){
 			if(isSelect && !isProjected){
-				for(Object object : objects){
-					this.SQL.append(BLANK).append(object).append(COMMA);
+				if(!isFields){
+					for(Object object : objects){
+						this.SQL.append(BLANK).append(object.toString()).append(COMMA);
+					}
+					this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
+					this.SQL.append(FROM);
+					isFields = true;
+				}else{
+					for(Object object : objects){
+						this.SQL.insert(this.SQL.indexOf(FROM),COMMA+object.toString());
+					}
+					isFields = true;
 				}
-				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
-				this.SQL.append(RP).append(FROM);
 			}else if(isInsert){
 				if(!isFields){
 					this.SQL.append(LP);
@@ -187,15 +195,24 @@ public class MySQLProvider implements ISQLProvider {
 	public ISQLProvider fields(Collection<Object> objects) {
 		if(null!=objects){
 			if(isSelect && !isProjected){
-				for(Object object : objects){
-					this.SQL.append(BLANK).append(object).append(COMMA);
+				if(!isFields){
+					for(Object object : objects){
+						this.SQL.append(BLANK).append(object).append(COMMA);
+					}
+					this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
+					this.SQL.append(FROM);
+					isFields = true;
+				}else{
+					for(Object object : objects){
+						this.SQL.insert(this.SQL.indexOf(FROM),COMMA+object.toString());
+					}
+					isFields = true;
 				}
-				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
-				this.SQL.append(RP).append(FROM);
 			}else if(isInsert){
 				if(!isFields){
 					this.SQL.append(LP);
 					for(Object object : objects){
+						
 						this.SQL.append(BLANK).append(object).append(COMMA);
 					}
 					this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
@@ -300,7 +317,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider eq(String field, Object value) {
+	public ISQLProvider eq(Object field, Object value) {
 		if(null!=value){
 			if(!isAnd){
 				this.SQL.append(field).append(EQ).append(QUOTE).append(value).append(QUOTE);
@@ -313,7 +330,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider ne(String field, Object value) {
+	public ISQLProvider ne(Object field, Object value) {
 		if(null!=value){
 			if(!isAnd){
 				this.SQL.append(field).append(NE).append(QUOTE).append(value).append(QUOTE);
@@ -326,7 +343,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider gt(String field, Object value) {
+	public ISQLProvider gt(Object field, Object value) {
 		if(null!=value){
 			if(!isAnd){
 				this.SQL.append(field).append(GT).append(QUOTE).append(value).append(QUOTE);
@@ -339,7 +356,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider ge(String field, Object value) {
+	public ISQLProvider ge(Object field, Object value) {
 		if(null!=value){
 			if(!isAnd){
 				this.SQL.append(field).append(GE).append(QUOTE).append(value).append(QUOTE);
@@ -352,7 +369,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider lt(String field, Object value) {
+	public ISQLProvider lt(Object field, Object value) {
 		if(null!=value){
 			if(!isAnd){
 				this.SQL.append(field).append(LT).append(QUOTE).append(value).append(QUOTE);
@@ -365,7 +382,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider le(String field, Object value) {
+	public ISQLProvider le(Object field, Object value) {
 		if(null!=value){
 			if(!isAnd){
 				this.SQL.append(field).append(LE).append(QUOTE).append(value).append(QUOTE);
@@ -378,7 +395,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider not(String field, Object value) {
+	public ISQLProvider not(Object field, Object value) {
 		if(null!=value){
 			if(!isAnd){
 				this.SQL.append(field).append(NOT).append(QUOTE).append(value).append(QUOTE);
@@ -391,7 +408,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider between(String field, Object lvalue, Object rvalue) {
+	public ISQLProvider between(Object field, Object lvalue, Object rvalue) {
 		if(null!=lvalue && null!=rvalue){
 			if(!isAnd){
 				this.SQL.append(field).append(BETWEEN).append(QUOTE).append(lvalue).append(QUOTE).append(AND).append(QUOTE).append(rvalue).append(QUOTE);
@@ -404,7 +421,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider in(String field, Object... objects) {
+	public ISQLProvider in(Object field, Object... objects) {
 		if(null!=objects){
 			StringBuilder list = new StringBuilder();
 			list.append(LP);
@@ -425,7 +442,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider in(String field, Collection<Object> objects) {
+	public ISQLProvider in(Object field, Collection<Object> objects) {
 		if(null!=objects){
 			StringBuilder list = new StringBuilder();
 			list.append(LP);
@@ -445,7 +462,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider notIn(String field, Object... objects) {
+	public ISQLProvider notIn(Object field, Object... objects) {
 		if(null!=objects){
 			StringBuffer list = new StringBuffer();
 			list.append(LP);
@@ -466,7 +483,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider notIn(String field, Collection<Object> objects) {
+	public ISQLProvider notIn(Object field, Collection<Object> objects) {
 		if(null!=objects){
 			StringBuffer list = new StringBuffer();
 			list.append(LP);
@@ -488,7 +505,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider like(String field, Object regex) {
+	public ISQLProvider like(Object field, Object regex) {
 		if(null!=regex){
 			if(!isAnd){
 				this.SQL.append(field).append(LIKE).append(QUOTE).append(regex).append(QUOTE);
@@ -501,7 +518,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider notLike(String field, Object regex) {
+	public ISQLProvider notLike(Object field, Object regex) {
 		if(null!=regex){
 			if(!isAnd){
 				this.SQL.append(field).append(QUOTE).append(regex).append(QUOTE);
@@ -514,7 +531,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider isNull(String field) {
+	public ISQLProvider isNull(Object field) {
 		if(!isAnd){
 			this.SQL.append(field).append(IS_NULL);
 			isAnd = true;
@@ -525,7 +542,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider isNotNull(String field) {
+	public ISQLProvider isNotNull(Object field) {
 		if(!isAnd){
 			this.SQL.append(field).append(IS_NOT_NULL);
 			isAnd = true;
@@ -536,7 +553,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public ISQLProvider orderBy(String field,SORT sort) {
+	public ISQLProvider orderBy(Object field,SORT sort) {
 		if(isSelect){
 			if(!isOrder){
 				this.SQL.append(ORDER).append(field).append(sort.getSort());
@@ -570,7 +587,7 @@ public class MySQLProvider implements ISQLProvider {
 	
 	//get & set
 	@Override
-	public void setModel(String model) {
+	public void setModel(Object model) {
 		this.Model = model;
 		if(isInsert){
 			this.SQL.insert(this.SQL.indexOf(INSERT)+INSERT.length()+1, this.Model+BLANK);
@@ -592,7 +609,7 @@ public class MySQLProvider implements ISQLProvider {
 	}
 	
 	@Override
-	public String getModel() {
+	public Object getModel() {
 		return Model;
 	}
 

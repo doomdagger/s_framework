@@ -19,10 +19,9 @@ public interface SysSettingService {
 	
 	public boolean updateByWrapper(SQLWrapper wrapper);
 	
-	public SysSetting selectById();
+	public SysSetting selectById(Object...id);
 	
 	public List<SysSetting> selectAll();
 	
 	public List<SysSetting> selectByWrapper(SQLWrapper wrapper);
-
 }
