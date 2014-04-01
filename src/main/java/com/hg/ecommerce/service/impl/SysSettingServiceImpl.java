@@ -62,11 +62,10 @@ public class SysSettingServiceImpl implements SysSettingService {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public SysSetting selectById(Object...id) {
-		sysSettingDao.findOneById(id);
-		return null;
+		return sysSettingDao.findOneById(id);
 	}
 
 	@Override

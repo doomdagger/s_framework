@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
+
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -157,13 +158,8 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 			wrapper.eq(keys[i], id[i]);
 		}
 		this.query = wrapper.getQuery();
-		System.out.println("ById:"+this.query);
 		List<T> list = getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
-		System.out.println(list.size());
-		for(T t : list){
-			System.out.println(((EntityObject)t).toJSON());
-		}
-		return list.iterator().next();
+		return list.get(0);
 	}
 
 	@Override

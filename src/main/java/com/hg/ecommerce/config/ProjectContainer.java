@@ -3,6 +3,7 @@ package com.hg.ecommerce.config;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.hg.ecommerce.dao.support.IProjections;
 import com.hg.ecommerce.dao.support.ISQLProvider;
 import com.hg.ecommerce.model.support.FieldTypeMapper;
 
@@ -36,6 +37,8 @@ public class ProjectContainer extends AbstractModule{
 		String fieldTypeMapperCls = ProjectConfig.getProperty(dbName+".field");
 		//get sql dialect class name
 		String sqlDialectCls = ProjectConfig.getProperty(dbName+".sql");
+		//get projection class name
+		String sqlProjections = ProjectConfig.getProperty(dbName+".projection");
 		
 		/**
 		 * No Handler, We do not allow this.
@@ -51,7 +54,7 @@ public class ProjectContainer extends AbstractModule{
 			//dynamic bind
 			bind(FieldTypeMapper.class).to((Class<? extends FieldTypeMapper>)Class.forName(fieldTypeMapperCls));
 			bind(ISQLProvider.class).to((Class<? extends ISQLProvider>)Class.forName(sqlDialectCls));		
-			
+			bind(IProjections.class).to((Class<? extends IProjections>)Class.forName(sqlProjections));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
