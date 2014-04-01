@@ -82,7 +82,7 @@ Ext.define('MyDesktop.App', {
                 ]
             }),
 
-            wallpaper: 'wallpapers/sky.jpg',
+            wallpaper: 'wallpapers/london.jpg',
             wallpaperStretch: true
         });
     },

@@ -19,5 +19,5 @@ public class AppController {
 		model.addAttribute("extRoot", extRoot);
 		return "index";
 	}
-	
+		
 }

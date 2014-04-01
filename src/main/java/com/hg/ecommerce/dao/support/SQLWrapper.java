@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +12,7 @@ import com.hg.ecommerce.config.ProjectContainer;
 import com.hg.ecommerce.dao.support.IOperators.AOR;
 import com.hg.ecommerce.model.support.AnnotatedModel;
 import com.hg.ecommerce.model.support.EntityObject;
+import com.hg.ecommerce.util.Util;
 
 /**
  * 此wrapper实现的是简单单表查询，不支持多表查询，连接查询，子查询
@@ -57,6 +59,8 @@ public class SQLWrapper {
 						  }else{
 							  values.add(0);
 						  }
+					  }else if(value instanceof Date) {
+						  values.add(Util.dateToString((Date)value));
 					  }else {
 						  values.add(value);
 					  }

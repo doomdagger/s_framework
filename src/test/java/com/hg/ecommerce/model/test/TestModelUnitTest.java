@@ -9,6 +9,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.hg.ecommerce.config.ProjectConfig;
 import com.hg.ecommerce.model.SysSetting;
 import com.hg.ecommerce.service.SysSettingService;
+import com.hg.ecommerce.util.Util;
 
 public class TestModelUnitTest {
 	@Test
@@ -32,7 +33,7 @@ public class TestModelUnitTest {
 		
 		sysSettingService.save(sysSetting);
 		
-		System.err.println(sysSettingService.selectAll());
+		System.err.println(Util.getJsonObject(sysSettingService.selectAll()));
 				
 	}
 	

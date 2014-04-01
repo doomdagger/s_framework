@@ -6,9 +6,10 @@ import java.util.List;
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.dao.support.Sortable;
+import com.hg.ecommerce.model.support.EntityObject;
 
 
-public interface BaseDao<T> {
+public interface BaseDao<T extends EntityObject> {
 	
 	/**
 	 * 直接添加一个实体Model

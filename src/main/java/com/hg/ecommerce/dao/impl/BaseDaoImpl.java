@@ -16,7 +16,7 @@ import com.hg.ecommerce.model.support.AnnotatedModel;
 import com.hg.ecommerce.model.support.EntityObject;
 
 
-public class BaseDaoImpl<T> implements BaseDao<T>{
+public class BaseDaoImpl<T extends EntityObject> implements BaseDao<T>{
 	
 	private Class<T> cls;
 	
@@ -120,7 +120,6 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean deleteById(String...id) {
 		AnnotatedModel meta = new AnnotatedModel((Class<? extends EntityObject>) cls);
@@ -148,7 +147,6 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 
 	@Override
 	public T findOneById(String...id) {
-		@SuppressWarnings("unchecked")
 		AnnotatedModel meta = new AnnotatedModel((Class<? extends EntityObject>) cls);
 		String[] keys = (String[]) meta.getPrimaryKeys().toArray();
 		SQLWrapper wrapper = SQLWrapper.instance();
