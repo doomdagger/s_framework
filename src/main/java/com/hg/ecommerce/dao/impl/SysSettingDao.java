@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.hg.ecommerce.model.TestModel;
+import com.hg.ecommerce.model.SysSetting;
 
-
-@Repository("testModelDao")
-public class TestModelDao extends BaseDaoImpl<TestModel>{
-	
+@Repository("sysSettingDao")
+public class SysSettingDao extends BaseDaoImpl<SysSetting>{
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	@Override
@@ -19,5 +17,4 @@ public class TestModelDao extends BaseDaoImpl<TestModel>{
 	protected void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
 	}
-	
 }

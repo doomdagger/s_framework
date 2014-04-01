@@ -11,5 +11,9 @@ src/main/java/com/hg/ecommerce/model/*.java
 !src/main/java/com/hg/ecommerce/model/TestModel.java
 # Custom Configuration #
 src/main/resources/project-custom.properties
+# Dao Control #
 src/main/java/com/hg/ecommerce/dao/impl/*Dao.java
-!src/main/java/com/hg/ecommerce/model/TestModelDao.java
+!src/main/java/com/hg/ecommerce/dao/impl/SysSettingDao.java
+# Model Control #
+src/main/java/com/hg/ecommerce/model/*.java
+!src/main/java/com/hg/ecommerce/model/SysSetting.java
