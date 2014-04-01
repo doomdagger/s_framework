@@ -162,9 +162,26 @@ Ext.define('MyDesktop.view.SysSettingView', {
                     'selectionchange': function(view, records) {
                         grid.down('#removeSysSetting').setDisabled(!records.length);
                     },
-                    'edit': function(editor, e) {
-                    	e.record.commit();
-                        console.log("finish a update");
+                    'edit': function(editor, context) {
+                    	context.record.commit();
+                    	var data = context.record.data;
+                    	Ext.Ajax.request({
+                    	    url: '/ecommerce/webservice/sys_setting/update',
+                    	    params: {
+                    	        propId:data.propId,
+                    	        propKey:data.propKey,
+                    	        propValue:data.propValue,
+                    	        remark:data.remark,
+                    	        createperson:data.createperson,
+                    	        createtime:Ext.Date.format(data.createtime, 'Y-m-d H:i:s'),
+                    	        editperson:data.editperson,
+                    	        edittime:Ext.Date.format(data.createtime, 'Y-m-d H:i:s')
+                    	    },
+                    	    success: function(response){
+                    	        var text = response.responseText;
+                    	        console.log(text);
+                    	    }
+                    	});
                     },
                     'canceledit': function(editor, context, eOpts){
                 		console.log("cancel edit!");

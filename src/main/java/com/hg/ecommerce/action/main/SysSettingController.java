@@ -2,6 +2,7 @@ package com.hg.ecommerce.action.main;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +28,21 @@ public class SysSettingController {
 	
 	@Autowired
 	private SysSettingService sysSettingService;
+	
+	
+	/**
+	 * Date类型对象的Editor覆盖，CustomDateEditor需要继承PropertyEditor，实现两个核心方法，
+	 * 从Date到String，以及从String到Date的转换，你可以自定义自己的Model类型的Editor，使其具备String到Model，
+	 * Model到String的无缝切换
+	 * 
+	 * @param binder
+	 */
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+	}
 	
 	@ModelAttribute("sysSetting")
 	public SysSetting assembleSysSetting(@RequestParam(defaultValue="-1") long propId
