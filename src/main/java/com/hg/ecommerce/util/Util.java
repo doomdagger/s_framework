@@ -222,7 +222,8 @@ public class Util {
 		if (object instanceof EntityObject) { // 字段对象为EntityObject
 			object = ((EntityObject) object).toJSON();
 		} else if (object instanceof Date) { // 字段对象为Date
-			object = ((Date) object).getTime();
+//			object = ((Date) object).getTime();
+			object = Util.dateToString((Date)object);
 		} else if (object instanceof Map) {
 			JSONObject jsonObject = new JSONObject();
 			for (Object obj : ((Map) object).entrySet()) {

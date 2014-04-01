@@ -1,8 +1,12 @@
 package com.hg.ecommerce.action.main;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,14 +26,19 @@ public class SysSettingController {
 	private SysSettingService sysSettingService;
 	
 	@ModelAttribute("sysSetting")
-	public SysSetting assembleSysSetting(@RequestParam long propId
-			, @RequestParam String propKey
-			, @RequestParam String propValue
-			, @RequestParam String remark
-			, @RequestParam long createperson
-			, @RequestParam Date createtime
-			, @RequestParam long editperson
-			, @RequestParam Date edittime){
+	public SysSetting assembleSysSetting(@RequestParam(defaultValue="-1") long propId
+			, @RequestParam(required=false) String propKey
+			, @RequestParam(required=false) String propValue
+			, @RequestParam(required=false) String remark
+			, @RequestParam(required=false,defaultValue="-1") long createperson
+			, @RequestParam(required=false) Date createtime
+			, @RequestParam(required=false,defaultValue="-1") long editperson
+			, @RequestParam(required=false) Date edittime){
+		
+		if(propId==-1){
+			return null;
+		}
+		
 		SysSetting setting = new SysSetting();
 		setting.setPropId(propId);
 		setting.setPropKey(propKey);
@@ -64,12 +73,19 @@ public class SysSettingController {
 	}
 	
 	@RequestMapping(value="/fetch",produces="application/json")
-	public String fetchSysSetting(){
+	public void fetchSysSetting(HttpServletResponse response) throws IOException{
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("application/json");
+		
+		PrintWriter printWriter = response.getWriter();
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("success", true);
 		map.put("data", sysSettingService.selectAll());
 		
-		return Util.getJsonObject(map).toString();
+		printWriter.write(Util.getJsonObject(map).toString());
+		printWriter.flush();
+		printWriter.close();
 	}
 	
 	@RequestMapping(value="/remove",produces="application/json")

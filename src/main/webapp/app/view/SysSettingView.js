@@ -27,18 +27,15 @@ Ext.define('MyDesktop.view.SysSettingView', {
         };
     },
 
-    createWindow : function(){
-		console.log('before desktop here is no fault');
-		
+    createWindow : function(){		
         var desktop = this.app.getDesktop();
         var win = desktop.getWindow('sys-setting');
         if(!win){
-        	
-			console.log('before store here is no fault');
-			
+        				
 			var store = Ext.create('MyDesktop.store.SysSettingStore');
 			
         	var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+        		clicksToEdit: 2,
                 clicksToMoveEditor: 1,
                 autoCancel: false
             });
@@ -93,6 +90,7 @@ Ext.define('MyDesktop.view.SysSettingView', {
                     header: '创建时间',
                     dataIndex: 'createtime',
                     flex: 1,
+                    format: 'Y-m-d',
                     editor: {
                         xtype: 'datefield',
                         allowBlank: false,
@@ -116,6 +114,7 @@ Ext.define('MyDesktop.view.SysSettingView', {
                     header: '修改时间',
                     dataIndex: 'edittime',
                     flex: 1,
+                    format: 'Y-m-d',
                     editor: {
                         xtype: 'datefield',
                         allowBlank: false,
@@ -132,9 +131,9 @@ Ext.define('MyDesktop.view.SysSettingView', {
                         // Create a model instance
                         var r = Ext.create('MyDesktop.model.SysSettingModel', {
                             propId : 0,
-							propKey : '参数关键字',
-							propValue : '系统参数值',
-							remark : '描述',
+							propKey : '输入关键字',
+							propValue : '输入参数值',
+							remark : '输入描述',
 							createperson : 0,
 							createtime : Ext.Date.clearTime(new Date()),
 							editperson : 0,
@@ -162,12 +161,17 @@ Ext.define('MyDesktop.view.SysSettingView', {
                 listeners: {
                     'selectionchange': function(view, records) {
                         grid.down('#removeSysSetting').setDisabled(!records.length);
-                    }
+                    },
+                    'edit': function(editor, e) {
+                    	e.record.commit();
+                        console.log("finish a update");
+                    },
+                    'canceledit': function(editor, context, eOpts){
+                		console.log("cancel edit!");
+                	}
                 }
             });
-        	
-			console.log('before win here is no fault');
-			
+        				
             win = desktop.createWindow({
                 id: 'sys-setting',
                 title:'系统管理',

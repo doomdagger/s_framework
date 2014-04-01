@@ -6,8 +6,8 @@ Ext.define('MyDesktop.model.SysSettingModel', {
         {name: 'propValue',  type: 'string'},
         {name: 'remark',  type: 'string'},
         {name: 'createperson',  type: 'int'},
-        {name: 'createtime',  type: 'date', dateFormat: 'yyyy-MM-dd'},
+        {name: 'createtime',  type: 'date', dateFormat: 'Y-m-d H:i:s'},
         {name: 'editperson',  type: 'int'},
-        {name: 'edittime',  type: 'date', dateFormat: 'yyyy-MM-dd'}
+        {name: 'edittime',  type: 'date', dateFormat: 'Y-m-d H:i:s'}
     ]
 });

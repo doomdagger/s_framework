@@ -4,10 +4,10 @@ Ext.define('MyDesktop.store.SysSettingStore', {
 	model : 'MyDesktop.model.SysSettingModel',
 	proxy : {
 		type : 'ajax',
-		url : '/webservice/sys_setting',
+		url : '/ecommerce/webservice/sys_setting/fetch',
 		reader : {
 			type : 'json',
-			root : 'sys_settings'
+			root : 'data'
 		}
 	},
 	sorters: [{
