@@ -12,7 +12,14 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-4.0.xsd ">
 
-	<mvc:annotation-driven enable-matrix-variables="true" conversion-service="conversionService" />
+	<mvc:annotation-driven enable-matrix-variables="true" conversion-service="conversionService">
+		<mvc:message-converters>
+        	<bean  class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+    		<bean  class="org.springframework.http.converter.ResourceHttpMessageConverter"></bean>
+    		<bean  class="org.springframework.http.converter.FormHttpMessageConverter"></bean>
+    		<bean  class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter"></bean>
+    	</mvc:message-converters>
+	</mvc:annotation-driven>
 	
 	<!-- 拦截器配置 -->
 	<mvc:interceptors>
@@ -31,11 +38,6 @@
         	<list>
             	
         	</list>
-    	</property>
-    	<property name="converters">
-    	    <list>
-    	        
-    	    </list>
     	</property>
 	</bean>
 	

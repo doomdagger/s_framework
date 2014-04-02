@@ -43,7 +43,7 @@ public class ProjectContainer extends AbstractModule{
 		/**
 		 * No Handler, We do not allow this.
 		 */
-		if(dbName==null||fieldTypeMapperCls==null||sqlDialectCls==null){
+		if(dbName==null||fieldTypeMapperCls==null||sqlDialectCls==null||sqlProjections==null){
 			throw new RuntimeException("Unhandled Provider, You should at least choose One provider for your dbms. Check the properties config file exists?");
 		}
 		

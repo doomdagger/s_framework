@@ -26,6 +26,7 @@ import com.hg.ecommerce.util.Util;
 @RequestMapping("/webservice/sys_setting")
 public class SysSettingController {
 	
+	
 	@Autowired
 	private SysSettingService sysSettingService;
 	
@@ -91,6 +92,11 @@ public class SysSettingController {
 		return Util.getJsonObject(map).toString();
 	}
 	
+	/**
+	 * 唯有使用response才能避免中文乱码问题
+	 * @param response
+	 * @throws IOException
+	 */
 	@RequestMapping(value="/fetch",produces="application/json")
 	public void fetchSysSetting(HttpServletResponse response) throws IOException{
 		response.setCharacterEncoding("utf-8");
@@ -116,4 +122,6 @@ public class SysSettingController {
 		
 		return Util.getJsonObject(map).toString();
 	}
+	
+	
 }

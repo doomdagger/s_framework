@@ -88,4 +88,9 @@
 		</aop:aspect>
 	</aop:config>
 
+	<!-- add scheduler and asyncer support -->
+	<task:annotation-driven executor="executor"
+		scheduler="scheduler" />
+	<task:executor id="executor" pool-size="10" />
+	<task:scheduler id="scheduler" pool-size="10" />
 </beans>

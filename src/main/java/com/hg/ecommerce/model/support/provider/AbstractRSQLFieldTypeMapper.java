@@ -17,6 +17,12 @@ import com.hg.ecommerce.model.support.FieldEntry;
 import com.hg.ecommerce.model.support.FieldTypeMapper;
 import com.hg.ecommerce.model.support.TableDef;
 
+/**
+ * RDBMS Field Mapper Class
+ * 
+ * @author Li He
+ *
+ */
 public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 
 	/**
