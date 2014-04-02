@@ -37,6 +37,10 @@ db.password=911119   #数据库用户密码
 
 #log path config - default to be your home directory -- see project.properties
 log.path=D:\\Developer\\log    #系统日志目录
+
+#ext js root
+ext.url=http://localhost:8080/extjs/
+
 ```
 框架的详细配置信息，参考[Configuration]()一节的内容。
 
@@ -51,7 +55,7 @@ log.path=D:\\Developer\\log    #系统日志目录
 
 ####运行项目
 在Eclipse的server视图中，确保存在tomcat7.0.52以上版本，在tomcat服务器上点击右键，选择`add and remove`，在弹出的对话框中，将s_framework项目add到右侧一栏中。然后启动tomcat即可，访问:
-`http://localhost:*your_port*/ecommerce/index.action`
+`http://localhost:*your_port*/ecommerce/app/index`
 
 
 
