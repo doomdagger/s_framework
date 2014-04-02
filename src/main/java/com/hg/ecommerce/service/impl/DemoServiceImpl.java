@@ -14,7 +14,7 @@ public class DemoServiceImpl implements DemoService{
 
 	@Override
 	public boolean areYouGood() {
-		return true;
+		throw new RuntimeException("I am not OK!!!");
 	}
 
 }

@@ -1,9 +1,12 @@
 package com.hg.ecommerce.action.demo;
 
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.io.Resource;
 import org.springframework.util.MultiValueMap;
@@ -16,6 +19,7 @@ import org.springframework.web.context.support.ServletContextResource;
 
 import com.hg.ecommerce.action.extension.MIME;
 import com.hg.ecommerce.model.SysSetting;
+import com.hg.ecommerce.model.support.ExcelBinder;
 import com.hg.ecommerce.util.Util;
 
 /**
@@ -91,6 +95,46 @@ public class RestfulController {
 		return resource;
 	}
 	
+	/**
+	 * 发送Excel表格的demo示例
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/converter/excel",produces=MIME.XLS)
+	public void excel(HttpServletResponse response) throws Exception{
+		//Resource resource = new ClassPathResource("project-custom.properties");
+		//设置文件目录
+		response.setContentType(MIME.XLS);
+		response.setCharacterEncoding("UTF-8");
+		OutputStream out = response.getOutputStream();
+		
+		ExcelBinder<SysSetting> binder = new ExcelBinder<SysSetting>(SysSetting.class);
+		binder.setSheetName("系统设置表单");
+		binder.setTitle("这是一个系统设置表单");
+		binder.bind("propKey", "参数关键字").bind("propValue", "参数值").bind("remark", "描述").bind("createtime", "创建时间");
+		
+		//demo data
+		SysSetting s1 = new SysSetting();
+		s1.setPropKey("关键字1");
+		s1.setPropValue("关键值1");
+		s1.setRemark("描述1");
+		s1.setCreatetime(new Date());
+		SysSetting s2 = new SysSetting();
+		s2.setPropKey("关键字2");
+		s2.setPropValue("关键值2");
+		s2.setRemark("描述2");
+		s2.setCreatetime(null);
+		SysSetting s3 = new SysSetting();
+		s3.setPropKey("关键字3");
+		s3.setPropValue("关键值3");
+		s3.setRemark("描述3");
+		s3.setCreatetime(new Date());
+		
+		binder.genExcel(Arrays.asList(s1,s2,s3), out);
+	
+		out.flush();
+		out.close();
+	}
 	
 	/**
 	 * <p>form data parsing use FormHttpMessageConverter class</p>

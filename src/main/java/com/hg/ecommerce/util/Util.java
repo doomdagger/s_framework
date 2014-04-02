@@ -2,6 +2,7 @@ package com.hg.ecommerce.util;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -478,5 +479,38 @@ public class Util {
 		}
 
 		return in;
+	}
+	
+	/**
+	 * 通过传入对象和fieldName来获取该FieldName上的值
+	 */
+	public static <T> Object getFieldValue(Field field, T data){
+		Class<?> cls = field.getDeclaringClass();
+		
+		String rFieldName = repairName(field.getName());
+		
+		Method method = null;
+		
+		try{
+			method = cls.getDeclaredMethod("get"+rFieldName, (Class<?>[])null);
+		} catch(Exception exception){
+			try{
+				method = cls.getDeclaredMethod("is"+rFieldName, (Class<?>[])null);
+			}catch(Exception exception2){
+			}
+		}
+		
+		if(method!=null){
+			try {
+				Object obj = method.invoke(data, (Object[])null);
+				if(obj!=null)
+					return obj;
+			} catch (Exception e) {
+			} 
+		}
+		
+		
+		return "";
+		
 	}
 }

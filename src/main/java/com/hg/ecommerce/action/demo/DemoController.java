@@ -36,6 +36,7 @@ public class DemoController {
 	 */
 	@RequestMapping("/index") // left equal to @RequestMapping(value="/index", method={RequestMethod.GET,RequestMethod.POST})
 	public String index(){
+		demoService.areYouGood();
 		return "main";
 	}
 	
