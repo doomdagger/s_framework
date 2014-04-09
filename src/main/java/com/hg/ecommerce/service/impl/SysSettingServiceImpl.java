@@ -16,11 +16,11 @@ public class SysSettingServiceImpl implements SysSettingService {
 	private  SysSettingDao sysSettingDao;
 	
 	@Override
-	public boolean save(SysSetting sysSetting) {
-		if(sysSettingDao.add(sysSetting)){
-			return true;
-		}
-		return false;
+	public Object save(SysSetting sysSetting) {
+		//if(sysSettingDao.add(sysSetting)){
+			//return true;
+		//}
+		return sysSettingDao.add(sysSetting);
 	}
 
 	@Override

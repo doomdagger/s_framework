@@ -15,14 +15,14 @@ public interface BaseDao<T> {
 	 * @param param：实体
 	 * @return：成功返回true
 	 */
-	boolean add(T param);
+	Object add(T param);
 	
 	/**
 	 * 同时添加多个实体Model
 	 * @param params：Model的Collection集合
 	 * @return：成功返回true
 	 */
-	boolean addMulti(Collection<T> params);
+	List<Object> addMulti(Collection<T> params);
 	
 	boolean addByWrapper(SQLWrapper sqlWrapper);
 	

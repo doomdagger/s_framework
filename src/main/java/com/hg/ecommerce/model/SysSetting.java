@@ -103,26 +103,6 @@ public class SysSetting extends EntityObject{
 	 * <p>
 	 * Mapped field info in table:
 	 * <ul>
-	 * 	 <li>Field Name  : "createperson"</li>
-	 * 	 <li>Field Type  : "BIGINT"</li>
-	 * 	 <li>Field Length: "19"</li>
-	 *   <li>Refer Info  : ""</li>
-	 * </ul>
-	 * </p>
-	 */
-	@Column("createperson")
-	private long createperson;
-	public long getCreateperson() {
-		return createperson;
-	}
-	public void setCreateperson(long createperson) {
-		this.createperson = createperson;
-	}
-	/**
-	 * Description:
-	 * <p>
-	 * Mapped field info in table:
-	 * <ul>
 	 * 	 <li>Field Name  : "createtime"</li>
 	 * 	 <li>Field Type  : "DATETIME"</li>
 	 * 	 <li>Field Length: "19"</li>
@@ -177,5 +157,25 @@ public class SysSetting extends EntityObject{
 	}
 	public void setEdittime(Date edittime) {
 		this.edittime = edittime;
+	}
+	/**
+	 * Description:
+	 * <p>
+	 * Mapped field info in table:
+	 * <ul>
+	 * 	 <li>Field Name  : "createperson"</li>
+	 * 	 <li>Field Type  : "BIGINT"</li>
+	 * 	 <li>Field Length: "19"</li>
+	 *   <li>Refer Info  : ""</li>
+	 * </ul>
+	 * </p>
+	 */
+	@Column("createperson")
+	private long createperson;
+	public long getCreateperson() {
+		return createperson;
+	}
+	public void setCreateperson(long createperson) {
+		this.createperson = createperson;
 	}
 }

@@ -2,11 +2,18 @@ package com.hg.ecommerce.dao.impl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import com.hg.ecommerce.dao.BaseDao;
 import com.hg.ecommerce.dao.support.Pageable;
@@ -53,31 +60,36 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	}
 	
 	@Override
-	public boolean add(T param) {
+	public Object add(final T param) {
 		this.query = SQLWrapper.instance().insert((EntityObject) param).setModel(meta.getTableName()).getQuery();
-		if(0<getJdbcTemplate().update(this.query)){
-			return true;
-		}
-		return false;
+		final String preQuery = this.query;
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		getJdbcTemplate().update((new PreparedStatementCreator() {
+			@Override
+			public java.sql.PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				PreparedStatement preparedStatement = con.prepareStatement(preQuery,Statement.RETURN_GENERATED_KEYS);
+				return preparedStatement;
+			}
+		}), keyHolder);
+		return keyHolder.getKey()==null?null:keyHolder.getKey().intValue();
 	}
 	
+	
 	@Override
-	public boolean addMulti(Collection<T> params) {
-		int count = 0;
+	public List<Object> addMulti(Collection<T> params) {
+		List<Object> list = new ArrayList<Object>();
 		for(T param : params){
 			this.query = SQLWrapper.instance().insert((EntityObject) param).setModel(meta.getTableName()).getQuery();
-			getJdbcTemplate().update(this.query);
-			count++;
+			list.add(getJdbcTemplate().update(this.query));
 		}
-		if(count==params.size()){
-			return true;
-		}
-		return false;
+		return list;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean addByWrapper(SQLWrapper sqlWrapper) {
-		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
+		this.query = sqlWrapper.setModel(meta.getTableName()).preparedInsert((Class<EntityObject>) cls);
 		if(0<getJdbcTemplate().update(this.query)){
 			return true;
 		}
@@ -92,7 +104,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean updateByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
@@ -119,7 +131,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		}
 		return false;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean deleteById(Object...id) {
@@ -161,7 +173,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		List<T> list = getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 		return list.get(0);
 	}
-
+	
 	@Override
 	public T findOneByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
@@ -172,7 +184,6 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public List<T> findAll() {
 		this.query = SQLWrapper.instance().selectAll().setModel(meta.getTableName()).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
-		//return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
 	
 	@Override
@@ -221,6 +232,48 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	}
 
 	
+	/*
+	@SuppressWarnings("unchecked")
+	private T clearEntityObject(T param){
+		EntityObject entity = (EntityObject)param;
+		String fieldName;
+		try {
+			if(entity!=null){
+				Method[] methods = entity.getClass().getDeclaredMethods();
+				Method setMethod;
+				for(int i=0;i<methods.length;i++){
+				  if(methods[i].getName().startsWith("get")){
+					  fieldName = methods[i].getName().substring(3);  // 属性
+					  Object value = methods[i].invoke(entity, (Object[])null);
+					  System.out.println("set"+fieldName);
+					  System.err.println("value:"+value);
+					  if(value == null){
+						  String entityField = fieldName.substring(0,1).toLowerCase()+fieldName.substring(1);
+						  Field field = entity.getClass().getDeclaredField(entityField);
+						  setMethod = entity.getClass().getDeclaredMethod("set"+fieldName,field.getType());
+						  //System.out.println("type:"+field.getType());
+						  //Object defaultValue = new Object();
+						  String fieldType = field.getType().getSimpleName();
+						  System.out.println("fieldType :" +fieldType);
+						  if(fieldType.equals("String")){
+							  
+						  }else if(fieldType.equals("Number")){
+							  
+						  }else if(fieldType.equals("Date")){
+							  
+						  }
+					  }
+				  }
+				}
+			}
+			System.out.println(entity.toJSON());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return (T) entity;
+	}
+	*/
 	
 
 

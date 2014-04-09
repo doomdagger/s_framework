@@ -7,7 +7,7 @@ import com.hg.ecommerce.model.SysSetting;
 
 public interface SysSettingService {
 	
-	public boolean save(SysSetting sysSetting);
+	public Object save(SysSetting sysSetting);
 	
 	public boolean saveByWrapper(SQLWrapper wrapper);
 	
