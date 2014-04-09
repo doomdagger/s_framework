@@ -4,15 +4,20 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import com.hg.ecommerce.dao.BaseDao;
@@ -21,6 +26,7 @@ import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.dao.support.Sortable;
 import com.hg.ecommerce.model.support.AnnotatedModel;
 import com.hg.ecommerce.model.support.EntityObject;
+
 
 
 public class BaseDaoImpl<T> implements BaseDao<T>{
@@ -213,10 +219,11 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> findByNativeQuery(String sql) {
+	public List<Map<String, Object>> findByNativeQuery(String sql) {
 		this.query = sql;
-		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
+		return getJdbcTemplate().query(this.query, new IRowMapper());
 	}
 	
 	@Override
@@ -224,57 +231,25 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		this.query = SQLWrapper.instance().selectAll().setModel(meta.getTableName()).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls)).size();
 	}
-
+	
 	@Override
 	public long getCountByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls)).size();
 	}
-
 	
-	/*
-	@SuppressWarnings("unchecked")
-	private T clearEntityObject(T param){
-		EntityObject entity = (EntityObject)param;
-		String fieldName;
-		try {
-			if(entity!=null){
-				Method[] methods = entity.getClass().getDeclaredMethods();
-				Method setMethod;
-				for(int i=0;i<methods.length;i++){
-				  if(methods[i].getName().startsWith("get")){
-					  fieldName = methods[i].getName().substring(3);  // 属性
-					  Object value = methods[i].invoke(entity, (Object[])null);
-					  System.out.println("set"+fieldName);
-					  System.err.println("value:"+value);
-					  if(value == null){
-						  String entityField = fieldName.substring(0,1).toLowerCase()+fieldName.substring(1);
-						  Field field = entity.getClass().getDeclaredField(entityField);
-						  setMethod = entity.getClass().getDeclaredMethod("set"+fieldName,field.getType());
-						  //System.out.println("type:"+field.getType());
-						  //Object defaultValue = new Object();
-						  String fieldType = field.getType().getSimpleName();
-						  System.out.println("fieldType :" +fieldType);
-						  if(fieldType.equals("String")){
-							  
-						  }else if(fieldType.equals("Number")){
-							  
-						  }else if(fieldType.equals("Date")){
-							  
-						  }
-					  }
-				  }
-				}
+	@SuppressWarnings("rawtypes")
+	public class IRowMapper implements RowMapper{
+
+		@Override
+		public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Map<String, Object> row = new HashMap<String, Object>();
+			ResultSetMetaData rsMetaData = rs.getMetaData();
+			for(int i=1,size=rsMetaData.getColumnCount(); i<=size; i++){
+				row.put(rsMetaData.getColumnName(i), rs.getObject(i));
 			}
-			System.out.println(entity.toJSON());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			return row;
 		}
-		return (T) entity;
 	}
-	*/
 	
-
-
 }

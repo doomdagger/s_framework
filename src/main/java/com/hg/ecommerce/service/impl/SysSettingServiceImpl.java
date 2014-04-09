@@ -1,9 +1,11 @@
 package com.hg.ecommerce.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import com.hg.ecommerce.dao.impl.SysSettingDao;
 import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.model.SysSetting;
@@ -76,6 +78,11 @@ public class SysSettingServiceImpl implements SysSettingService {
 	@Override
 	public List<SysSetting> selectByWrapper(SQLWrapper wrapper) {
 		return sysSettingDao.findAllByWrapper(wrapper);
+	}
+
+	@Override
+	public List<Map<String, Object>> findByNativeQuery(String query) {
+		return sysSettingDao.findByNativeQuery(query);
 	}
 
 }

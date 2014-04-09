@@ -2,6 +2,7 @@ package com.hg.ecommerce.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
@@ -54,7 +55,7 @@ public interface BaseDao<T> {
 	List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,Pageable pageable,Sortable sortable);
 	
 	//native
-	List<T> findByNativeQuery(String sql);
+	List<Map<String, Object>> findByNativeQuery(String sql);
 	
 	//all rows
 	long getCount();

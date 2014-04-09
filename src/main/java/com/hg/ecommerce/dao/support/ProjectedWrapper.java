@@ -4,6 +4,12 @@ import java.util.Collection;
 
 import com.hg.ecommerce.config.ProjectContainer;
 
+/**
+ * 聚合函数查询，当用到projectedWrapper中的时候，
+ * 只需要调用SQLWrapper中的selectByProjectedWrapper(projectedWrapper)，后面直接跟where()条件语句
+ * @author JOE
+ *
+ */
 public class ProjectedWrapper {
 	
 	private StringBuilder projection;
@@ -113,5 +119,9 @@ public class ProjectedWrapper {
 	//only get \ no set
 	public StringBuilder getProjection() {
 		return projection;
+	}
+	
+	public IProjections getProjecter(){
+		return projecter;
 	}
 }

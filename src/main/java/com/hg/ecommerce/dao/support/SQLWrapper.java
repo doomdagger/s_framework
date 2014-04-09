@@ -321,6 +321,15 @@ public class SQLWrapper {
 		return this;
 	}
 	
+	/**
+	 * 聚合查询，AVG，COUNT等，projected提供基本常用的聚合函数
+	 * @param projectedWrapper
+	 * @return
+	 */
+	public SQLWrapper selectByProjectedWrapper(ProjectedWrapper projectedWrapper){
+		provider.select(projectedWrapper.getProjecter());
+		return this;
+	}
 	 
 	/**
 	 * 此方法只用于insert()之后，来确定要插入数据库的字段
