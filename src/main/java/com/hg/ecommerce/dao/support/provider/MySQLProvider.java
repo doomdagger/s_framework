@@ -85,6 +85,7 @@ public class MySQLProvider implements ISQLProvider {
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider values(Collection<Object> objects){
 		if(null!=objects && isInsert){
@@ -114,6 +115,7 @@ public class MySQLProvider implements ISQLProvider {
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider update() {
@@ -210,6 +212,7 @@ public class MySQLProvider implements ISQLProvider {
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider fields(Collection<Object> objects) {
 		if(null!=objects){
@@ -248,6 +251,7 @@ public class MySQLProvider implements ISQLProvider {
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider set(String field, Object value) {
@@ -460,6 +464,7 @@ public class MySQLProvider implements ISQLProvider {
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider in(Object field, Collection<Object> objects) {
 		if(null!=objects){
@@ -479,6 +484,7 @@ public class MySQLProvider implements ISQLProvider {
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider notIn(Object field, Object... objects) {
@@ -501,6 +507,7 @@ public class MySQLProvider implements ISQLProvider {
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider notIn(Object field, Collection<Object> objects) {
 		if(null!=objects){
@@ -522,6 +529,7 @@ public class MySQLProvider implements ISQLProvider {
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider like(Object field, Object regex) {

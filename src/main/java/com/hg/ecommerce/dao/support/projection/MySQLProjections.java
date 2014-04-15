@@ -1,6 +1,5 @@
 package com.hg.ecommerce.dao.support.projection;
 
-import java.util.Collection;
 
 import com.hg.ecommerce.dao.support.IProjections;
 
@@ -27,6 +26,7 @@ public class MySQLProjections implements IProjections{
 		return this;
 	}
 
+	/*
 	@Override
 	public IProjections fields(Collection<Object> objects) {
 		if(null!=objects){
@@ -38,6 +38,7 @@ public class MySQLProjections implements IProjections{
 		}
 		return this;
 	}
+	*/
 	
 	//functions operation work for select
 	@Override

@@ -27,7 +27,7 @@ public class SysSettingServiceImpl implements SysSettingService {
 
 	@Override
 	public boolean saveByWrapper(SQLWrapper wrapper) {
-		if(sysSettingDao.addByWrapper(wrapper)){
+		if(sysSettingDao.addByWrapper(wrapper) != null){
 			return true;
 		}
 		return false;

@@ -70,6 +70,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		this.query = SQLWrapper.instance().insert((EntityObject) param).setModel(meta.getTableName()).getQuery();
 		final String preQuery = this.query;
 		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		System.out.println(this.query);
 		getJdbcTemplate().update((new PreparedStatementCreator() {
 			@Override
 			public java.sql.PreparedStatement createPreparedStatement(Connection con)
@@ -94,12 +95,19 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean addByWrapper(SQLWrapper sqlWrapper) {
+	public Object addByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).preparedInsert((Class<EntityObject>) cls);
-		if(0<getJdbcTemplate().update(this.query)){
-			return true;
-		}
-		return false;
+		final String preQuery = this.query;
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		getJdbcTemplate().update((new PreparedStatementCreator() {
+			@Override
+			public java.sql.PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				PreparedStatement preparedStatement = con.prepareStatement(preQuery,Statement.RETURN_GENERATED_KEYS);
+				return preparedStatement;
+			}
+		}), keyHolder);
+		return keyHolder.getKey()==null?null:keyHolder.getKey().intValue();
 	}
 	
 	@Override
@@ -219,12 +227,28 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
 	
+	
+	//Native api to execute sql command
+	/**
+	 * only for select SQL Statement
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> findByNativeQuery(String sql) {
 		this.query = sql;
 		return getJdbcTemplate().query(this.query, new IRowMapper());
 	}
+	
+	/**
+	 * support insert update delete SQL Statement
+	 */
+	@Override
+	public void updateByNativeQuery(String sql) {
+		this.query = sql;
+		getJdbcTemplate().update(this.query);
+	}
+	
+	
 	
 	@Override
 	public long getCount() {
@@ -251,5 +275,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 			return row;
 		}
 	}
+
+	
 	
 }

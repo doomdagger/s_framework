@@ -25,7 +25,7 @@ public interface BaseDao<T> {
 	 */
 	List<Object> addMulti(Collection<T> params);
 	
-	boolean addByWrapper(SQLWrapper sqlWrapper);
+	Object addByWrapper(SQLWrapper sqlWrapper);
 	
 	boolean update(T param);
 	
@@ -56,6 +56,8 @@ public interface BaseDao<T> {
 	
 	//native
 	List<Map<String, Object>> findByNativeQuery(String sql);
+	
+	void updateByNativeQuery(String sql);
 	
 	//all rows
 	long getCount();

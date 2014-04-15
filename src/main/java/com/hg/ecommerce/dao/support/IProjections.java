@@ -1,13 +1,13 @@
 package com.hg.ecommerce.dao.support;
 
-import java.util.Collection;
+//import java.util.Collection;
 
 public interface IProjections extends IOperators{
 
 	//fields
 	public IProjections fields(Object...objects);
 	
-	public IProjections fields(Collection<Object> objects);
+	//public IProjections fields(Collection<Object> objects);
 	
 	//projections  functions; usually be used for select
 	public IProjections AVG(String field,String alias);

@@ -6,11 +6,9 @@ import java.lang.reflect.Method;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 import com.hg.ecommerce.config.ProjectContainer;
 import com.hg.ecommerce.dao.support.IOperators.AOR;
 import com.hg.ecommerce.model.support.AnnotatedModel;
@@ -87,7 +85,7 @@ public class SQLWrapper {
 			  	}
 			}
 		}
-		provider.insert().fields(fields).values(values);
+		provider.insert().fields(fields.toArray()).values(values.toArray());
 		return this;
 	}
 	
@@ -109,6 +107,7 @@ public class SQLWrapper {
 		AnnotatedModel meta = new AnnotatedModel(Model.getClass());
 		Set<String> set = meta.getPrimaryKeys();
 		Method[] methods = Model.getClass().getDeclaredMethods();
+		//delete
 		provider.delete().where();
 		String fieldName;
 		for(int i=0;i<methods.length;i++){
@@ -147,10 +146,12 @@ public class SQLWrapper {
 	 * @param objects
 	 * @return
 	 */
+	/*此方法废除
 	public SQLWrapper values(Collection<Object> objects){
 		provider.values(objects);
 		return this;
 	}
+	*/
 	
 	/**
 	 * 
@@ -184,7 +185,7 @@ public class SQLWrapper {
 					}
 			  	}
 		}
-		provider.fields(fields).values(values);
+		provider.fields(fields.toArray()).values(values.toArray());
 		return this;
 	}
 	
@@ -226,16 +227,18 @@ public class SQLWrapper {
 						  keys.add(fieldName);
 						  keyValues.add(value);
 					  }else{
-						  fields.add(fieldName);
 						  if(value instanceof Boolean){
+							  fields.add(fieldName);
 							  if((Boolean) value){
 								  values.add(1);
 							  }else{
 								  values.add(0);
 							  }
 						  }else if(value instanceof Date){
+							  fields.add(fieldName);
 							  values.add(Util.dateToString((Date)value));
-						  }else {
+						  }else if(!"".equals(value)){
+							  fields.add(fieldName);
 							  values.add(value);
 						  }
 					  }
@@ -346,16 +349,19 @@ public class SQLWrapper {
 	 * @param objects
 	 * @return
 	 */
+	/*此方法废除
 	public SQLWrapper fields(Collection<Object> objects){
 		provider.fields(objects);
 		return this;
 	}
+	*/
 	
 	/**
 	 * 使用Model中的所有字段来填充fields，用于insert后
 	 * @param Model
 	 * @return
 	 */
+	/*此方法废除
 	public SQLWrapper fields(Class<EntityObject> Model){
 		List<Object> fields = new ArrayList<Object>();//字段
 		AnnotatedModel meta = new AnnotatedModel(Model);
@@ -372,6 +378,7 @@ public class SQLWrapper {
 		}
 		return this;
 	}
+	*/
 	
 	/**
 	 * 此方法用于update后，来update对应的字段和值
@@ -566,10 +573,12 @@ public class SQLWrapper {
 	 * @param objects
 	 * @return
 	 */
+	/*此方法废除
 	public SQLWrapper in(Object field,Collection<Object> objects){
 		provider.in(field, objects);
 		return this;
 	}
+	*/
 	
 	/**
 	 * "not in(a1,a2,a3...)"
@@ -588,11 +597,12 @@ public class SQLWrapper {
 	 * @param objects
 	 * @return
 	 */
+	/*此方法废除
 	public SQLWrapper notIn(Object field,Collection<Object> objects){
 		provider.notIn(field, objects);
 		return this;
 	}
-	
+	*/
 	/**
 	 * "like 'value'"
 	 * @param field
