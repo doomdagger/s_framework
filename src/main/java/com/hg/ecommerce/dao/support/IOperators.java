@@ -33,6 +33,7 @@ public interface IOperators {
 	public static final String NOT_LIKE = " NOT LIKE ";
 	public static final String IN = " IN ";
 	public static final String NOT_IN = " NOT IN ";
+	public static final String NULL = " NULL ";
 	//key words
 	public static final String INSERT = " INSERT INTO ";//select
 	public static final String VALUES = " VALUES ";

@@ -2,11 +2,23 @@ package com.hg.ecommerce.dao.impl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import com.hg.ecommerce.dao.BaseDao;
 import com.hg.ecommerce.dao.support.Pageable;
@@ -14,6 +26,7 @@ import com.hg.ecommerce.dao.support.SQLWrapper;
 import com.hg.ecommerce.dao.support.Sortable;
 import com.hg.ecommerce.model.support.AnnotatedModel;
 import com.hg.ecommerce.model.support.EntityObject;
+
 
 
 public class BaseDaoImpl<T> implements BaseDao<T>{
@@ -53,35 +66,48 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	}
 	
 	@Override
-	public boolean add(T param) {
+	public Object add(final T param) {
 		this.query = SQLWrapper.instance().insert((EntityObject) param).setModel(meta.getTableName()).getQuery();
-		if(0<getJdbcTemplate().update(this.query)){
-			return true;
-		}
-		return false;
+		final String preQuery = this.query;
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		System.out.println(this.query);
+		getJdbcTemplate().update((new PreparedStatementCreator() {
+			@Override
+			public java.sql.PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				PreparedStatement preparedStatement = con.prepareStatement(preQuery,Statement.RETURN_GENERATED_KEYS);
+				return preparedStatement;
+			}
+		}), keyHolder);
+		return keyHolder.getKey()==null?null:keyHolder.getKey().intValue();
 	}
 	
+	
 	@Override
-	public boolean addMulti(Collection<T> params) {
-		int count = 0;
+	public List<Object> addMulti(Collection<T> params) {
+		List<Object> list = new ArrayList<Object>();
 		for(T param : params){
 			this.query = SQLWrapper.instance().insert((EntityObject) param).setModel(meta.getTableName()).getQuery();
-			getJdbcTemplate().update(this.query);
-			count++;
+			list.add(getJdbcTemplate().update(this.query));
 		}
-		if(count==params.size()){
-			return true;
-		}
-		return false;
+		return list;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean addByWrapper(SQLWrapper sqlWrapper) {
-		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
-		if(0<getJdbcTemplate().update(this.query)){
-			return true;
-		}
-		return false;
+	public Object addByWrapper(SQLWrapper sqlWrapper) {
+		this.query = sqlWrapper.setModel(meta.getTableName()).preparedInsert((Class<EntityObject>) cls);
+		final String preQuery = this.query;
+		GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+		getJdbcTemplate().update((new PreparedStatementCreator() {
+			@Override
+			public java.sql.PreparedStatement createPreparedStatement(Connection con)
+					throws SQLException {
+				PreparedStatement preparedStatement = con.prepareStatement(preQuery,Statement.RETURN_GENERATED_KEYS);
+				return preparedStatement;
+			}
+		}), keyHolder);
+		return keyHolder.getKey()==null?null:keyHolder.getKey().intValue();
 	}
 	
 	@Override
@@ -92,7 +118,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean updateByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
@@ -119,7 +145,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		}
 		return false;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean deleteById(Object...id) {
@@ -161,7 +187,7 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		List<T> list = getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 		return list.get(0);
 	}
-
+	
 	@Override
 	public T findOneByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
@@ -172,7 +198,6 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 	public List<T> findAll() {
 		this.query = SQLWrapper.instance().selectAll().setModel(meta.getTableName()).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
-		//return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
 	
 	@Override
@@ -202,26 +227,55 @@ public class BaseDaoImpl<T> implements BaseDao<T>{
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
 	}
 	
+	
+	//Native api to execute sql command
+	/**
+	 * only for select SQL Statement
+	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> findByNativeQuery(String sql) {
+	public List<Map<String, Object>> findByNativeQuery(String sql) {
 		this.query = sql;
-		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls));
+		return getJdbcTemplate().query(this.query, new IRowMapper());
 	}
+	
+	/**
+	 * support insert update delete SQL Statement
+	 */
+	@Override
+	public void updateByNativeQuery(String sql) {
+		this.query = sql;
+		getJdbcTemplate().update(this.query);
+	}
+	
+	
 	
 	@Override
 	public long getCount() {
 		this.query = SQLWrapper.instance().selectAll().setModel(meta.getTableName()).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls)).size();
 	}
-
+	
 	@Override
 	public long getCountByWrapper(SQLWrapper sqlWrapper) {
 		this.query = sqlWrapper.setModel(meta.getTableName()).getQuery();
 		return getJdbcTemplate().query(this.query, BeanPropertyRowMapper.newInstance(cls)).size();
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public class IRowMapper implements RowMapper{
+
+		@Override
+		public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Map<String, Object> row = new HashMap<String, Object>();
+			ResultSetMetaData rsMetaData = rs.getMetaData();
+			for(int i=1,size=rsMetaData.getColumnCount(); i<=size; i++){
+				row.put(rsMetaData.getColumnName(i), rs.getObject(i));
+			}
+			return row;
+		}
+	}
 
 	
 	
-
-
 }

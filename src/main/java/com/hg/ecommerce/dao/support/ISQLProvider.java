@@ -1,6 +1,6 @@
 package com.hg.ecommerce.dao.support;
 
-import java.util.Collection;
+//import java.util.Collection;
 
 public interface ISQLProvider extends IOperators{
 	
@@ -11,7 +11,7 @@ public interface ISQLProvider extends IOperators{
 	
 	public ISQLProvider values(Object...objects);
 	
-	public ISQLProvider values(Collection<Object> objects);
+	//public ISQLProvider values(Collection<Object> objects);
 	
 	//delete
 	public ISQLProvider delete();
@@ -38,7 +38,7 @@ public interface ISQLProvider extends IOperators{
 	
 	public ISQLProvider fields(Object...objects);
 	
-	public ISQLProvider fields(Collection<Object> objects);
+	//public ISQLProvider fields(Collection<Object> objects);
 	
 	//where
 	public ISQLProvider where();//static
@@ -69,11 +69,11 @@ public interface ISQLProvider extends IOperators{
 	
 	public ISQLProvider in(Object field,Object...objects);
 	
-	public ISQLProvider in(Object field,Collection<Object> objects);
+	//public ISQLProvider in(Object field,Collection<Object> objects);
 	
 	public ISQLProvider notIn(Object field,Object...objects);
 	
-	public ISQLProvider notIn(Object field,Collection<Object> objects);
+	//public ISQLProvider notIn(Object field,Collection<Object> objects);
 	
 	public ISQLProvider like(Object field,Object regex);
 	

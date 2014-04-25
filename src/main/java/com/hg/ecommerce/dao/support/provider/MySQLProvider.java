@@ -1,5 +1,6 @@
 package com.hg.ecommerce.dao.support.provider;
 
+import java.sql.Types;
 import java.util.Collection;
 
 import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Black;
@@ -21,6 +22,7 @@ public class MySQLProvider implements ISQLProvider {
 	private boolean isSet = false;//work with update
 	private boolean isAnd = false;//work with where
 	private boolean isOrder = false;//work with order
+	private boolean isSetModel = false;
 	
 	/**
 	 * 当使用selectAll 和 select(Projection)的时候，isProjected设置为true，控制ISQLProvider的fileds的使用
@@ -59,42 +61,61 @@ public class MySQLProvider implements ISQLProvider {
 			if(!isValues){
 				this.SQL.append(VALUES).append(LP);
 				for(Object object : objects){
-					this.SQL.append(QUOTE).append(object).append(QUOTE);
-					this.SQL.append(COMMA);
+					if(object.equals(NULL)){
+						this.SQL.append(Types.NULL).append(COMMA);
+					}else{
+						this.SQL.append(QUOTE).append(object).append(QUOTE).append(COMMA);
+					}
+					
 				}
 				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
 				this.SQL.append(RP);
 				isValues = true;
 			}else{
 				for(Object object : objects){
-					this.SQL.insert(this.SQL.lastIndexOf(RP), COMMA+QUOTE+object+QUOTE);
+					if(object.equals(NULL)){
+						this.SQL.insert(this.SQL.lastIndexOf(RP), COMMA+Types.NULL);
+					}else{
+						this.SQL.insert(this.SQL.lastIndexOf(RP), COMMA+QUOTE+object+QUOTE);
+					}
+					
 				}
 			}
-			
 		}
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider values(Collection<Object> objects){
 		if(null!=objects && isInsert){
 			if(!isValues){
 				this.SQL.append(VALUES).append(LP);
 				for(Object object : objects){
-					this.SQL.append(QUOTE).append(object).append(QUOTE);
-					this.SQL.append(COMMA);
+					if(object.equals(NULL)){
+						this.SQL.append(Types.NULL).append(COMMA);
+					}else{
+						this.SQL.append(QUOTE).append(object).append(QUOTE).append(COMMA);
+					}
+					
 				}
 				this.SQL = new StringBuilder(this.SQL.substring(0, this.SQL.lastIndexOf(COMMA)));
 				this.SQL.append(RP);
 				isValues = true;
 			}else{
 				for(Object object : objects){
-					this.SQL.insert(this.SQL.lastIndexOf(RP), COMMA+QUOTE+object+QUOTE);
+					if(object.equals(NULL)){
+						this.SQL.insert(this.SQL.lastIndexOf(RP), COMMA+Types.NULL);
+					}else{
+						this.SQL.insert(this.SQL.lastIndexOf(RP), COMMA+QUOTE+object+QUOTE);
+					}
+					
 				}
 			}
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider update() {
@@ -191,6 +212,7 @@ public class MySQLProvider implements ISQLProvider {
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider fields(Collection<Object> objects) {
 		if(null!=objects){
@@ -229,6 +251,7 @@ public class MySQLProvider implements ISQLProvider {
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider set(String field, Object value) {
@@ -441,6 +464,7 @@ public class MySQLProvider implements ISQLProvider {
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider in(Object field, Collection<Object> objects) {
 		if(null!=objects){
@@ -460,6 +484,7 @@ public class MySQLProvider implements ISQLProvider {
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider notIn(Object field, Object... objects) {
@@ -482,6 +507,7 @@ public class MySQLProvider implements ISQLProvider {
 		return this;
 	}
 	
+	/*
 	@Override
 	public ISQLProvider notIn(Object field, Collection<Object> objects) {
 		if(null!=objects){
@@ -503,6 +529,7 @@ public class MySQLProvider implements ISQLProvider {
 		}
 		return this;
 	}
+	*/
 	
 	@Override
 	public ISQLProvider like(Object field, Object regex) {
@@ -588,23 +615,28 @@ public class MySQLProvider implements ISQLProvider {
 	//get & set
 	@Override
 	public void setModel(Object model) {
-		this.Model = model;
-		if(isInsert){
-			this.SQL.insert(this.SQL.indexOf(INSERT)+INSERT.length()+1, this.Model+BLANK);
-		}else if(isDelete){
-			this.SQL.insert(this.SQL.indexOf(DELETE)+DELETE.length()+1, this.Model+BLANK);
-		}else if(isUpdate){
-			this.SQL.insert(this.SQL.indexOf(UPDATE)+UPDATE.length(), this.Model+BLANK+SET);
-		}else if(isSelect){
-			if(-1!=this.SQL.indexOf(FROM)){
-				this.SQL.append(BLANK).append(BLANK);
-				this.SQL.insert(this.SQL.indexOf(FROM)+FROM.length()+1, this.Model+BLANK);
-			}else if(-1!=this.SQL.indexOf(WHERE)){
-				this.SQL.insert(this.SQL.indexOf(WHERE), FROM+this.Model+BLANK);
-			}else{
-				this.SQL.append(FROM).append(this.Model);
+		if(!isSetModel){
+			this.Model = model;
+			if(isInsert){
+				this.SQL.insert(this.SQL.indexOf(INSERT)+INSERT.length()+1, this.Model+BLANK);
+				this.isSetModel = true;
+			}else if(isDelete){
+				this.SQL.insert(this.SQL.indexOf(DELETE)+DELETE.length()+1, this.Model+BLANK);
+				this.isSetModel = true;
+			}else if(isUpdate){
+				this.SQL.insert(this.SQL.indexOf(UPDATE)+UPDATE.length(), this.Model+BLANK+SET);
+				this.isSetModel = true;
+			}else if(isSelect){
+				if(-1!=this.SQL.indexOf(FROM)){
+					this.SQL.append(BLANK).append(BLANK);
+					this.SQL.insert(this.SQL.indexOf(FROM)+FROM.length()+1, this.Model+BLANK);
+				}else if(-1!=this.SQL.indexOf(WHERE)){
+					this.SQL.insert(this.SQL.indexOf(WHERE), FROM+this.Model+BLANK);
+				}else{
+					this.SQL.append(FROM).append(this.Model);
+				}
+				this.isSetModel = true;
 			}
-			
 		}
 	}
 	
@@ -629,6 +661,7 @@ public class MySQLProvider implements ISQLProvider {
 		this.isUpdate = false;
 		this.isValues = false;
 		this.isWhere = false;
+		this.isSetModel = false;
 	}
 
 

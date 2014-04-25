@@ -1,6 +1,5 @@
 package com.hg.ecommerce.dao.support.projection;
 
-import java.util.Collection;
 
 import com.hg.ecommerce.dao.support.IProjections;
 
@@ -12,11 +11,13 @@ public class MSSQLProjections implements IProjections {
 		return null;
 	}
 
+	/*
 	@Override
 	public IProjections fields(Collection<Object> objects) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	*/
 
 	@Override
 	public IProjections AVG(String field, String alias) {

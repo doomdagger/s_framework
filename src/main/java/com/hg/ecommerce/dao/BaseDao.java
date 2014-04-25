@@ -2,6 +2,7 @@ package com.hg.ecommerce.dao;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.hg.ecommerce.dao.support.Pageable;
 import com.hg.ecommerce.dao.support.SQLWrapper;
@@ -15,16 +16,16 @@ public interface BaseDao<T> {
 	 * @param param：实体
 	 * @return：成功返回true
 	 */
-	boolean add(T param);
+	Object add(T param);
 	
 	/**
 	 * 同时添加多个实体Model
 	 * @param params：Model的Collection集合
 	 * @return：成功返回true
 	 */
-	boolean addMulti(Collection<T> params);
+	List<Object> addMulti(Collection<T> params);
 	
-	boolean addByWrapper(SQLWrapper sqlWrapper);
+	Object addByWrapper(SQLWrapper sqlWrapper);
 	
 	boolean update(T param);
 	
@@ -54,7 +55,9 @@ public interface BaseDao<T> {
 	List<T> findAllByWrapperInPageInOrder(SQLWrapper sqlWrapper,Pageable pageable,Sortable sortable);
 	
 	//native
-	List<T> findByNativeQuery(String sql);
+	List<Map<String, Object>> findByNativeQuery(String sql);
+	
+	void updateByNativeQuery(String sql);
 	
 	//all rows
 	long getCount();
