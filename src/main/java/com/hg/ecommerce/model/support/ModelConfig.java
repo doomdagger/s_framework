@@ -17,6 +17,7 @@ public class ModelConfig extends EntityObject{
 	
 	
 	private String packageName;
+	private String extPackageName;  //package name for extjs
 	private String superClsPath;
 	private String modelName;
 	private String modelDescription;
@@ -25,6 +26,15 @@ public class ModelConfig extends EntityObject{
 	private Set<String> importInfos;
 	private List<FieldEntry> fieldEntries;
 
+	
+
+	public String getExtPackageName() {
+		return extPackageName;
+	}
+
+	public void setExtPackageName(String extPackageName) {
+		this.extPackageName = extPackageName;
+	}
 
 	public String getPackageName() {
 		return packageName;

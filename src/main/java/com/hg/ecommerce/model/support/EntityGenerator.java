@@ -15,6 +15,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import ch.rasc.extclassgenerator.Model;
+import ch.rasc.extclassgenerator.ModelField;
+
 import com.hg.ecommerce.config.ProjectConfig;
 import com.hg.ecommerce.config.ProjectContainer;
 import com.hg.ecommerce.model.support.annotation.Column;
@@ -70,15 +73,23 @@ public class EntityGenerator {
 			modelConfig.setSchema(Util.conditionedGet(tableDef.getTableCatalog(), tableDef.getTableSchema()));
 			modelConfig.setSuperClsPath(EntityObject.class.getName());
 			modelConfig.setTable(tableDef.getTableName());
+			modelConfig.setExtPackageName(ProjectConfig.getProperty("extjs.model.package"));
 			
 			Set<String> importInfos = new HashSet<String>();
 			importInfos.add(modelConfig.getSuperClsPath());
 			importInfos.add(Table.class.getName());
 			importInfos.add(Column.class.getName());
+			importInfos.add(Model.class.getName());
 			
 			for(FieldEntry fieldEntry : entries){
 				@SuppressWarnings("rawtypes")
 				Class cls = mapper.mapFieldType(fieldEntry);
+				
+				if(fieldEntry.isDateType()){
+					importInfos.add(ModelField.class.getName());
+					fieldEntry.setExtDateFormat(ProjectConfig.getProperty("extjs.format.date"));
+				}
+				
 				String clsName = cls.getName();
 				
 				if(clsName.split("\\.").length>1){

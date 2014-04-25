@@ -34,9 +34,9 @@ public class ModelGenController {
 				clsName = ProjectConfig.getProperty("package.pojo")+"."+modelName;
 			}
 			Class<?> cls = Class.forName(clsName);
-			ModelGenerator.writeModel(request, response, cls, OutputFormat.EXTJS4);
+			ModelGenerator.writeModel(request, response, cls, OutputFormat.EXTJS4,true);
 		}catch(ClassNotFoundException exception){
-			ModelGenerator.writeModel(request, response, NullModel.class, OutputFormat.EXTJS4);
+			ModelGenerator.writeModel(request, response, NullModel.class, OutputFormat.EXTJS4,true);
 		}
 		
     }

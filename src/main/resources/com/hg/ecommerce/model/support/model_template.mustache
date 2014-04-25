@@ -12,6 +12,7 @@ import {{.}};
  *  @author auto_generate model
  */
  @Table("{{table}}")
+ @Model(value="{{extPackageName}}.{{modelName}}") 
 public class {{modelName}} extends EntityObject{
 
 	/**
@@ -37,6 +38,9 @@ public class {{modelName}} extends EntityObject{
 	@Id
 	{{/primaryKey}}
 	@Column("{{mappedFieldName}}")
+	{{#dateType}}
+	@ModelField(dateFormat="{{extDateFormat}}")
+	{{/dateType}}
 	private {{typeName}} {{fieldName}};
 
 	public {{typeName}} get{{qualifiedFieldName}}() {

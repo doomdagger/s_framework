@@ -191,6 +191,7 @@ public abstract class AbstractRSQLFieldTypeMapper implements FieldTypeMapper {
 		case Types.TIME:
 		case Types.TIMESTAMP:
 			cls = Date.class;
+			entry.setDateType(true);
 			break;
 		
 		}

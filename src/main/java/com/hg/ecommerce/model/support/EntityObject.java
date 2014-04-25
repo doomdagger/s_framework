@@ -29,9 +29,9 @@ public class EntityObject implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -8495226126373394030L;
-	public static final String GETTER_PREFIX = "get";
-	public static final String SETTER_PREFIX = "set";
-	public static final String IS_PREFIX = "is";
+	private static final String GETTER_PREFIX = "get";
+	private static final String SETTER_PREFIX = "set";
+	private static final String IS_PREFIX = "is";
 
 	/**
 	 * 根据字段名设置一个字段值， String to EntityObject，只支持Object

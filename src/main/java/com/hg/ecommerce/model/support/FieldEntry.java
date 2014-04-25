@@ -101,8 +101,28 @@ public class FieldEntry extends EntityObject {
 	private String refTableName; //SCOPE_TABLE 
 	// 是否为主键
 	private boolean primaryKey;
+	// 是否为日期类型变量
+	private boolean dateType;
+	// ext date format
+	private String extDateFormat;
+
 	
-	
+	public String getExtDateFormat() {
+		return extDateFormat;
+	}
+
+	public void setExtDateFormat(String extDateFormat) {
+		this.extDateFormat = extDateFormat;
+	}
+
+	public boolean isDateType() {
+		return dateType;
+	}
+
+	public void setDateType(boolean dateType) {
+		this.dateType = dateType;
+	}
+
 	public boolean isPrimaryKey() {
 		return primaryKey;
 	}

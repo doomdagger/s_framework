@@ -2,7 +2,9 @@ package com.hg.ecommerce.model;
 import com.hg.ecommerce.model.support.annotation.Table;
 import com.hg.ecommerce.model.support.annotation.Column;
 import com.hg.ecommerce.model.support.EntityObject;
+import ch.rasc.extclassgenerator.Model;
 import java.util.Date;
+import ch.rasc.extclassgenerator.ModelField;
 import com.hg.ecommerce.model.support.annotation.Id;
 /**
  * Description:No Description Available
@@ -12,6 +14,7 @@ import com.hg.ecommerce.model.support.annotation.Id;
  *  @author auto_generate model
  */
  @Table("sys_setting")
+ @Model(value="MyDesktop.model.SysSetting") 
 public class SysSetting extends EntityObject{
 	/**
 	 *  serialVersionUID, dedicated to object serialize.
@@ -103,6 +106,26 @@ public class SysSetting extends EntityObject{
 	 * <p>
 	 * Mapped field info in table:
 	 * <ul>
+	 * 	 <li>Field Name  : "createperson"</li>
+	 * 	 <li>Field Type  : "BIGINT"</li>
+	 * 	 <li>Field Length: "19"</li>
+	 *   <li>Refer Info  : ""</li>
+	 * </ul>
+	 * </p>
+	 */
+	@Column("createperson")
+	private long createperson;
+	public long getCreateperson() {
+		return createperson;
+	}
+	public void setCreateperson(long createperson) {
+		this.createperson = createperson;
+	}
+	/**
+	 * Description:
+	 * <p>
+	 * Mapped field info in table:
+	 * <ul>
 	 * 	 <li>Field Name  : "createtime"</li>
 	 * 	 <li>Field Type  : "DATETIME"</li>
 	 * 	 <li>Field Length: "19"</li>
@@ -111,6 +134,7 @@ public class SysSetting extends EntityObject{
 	 * </p>
 	 */
 	@Column("createtime")
+	@ModelField(dateFormat="Y-m-d H:i:s")
 	private Date createtime;
 	public Date getCreatetime() {
 		return createtime;
@@ -151,31 +175,12 @@ public class SysSetting extends EntityObject{
 	 * </p>
 	 */
 	@Column("edittime")
+	@ModelField(dateFormat="Y-m-d H:i:s")
 	private Date edittime;
 	public Date getEdittime() {
 		return edittime;
 	}
 	public void setEdittime(Date edittime) {
 		this.edittime = edittime;
-	}
-	/**
-	 * Description:
-	 * <p>
-	 * Mapped field info in table:
-	 * <ul>
-	 * 	 <li>Field Name  : "createperson"</li>
-	 * 	 <li>Field Type  : "BIGINT"</li>
-	 * 	 <li>Field Length: "19"</li>
-	 *   <li>Refer Info  : ""</li>
-	 * </ul>
-	 * </p>
-	 */
-	@Column("createperson")
-	private long createperson;
-	public long getCreateperson() {
-		return createperson;
-	}
-	public void setCreateperson(long createperson) {
-		this.createperson = createperson;
 	}
 }
