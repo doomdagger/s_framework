@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd ">
+
+	<mvc:annotation-driven enable-matrix-variables="true">
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			<bean
+				class="org.springframework.http.converter.ResourceHttpMessageConverter"></bean>
+			<bean class="org.springframework.http.converter.FormHttpMessageConverter"></bean>
+			<bean
+				class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter"></bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- 拦截器配置 -->
+	<mvc:interceptors>
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+		<mvc:interceptor>
+			<mvc:mapping path="/remoting/**" />
+			<bean class="com.hg.ecommerce.interceptor.UserControlInterceptor" />
+		</mvc:interceptor>
+		<!-- Add more interceptors here -->
+	</mvc:interceptors>
+
+	<context:property-placeholder location="classpath:/project-custom.properties" />
+	<context:annotation-config></context:annotation-config>
+	<!-- compulsory for extdirect spring -->
+	<context:component-scan base-package="ch.ralscha.extdirectspring" />
+	<context:component-scan base-package="com.hg.ecommerce.service.rmi.impl">
+		<!-- <context:include-filter type="annotation" expression=""/> -->
+	</context:component-scan>
+
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>
+
+	<bean id="threadPool"
+		class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+		<property name="corePoolSize" value="${extjs.pool.corePoolSize}" />
+		<property name="maxPoolSize" value="${extjs.pool.maxPoolSize}" />
+		<property name="queueCapacity" value="${extjs.pool.queueCapacity}" />
+	</bean>
+
+	<!-- see http://docs.sencha.com/extjs/4.2.2/#!/api/Ext.direct.RemotingProvider -->
+	<bean id="extDirectSpringConfiguration" class="ch.ralscha.extdirectspring.controller.Configuration"
+		p:timeout="${extjs.rmi.timeout}" p:maxRetries="${extjs.rmi.maxRetries}" p:enableBuffer="${extjs.rmi.enableBuffer}"
+		p:batchedMethodsExecutionPolicy="CONCURRENT"
+		p:batchedMethodsExecutorService-ref="threadPool"
+		p:defaultExceptionMessage="${extjs.rmi.defaultExceptionMessage}" p:sendExceptionMessage="${extjs.rmi.sendExceptionMessage}"
+		p:sendStacktrace="${extjs.rmi.sendStacktrace}">
+
+		<property name="exceptionToMessage">
+			<map>
+				<entry key="java.lang.IllegalArgumentException" value="illegal argument" />
+				<entry
+					key="org.springframework.beans.factory.NoSuchBeanDefinitionException">
+					<null />
+				</entry>
+			</map>
+		</property>
+
+	</bean>
+
+
+
+</beans>

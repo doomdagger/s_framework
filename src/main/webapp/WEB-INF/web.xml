@@ -12,9 +12,9 @@
 		</param-value>
 	</context-param>
 	<context-param>
-        <param-name>isLog4jAutoInitializationDisabled</param-name>
-        <param-value>true</param-value>
-    </context-param>
+		<param-name>isLog4jAutoInitializationDisabled</param-name>
+		<param-value>true</param-value>
+	</context-param>
 	<context-param>
 		<param-name>log4jConfiguration</param-name>
 		<param-value>classpath:/log4j2.xml</param-value>
@@ -22,15 +22,15 @@
 
 
 	<listener>
-	    <listener-class>com.hg.ecommerce.listener.ProjectBootstrapListener</listener-class>
+		<listener-class>com.hg.ecommerce.listener.ProjectBootstrapListener</listener-class>
 	</listener>
 	<listener>
-        <listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
-    </listener>
+		<listener-class>org.apache.logging.log4j.core.web.Log4jServletContextListener</listener-class>
+	</listener>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
+
 
 	<!-- Filter Place Here -->
 	<filter>
@@ -46,21 +46,22 @@
 		<filter-class>com.hg.ecommerce.filter.RequestFilter</filter-class>
 	</filter>
 	<filter>
-        <filter-name>log4jServletFilter</filter-name>
-        <filter-class>org.apache.logging.log4j.core.web.Log4jServletFilter</filter-class>
-    </filter>
-    
-	
-    <!-- sequence does matter from now -->
-    <filter-mapping>
-        <filter-name>log4jServletFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-        <dispatcher>ERROR</dispatcher>
-        <dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization only; not supported in 2.5 -->
-    </filter-mapping>
+		<filter-name>log4jServletFilter</filter-name>
+		<filter-class>org.apache.logging.log4j.core.web.Log4jServletFilter</filter-class>
+	</filter>
+
+
+	<!-- sequence does matter from now -->
+	<filter-mapping>
+		<filter-name>log4jServletFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+		<dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization 
+			only; not supported in 2.5 -->
+	</filter-mapping>
 	<filter-mapping>
 		<filter-name>charEncodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -78,7 +79,7 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-	
+
 	<!-- servlet config now -->
 	<servlet>
 		<servlet-name>action</servlet-name>
@@ -89,6 +90,24 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+
+	<servlet>
+		<servlet-name>remoting</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>WEB-INF/spring/remoting-servlet.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+		<multipart-config></multipart-config>
+	</servlet>
+	
+	<!-- servlet mapping -->
+	<servlet-mapping>
+		<servlet-name>remoting</servlet-name>
+		<url-pattern>/remoting/*</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
 		<url-pattern>/</url-pattern>

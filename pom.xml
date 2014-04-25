@@ -56,6 +56,21 @@
 			<version>4.0.2.RELEASE</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+			<version>4.0.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+			<version>4.0.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.ralscha</groupId>
+			<artifactId>extdirectspring</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 			<version>3.1</version>
@@ -149,6 +164,12 @@
 			<artifactId>itextpdf</artifactId>
 			<version>5.5.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext-asian</artifactId>
+			<version>5.2.0</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>ecommerce</finalName>
