@@ -23,7 +23,7 @@
 	</bean>
     
 	<websocket:handlers>
-		<websocket:mapping path="/chat" handler="chatHandler" />
+		<websocket:mapping path="/chat" handler="messageHandler" />
 		<websocket:handshake-interceptors>
 			<bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" />
 			<bean class="com.hg.ecommerce.interceptor.websocket.DemoWebsocketInterceptor"/>

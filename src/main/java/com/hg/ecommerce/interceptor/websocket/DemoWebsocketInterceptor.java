@@ -19,15 +19,17 @@ public class DemoWebsocketInterceptor implements HandshakeInterceptor{
 	public boolean beforeHandshake(ServerHttpRequest request,
 			ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+
+		System.out.println(getClass().getSimpleName()+" before handshake");
+		
+		return true;
 	}
 
 	@Override
 	public void afterHandshake(ServerHttpRequest request,
 			ServerHttpResponse response, WebSocketHandler wsHandler,
 			Exception exception) {
-		// TODO Auto-generated method stub
+		System.out.println(getClass().getSimpleName()+" after handshake");
 		
 	}
 
