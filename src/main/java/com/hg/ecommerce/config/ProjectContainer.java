@@ -1,5 +1,6 @@
 package com.hg.ecommerce.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -55,6 +56,8 @@ public class ProjectContainer extends AbstractModule{
 			bind(FieldTypeMapper.class).to((Class<? extends FieldTypeMapper>)Class.forName(fieldTypeMapperCls));
 			bind(ISQLProvider.class).to((Class<? extends ISQLProvider>)Class.forName(sqlDialectCls));		
 			bind(IProjections.class).to((Class<? extends IProjections>)Class.forName(sqlProjections));
+			
+			bind(ObjectMapper.class).toInstance(new ObjectMapper());
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -8,7 +8,12 @@ import java.util.Map.Entry;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import com.hg.ecommerce.websocket.support.PlainTextMessage;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hg.ecommerce.config.ProjectContainer;
+import com.hg.ecommerce.websocket.support.Socket;
+import com.hg.ecommerce.websocket.support.SocketMessage;
 
 /**
  * ConnectHub, 在这里存放一切的连接对象
@@ -18,7 +23,7 @@ import com.hg.ecommerce.websocket.support.PlainTextMessage;
 public class ConnectionHub {
 
 	private static ConnectionHub connectionHub = new ConnectionHub();
-
+	
 	
 	/**
 	 * 添加一个连接
@@ -79,13 +84,24 @@ public class ConnectionHub {
 	 * 将TextMessage的raw String解析为PlainTextMessage对象
 	 * @param message TextMessage
 	 * @return PlainTextMessage
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
-	public static PlainTextMessage wrapTextMessage(TextMessage message){
+	public static SocketMessage transferMessage(TextMessage message) throws JsonParseException, JsonMappingException, IOException {
 		
-		//TODO still not clear the operation
+		String payload = message.getPayload();
 		
-		return new PlainTextMessage();
+		ObjectMapper mapper = ProjectContainer.getInstance(ObjectMapper.class);
+		
+		SocketMessage socketMessage = mapper.readValue(payload, SocketMessage.class);
+		
+		return socketMessage;
+		
 	}
+	
+	
+	
 	
 	/**
 	 * 删掉不活跃的连接信息
@@ -110,11 +126,11 @@ public class ConnectionHub {
 	/**
 	 * 删除一个Connection，用户应当自行承担connection是否已经关闭的风险
 	 * @param sessionId
+	 * @throws IOException 
 	 */
 	public static void removeSocket(String sessionId){
 		
-		connectionHub.pool.remove(sessionId);
-		connectionHub.user_cache.remove(sessionId);
+		removeSocket(connectionHub.pool.get(sessionId));
 		
 	}
 	
@@ -123,16 +139,35 @@ public class ConnectionHub {
 	 * @param session session
 	 * @throws IOException session关闭时可能抛出异常
 	 */
-	public static void removeSocket(Socket socket) throws IOException{
+	public static void removeSocket(Socket socket){
 		
-		if(socket.isActive()){
-			socket.close();
+		if(socket==null) return;
+		
+		String sessionId = socket.getSessionId();
+		
+		try{
+			if(socket.isActive()){
+				socket.close();
+			}
+		}catch(IOException exception){
+			exception.printStackTrace();
+		}finally{
+			connectionHub.pool.remove(sessionId);
+			connectionHub.user_cache.remove(sessionId);
 		}
 		
-		removeSocket(socket.getSessionId());
 		
 	}
 	
+	/**
+	 * return the number of the active socket
+	 * @return int value
+	 */
+	public static int getActiveSocketCount(){
+		
+		return connectionHub.pool.size();
+		
+	}
 	
 	
 	//*********************************** gorgeous horizontal split ***********************************//

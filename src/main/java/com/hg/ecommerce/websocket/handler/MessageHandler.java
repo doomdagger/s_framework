@@ -3,11 +3,12 @@ package com.hg.ecommerce.websocket.handler;
 import java.io.IOException;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.BinaryMessage;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.AbstractWebSocketHandler;
+
+import com.hg.ecommerce.model.SysSetting;
+import com.hg.ecommerce.websocket.WebSocketEventDrivenHandler;
+import com.hg.ecommerce.websocket.exception.BadMessageException;
+import com.hg.ecommerce.websocket.support.Socket;
+import com.hg.ecommerce.websocket.support.SocketEventListener;
 
 /**
  * Handle Incoming Message and Manage WebSocket Session object
@@ -15,47 +16,40 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
  * @see com.hg.ecommerce.websocket.ConnectionHub
  */
 @Component("messageHandler")
-public class MessageHandler extends AbstractWebSocketHandler{
-	
-	/**
-	 * 连接成功建立时此方法被调用
-	 */
-	@Override
-	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-				
-		session.sendMessage(new TextMessage("The Connection is Established"));
-	}
-	
-	/**
-	 * 消息到来时，此方法被调用
-	 */
-	@Override
-	public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-		session.sendMessage(new TextMessage("Hi! You Back"));
-	
-	}
-	
-	/**
-	 * 二进制消息到来时，此方法被调用
-	 */
-	@Override
-	public void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
-	
-	}
+public class MessageHandler extends WebSocketEventDrivenHandler{
 
 	/**
-	 * 异常被触发时，此方法调用
+	 * 使用此方法注册事件，并执行连接建立后的部分逻辑
+	 * @throws IOException 
+	 * @throws BadMessageException 
 	 */
 	@Override
-	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+	public void onConnection(final Socket socket) {
+		
+		socket.emit("online", "haha");
+		
+		socket.on("say", new SocketEventListener<String>() {
+			@Override
+			public void actionPerformed(String message) {
+				socket.emit("say", "do not say anything");
+			}
+		});
+		
+		socket.on("yell", new SocketEventListener<String>() {
+
+			@Override
+			public void actionPerformed(String message) {
+				SysSetting setting = new SysSetting();
+				setting.setPropId(1234);
+				setting.setPropKey("嘿嘿");
+				setting.setPropValue("good");
+				setting.setRemark("This is the remark field");
+				socket.emit("say", setting);
+			}
+		});
 		
 	}
-
-	/**
-	 * 连接结束时，此方法调用
-	 */
-	@Override
-	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		// TODO do something here
-	}
+	
+	
+	
 }

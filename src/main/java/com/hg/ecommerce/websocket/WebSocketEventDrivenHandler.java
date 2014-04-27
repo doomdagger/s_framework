@@ -1,4 +1,4 @@
-package com.hg.ecommerce.websocket.handler;
+package com.hg.ecommerce.websocket;
 
 import java.io.IOException;
 
@@ -8,9 +8,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
-import com.hg.ecommerce.websocket.ConnectionHub;
-import com.hg.ecommerce.websocket.Socket;
-import com.hg.ecommerce.websocket.support.SocketEvent;
+import com.hg.ecommerce.websocket.support.Socket;
+import com.hg.ecommerce.websocket.support.SocketMessage;
 
 /**
  * WebSocket Event Driven Handler, all the event-driven handler should
@@ -24,7 +23,7 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	 * Any Derived Class implement this method to bind events to the given socket object
 	 * @param socket
 	 */
-	public abstract void config(Socket socket);
+	public abstract void onConnection(final Socket socket);
 	
 	
 	/**
@@ -35,10 +34,8 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		
 		Socket socket = ConnectionHub.cacheSocket(session);
-		
-		SocketEvent event = new SocketEvent("connection");
-		
-		socket.performEvent("connection", event);
+				
+		onConnection(socket);
 	}
 	
 	
@@ -47,7 +44,12 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	 */
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		// TODO do something here
+		
+		System.out.println("Close the Session for:"+status.getCode());
+		
+		ConnectionHub.removeSocket(session.getId());
+	
+		System.out.println("ConnectionHub Active Session:"+ConnectionHub.getActiveSocketCount());
 	}
 	
 	/**
@@ -55,8 +57,21 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	 */
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-		session.sendMessage(new TextMessage("Hi! You Back"));
-	
+		
+		try{
+			
+			SocketMessage socketMessage = ConnectionHub.transferMessage(message);
+			
+			Socket socket = ConnectionHub.getSocket(session.getId());
+			
+			socket.performEvent(socketMessage.getEventName(), socketMessage.getPayload());
+		
+		}catch(Exception e){
+			
+			e.printStackTrace();
+			
+		}
+		
 	}
 	
 	/**
@@ -64,7 +79,7 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	 */
 	@Override
 	protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
-	
+		
 	}
 
 	/**
