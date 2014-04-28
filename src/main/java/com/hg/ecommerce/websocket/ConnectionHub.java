@@ -1,6 +1,7 @@
 package com.hg.ecommerce.websocket;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -181,9 +182,15 @@ public class ConnectionHub {
 	 */
 	public static Collection<Socket> getOtherSockets(String sessionId){
 		
-		Collection<Socket> sockets = connectionHub.pool.values();
+		Collection<Socket> sockets = new ArrayList<Socket>();
 		
-		sockets.remove(connectionHub.pool.get(sessionId));
+		for(Entry<String, Socket> entry : connectionHub.pool.entrySet()){
+			if(entry.getKey().equals(sessionId)){
+				continue;
+			}
+			
+			sockets.add(entry.getValue());
+		}
 		
 		return sockets;
 	}
