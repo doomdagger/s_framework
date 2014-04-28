@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hg.ecommerce.config.ProjectContainer;
+import com.hg.ecommerce.websocket.ConnectionHub;
 import com.hg.ecommerce.websocket.exception.BadMessageException;
 import com.hg.ecommerce.websocket.exception.NoGenericSuperInterfaceException;
 
@@ -231,6 +232,24 @@ public class Socket {
 		
 		return this;
 	}
+	
+	/**
+	 * 广播事件与消息，消息接受者为除了自己以外的全部在线用户
+	 * @param event event name
+	 * @param message message object
+	 * @return chain invocation
+	 */
+	public Socket broadcast(String event, Object message){
+		
+		for(Socket socket : ConnectionHub.getOtherSockets(getSessionId())){
+			
+			socket.emit(event, message);
+			
+		}
+		
+		return this;
+	}
+	
 	
 	/**
 	 * Get Hub Object

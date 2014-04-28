@@ -33,7 +33,9 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		
 		Socket socket = ConnectionHub.cacheSocket(session);
-				
+		
+		System.out.println("New Session:"+session.getId()+"\tNow The Connection Hub Socket Number:"+ConnectionHub.getActiveSocketCount()+"\tUUID:"+ConnectionHub.uuid);
+		
 		onConnection(socket);
 	}
 	
@@ -44,11 +46,11 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		
-		System.out.println("Close the Session for:"+status.getCode());
-		
+		System.out.println("Close the Session: "+session.getId()+"\tfor:"+status.getCode());
+		System.out.println("ConnectionHub Active Session:"+(ConnectionHub.getActiveSocketCount()-1));
+
 		ConnectionHub.removeSocket(session.getId());
 	
-		System.out.println("ConnectionHub Active Session:"+ConnectionHub.getActiveSocketCount());
 	}
 	
 	/**

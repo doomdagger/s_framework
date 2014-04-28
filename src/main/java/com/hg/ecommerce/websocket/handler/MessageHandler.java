@@ -27,7 +27,7 @@ public class MessageHandler extends WebSocketEventDrivenHandler{
 	@Override
 	public void onConnection(final Socket socket) {
 		
-		//socket.emit("online", "haha");
+		socket.broadcast("online", "有人比如说我上线了");
 		
 		socket.on("say", new SocketEventListener<String>() {
 			@Override

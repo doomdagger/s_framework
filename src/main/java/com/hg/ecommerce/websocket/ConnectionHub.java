@@ -1,6 +1,7 @@
 package com.hg.ecommerce.websocket;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hg.ecommerce.config.ProjectContainer;
+import com.hg.ecommerce.dao.support.UUIDGenerator;
 import com.hg.ecommerce.websocket.support.Socket;
 import com.hg.ecommerce.websocket.support.SocketMessage;
 
@@ -22,7 +24,10 @@ import com.hg.ecommerce.websocket.support.SocketMessage;
  */
 public class ConnectionHub {
 
-	private static ConnectionHub connectionHub = new ConnectionHub();
+	public final static String uuid = UUIDGenerator.randomUUID();
+	
+	private final static ConnectionHub connectionHub = new ConnectionHub();
+	
 	
 	
 	/**
@@ -169,6 +174,34 @@ public class ConnectionHub {
 		
 	}
 	
+	/**
+	 * Get All The Sockets Except for the one with passing id
+	 * @param sessionId session id
+	 * @return collection of sockets
+	 */
+	public static Collection<Socket> getOtherSockets(String sessionId){
+		
+		Collection<Socket> sockets = connectionHub.pool.values();
+		
+		sockets.remove(connectionHub.pool.get(sessionId));
+		
+		return sockets;
+	}
+	
+	/**
+	 * 广播对象为全体在线用户
+	 * @param event event name
+	 * @param message message object
+	 */
+	public static void emit(String event, Object message){
+		
+		for(Socket socket : connectionHub.pool.values()){
+			
+			socket.emit(event, message);
+			
+		}
+		
+	}
 	
 	//*********************************** gorgeous horizontal split ***********************************//
 	
