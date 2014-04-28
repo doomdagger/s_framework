@@ -1,7 +1,5 @@
 package com.hg.ecommerce.websocket;
 
-import java.io.IOException;
-
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -9,6 +7,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import com.hg.ecommerce.websocket.support.Socket;
+import com.hg.ecommerce.websocket.support.SocketErrorPayload;
 import com.hg.ecommerce.websocket.support.SocketMessage;
 
 /**
@@ -56,21 +55,34 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	 * 消息到来时，此方法被调用
 	 */
 	@Override
-	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+				
+		Socket socket = ConnectionHub.getSocket(session.getId());
+
+		if(socket==null){
+			socket = ConnectionHub.cacheSocket(session);
+		}
 		
-		try{
+		try {
+			
+			System.out.println("raw text message:\n\t"+message.getPayload());
 			
 			SocketMessage socketMessage = ConnectionHub.transferMessage(message);
 			
-			Socket socket = ConnectionHub.getSocket(session.getId());
+			System.out.println("raw message for event:"+socketMessage.getEventName()+"\n\t"+socketMessage.getPayload());
 			
 			socket.performEvent(socketMessage.getEventName(), socketMessage.getPayload());
+
+		} catch (Exception exception){
+			SocketErrorPayload errorPayload = new SocketErrorPayload();
+			
+			errorPayload.setErrorName(exception.getClass().getSimpleName());
+			errorPayload.setErrorDescription(exception.getMessage());
+			
+			socket.emit("error", errorPayload);
+			
+		} 
 		
-		}catch(Exception e){
-			
-			e.printStackTrace();
-			
-		}
 		
 	}
 	
@@ -83,7 +95,7 @@ public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandl
 	}
 
 	/**
-	 * 异常被触发时，此方法调用
+	 * transport异常被触发时，此方法调用
 	 */
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {

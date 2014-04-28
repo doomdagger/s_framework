@@ -88,7 +88,7 @@ public class ConnectionHub {
 	 * @throws JsonMappingException 
 	 * @throws JsonParseException 
 	 */
-	public static SocketMessage transferMessage(TextMessage message) throws JsonParseException, JsonMappingException, IOException {
+	public static SocketMessage transferMessage(TextMessage message) throws IOException {
 		
 		String payload = message.getPayload();
 		

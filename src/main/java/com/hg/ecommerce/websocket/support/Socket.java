@@ -119,6 +119,7 @@ public class Socket {
 				//I will handle most basic type
 				try {
 					T message;
+					
 					if(STRING.equals(cls.getName())){
 						message = (T)rawMessage;
 					}else{
@@ -207,13 +208,11 @@ public class Socket {
 		socketMessage.setEventName(event);
 		
 		try {
-//			if(message instanceof String){
-//				socketMessage.setPayload((String)message);
-//			}else{
-				socketMessage.setPayload(mapper.writeValueAsString(message));			
-//			}
+			
+			socketMessage.setPayload(mapper.writeValueAsString(message));	
+			
 		} catch (JsonProcessingException e) {
-			//throw new BadMessageException("The Given Message Object cannot be write to JSON String",e);
+			//this actually should never happen
 			e.printStackTrace();
 		}
 		
@@ -223,8 +222,10 @@ public class Socket {
 			session.sendMessage(textMessage);
 			
 		} catch (JsonProcessingException e) {
+			//this actually should never happen
 			e.printStackTrace();
 		} catch (IOException e) {
+			//this actually should never happen
 			e.printStackTrace();
 		}
 		

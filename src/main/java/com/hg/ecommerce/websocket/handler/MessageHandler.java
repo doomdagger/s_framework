@@ -1,6 +1,7 @@
 package com.hg.ecommerce.websocket.handler;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class MessageHandler extends WebSocketEventDrivenHandler{
 	@Override
 	public void onConnection(final Socket socket) {
 		
-		socket.emit("online", "haha");
+		//socket.emit("online", "haha");
 		
 		socket.on("say", new SocketEventListener<String>() {
 			@Override
@@ -48,12 +49,19 @@ public class MessageHandler extends WebSocketEventDrivenHandler{
 				setting.setPropKey("嘿嘿");
 				setting.setPropValue("good");
 				setting.setRemark("This is the remark field");
+				setting.setCreatetime(new Date());
 				socket.emit("say", setting);
 			}
 		});
 		
+		socket.on("area", new SocketEventListener<SysSetting>() {
+
+			@Override
+			public void actionPerformed(SysSetting message) {
+				System.out.println(message.toJSON());
+			}
+		});
+		
 	}
-	
-	
-	
+		
 }
