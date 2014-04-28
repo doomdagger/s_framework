@@ -207,11 +207,11 @@ public class Socket {
 		socketMessage.setEventName(event);
 		
 		try {
-			if(message instanceof String){
-				socketMessage.setPayload((String)message);
-			}else{
+//			if(message instanceof String){
+//				socketMessage.setPayload((String)message);
+//			}else{
 				socketMessage.setPayload(mapper.writeValueAsString(message));			
-			}
+//			}
 		} catch (JsonProcessingException e) {
 			//throw new BadMessageException("The Given Message Object cannot be write to JSON String",e);
 			e.printStackTrace();

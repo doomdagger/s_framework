@@ -31,6 +31,8 @@ public class MessageHandler extends WebSocketEventDrivenHandler{
 		socket.on("say", new SocketEventListener<String>() {
 			@Override
 			public void actionPerformed(String message) {
+				System.out.println(message);
+				
 				socket.emit("say", "do not say anything");
 			}
 		});
@@ -39,6 +41,8 @@ public class MessageHandler extends WebSocketEventDrivenHandler{
 
 			@Override
 			public void actionPerformed(String message) {
+				System.out.println(message);
+				
 				SysSetting setting = new SysSetting();
 				setting.setPropId(1234);
 				setting.setPropKey("嘿嘿");
