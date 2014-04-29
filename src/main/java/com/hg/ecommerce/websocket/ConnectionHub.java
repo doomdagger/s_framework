@@ -2,8 +2,10 @@ package com.hg.ecommerce.websocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -73,7 +75,63 @@ public class ConnectionHub {
 		
 	}
 	
+	/**
+	 * 通过user id这种binding信息，来获取一个Socket对象
+	 * @param uid user identifier
+	 * @return Socket
+	 */
+	public static Socket getSocketViaBinding(String uid) {
+		
+		for(Entry<String, String> entry : connectionHub.user_cache.entrySet()){
+			
+			if(entry.getValue().equals(uid)){
+				return getSocket(entry.getKey());
+			}
+			
+		}
+		
+		return null;
+		
+	}
 	
+	/**
+	 * 根据user identifier的集合仅仅获取那些在线的用户的Socket对象，
+	 * <strong>当获取这些Socket是为了emit消息时，不推荐使用此方法，因为多次的遍历会显著降低效率</strong>
+	 * @param uids 若干个user identifier
+	 * @return List -- Socket集合
+	 */
+	public static List<Socket> getSocketsViaBinding(String... uids){
+		
+		List<Socket> sockets = new ArrayList<Socket>();
+		
+		List<String> list = Arrays.asList(uids);
+		
+		list.retainAll(connectionHub.user_cache.values());
+		
+		for(String uid : list){
+			
+			sockets.add(getSocketViaBinding(uid));
+			
+		}
+		
+		return sockets;
+		
+	}
+	
+	/**
+	 * 根据user identifier的集合获取那一部分offline的用户的bindings信息，当用户不在线却想要发送离线消息时，
+	 * 可以使用此方法筛选出offline的用户
+	 * @param uids user identifier
+	 * @return List -- String
+	 */
+	public static List<String> getOfflineBindings(String... uids){
+		
+		List<String> list = Arrays.asList(uids);
+		
+		list.removeAll(connectionHub.user_cache.values());
+		
+		return list;
+	}
 	
 	/**
 	 * 延迟绑定，绑定sessionId 到 一个userId
