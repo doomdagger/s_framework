@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.InitBinder;
  * 也是为了能够依据包进行Controller分组，每个ControllerAdvice可以控制一个Controller分组的AOP配置。
  * 
  * 举例来说，包：com.hg.ecommerce.action.repository 负责存放所有跟仓库管理功能相关的Controller，
- * 那么对应的,在com.hg.ecommerce.action.advice中，就应该有RepositoryControllerAdvice类，来为这个包下
+ * 那么对应的,在com.hg.ecommerce.action中，就应该有RepositoryControllerAdvice类，来为这个包下
  * 的全部Controller提供统一的配置信息：包括DataBinder, ModelAttribute等等。
  * 
  * @author Li He
