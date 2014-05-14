@@ -22,7 +22,7 @@ com.hg.ecommerce.service.impl    //Service Implementation
 快速开始
 ------
 
-####简单配置
+###简单配置
 
 使用s_framework之前，必须要进行适当的配置工作，由于使用了[Maven](http://maven.apache.org/)管理项目依赖，Source Folder的命名和组织也采用了Maven标准。一切的配置文件，均在`src/main/resources`这个源码包下，二次开发使用的，仅是`project-custom.properties`这个配置文件。在这个配置文件中，我们可以覆盖框架的默认配置属性，也可以自定义新的配置信息。
 
@@ -45,7 +45,7 @@ ext.url=http://localhost:8080/extjs/
 ```
 框架的详细配置信息，参考[Configuration]()一节的内容。
 
-####快速生成实体类
+###快速生成实体类
 
 运行`com.hg.ecommerce.util.Bootstrap`类的main方法，框架将根据数据库配置信息，访问数据库，抓取表信息，生成单表单实体。
 
@@ -55,7 +55,7 @@ ext.url=http://localhost:8080/extjs/
 >运行完毕后，新生成的类并不会直接显示在Eclipse左侧的Project Explorer视图中，在项目名称上点击右键，选择Refresh，刷新项目文件结构，这是Model类可见，并存放于`com.hg.ecommerce.model`包中。
 
 
-####运行项目
+###运行项目
 
 在Eclipse的server视图中，确保存在tomcat7.0.52以上版本，在tomcat服务器上点击右键，选择`add and remove`，在弹出的对话框中，将s_framework项目add到右侧一栏中。然后启动tomcat即可，访问:
 `http://localhost:*your_port*/ecommerce/app/index`
