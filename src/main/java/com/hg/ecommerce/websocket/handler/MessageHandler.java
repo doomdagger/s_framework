@@ -18,7 +18,7 @@ import com.hg.ecommerce.websocket.support.SocketEventListener;
  */
 @Component("messageHandler")
 public class MessageHandler extends WebSocketEventDrivenHandler{
-
+	
 	/**
 	 * 使用此方法注册事件，并执行连接建立后的部分逻辑
 	 * @throws IOException 
@@ -26,6 +26,8 @@ public class MessageHandler extends WebSocketEventDrivenHandler{
 	 */
 	@Override
 	public void onConnection(final Socket socket) {
+		
+		
 		
 		socket.broadcast("online", "有人比如说我上线了");
 		
@@ -63,5 +65,7 @@ public class MessageHandler extends WebSocketEventDrivenHandler{
 		});
 		
 	}
+
+
 		
 }

@@ -16,7 +16,7 @@ import com.hg.ecommerce.websocket.support.SocketMessage;
  * @author Li He
  *
  */
-public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandler{
+public abstract class WebSocketEventDrivenHandler extends AbstractWebSocketHandler {
 	
 	/**
 	 * Any Derived Class implement this method to bind events to the given socket object
