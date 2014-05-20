@@ -31,6 +31,8 @@ import com.hg.ecommerce.model.support.EntityObject;
 public class Util {
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat(
 			ProjectConfig.getProperty("format.date"));
+    private static Pattern pattern = Pattern.compile("(:([a-zA-Z0-9\\-_\\$]+))");
+
 
 	/**
 	 * 将java.util.Date对象转换为string，格式规定为project.properties文件中
@@ -513,4 +515,64 @@ public class Util {
 		return "";
 		
 	}
+	
+	
+	/**
+	 * render sql with named param
+	 * @param rawSQL raw sql
+	 * @param params map params
+	 * @return sql string
+	 */
+	public static String renderSQL(String rawSQL, Map<String, String> params){
+
+        StringBuilder builder = new StringBuilder();
+        Matcher matcher = pattern.matcher(rawSQL);
+
+        int endIndex = 0;
+        int start;
+        while (matcher.find(endIndex)){
+            start = endIndex;
+            endIndex = matcher.end();
+
+            builder.append(rawSQL.substring(start, matcher.start()));
+            builder.append("'").append(params.get(matcher.group(2))).append("'");
+        }
+
+        if(endIndex!=rawSQL.length()){
+            builder.append(rawSQL.substring(endIndex,rawSQL.length()));
+        }
+
+        return builder.toString();
+    }
+
+	/**
+	 * render sql with named param
+	 * @param rawSQL raw sql
+	 * @param object entity object
+	 * @return
+	 */
+    public static <T extends EntityObject> String renderSQL(String rawSQL, T object){
+
+        JSONObject jsonObject = ((EntityObject)object).toJSON();
+
+        StringBuilder builder = new StringBuilder();
+        Matcher matcher = pattern.matcher(rawSQL);
+
+        int endIndex = 0;
+        int start;
+        while (matcher.find(endIndex)){
+            start = endIndex;
+            endIndex = matcher.end();
+
+            builder.append(rawSQL.substring(start,matcher.start()));
+            builder.append("'").append(jsonObject.get(matcher.group(2))).append("'");
+        }
+
+        if(endIndex!=rawSQL.length()){
+            builder.append(rawSQL.substring(endIndex,rawSQL.length()));
+        }
+
+        return builder.toString();
+    }
+
 }
