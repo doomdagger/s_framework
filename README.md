@@ -1,5 +1,5 @@
-s_framework
-===========
+s_framework [(wiki)](https://github.com/doomdagger/s_framework/wiki)
+=====================================================================
 
 > a blank project can be used as a boilerplate, utterly based on Spring (Spring MVC, Spring Context, Spring JDBC)
 
