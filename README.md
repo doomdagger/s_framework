@@ -1,7 +1,7 @@
 s_framework [(wiki)](https://github.com/doomdagger/s_framework/wiki)
 =====================================================================
 
-> a blank project can be used as a boilerplate, utterly based on Spring (Spring MVC, Spring Context, Spring JDBC)
+> a blank project can be used as a boilerplate, utterly based on Spring (Spring MVC, Spring Context, Spring JDBC), also try the websocket component of s_framework, [MyWebsocket](https://github.com/doomdagger/MyWebsocket)
 
 Project Need to be bootstrapped before running on server.
 
